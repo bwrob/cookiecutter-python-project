@@ -1,13 +1,15 @@
+import keyword
 import re
 import sys
 
-PACKAGE_REGEX = r"^[a-zA-Z][_a-zA-Z0-9]+$"
+PACKAGE_REGEX = r"^[a-zA-Z][_a-zA-Z0-9]*$"
 package_name = "{{ cookiecutter.package_name }}"
 
-if not re.match(PACKAGE_REGEX, package_name):
+if not re.match(PACKAGE_REGEX, package_name) or keyword.iskeyword(package_name):
     print(
         f"ERROR: The package name '{package_name}' is not a valid Python package name. "
-        "It must start with a letter and contain only letters, numbers, and underscores."
+        "It must start with a letter, contain only alphanumeric characters and underscores, "
+        "and must not be a Python reserved keyword."
     )
     sys.exit(1)
 

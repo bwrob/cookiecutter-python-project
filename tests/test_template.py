@@ -4,6 +4,7 @@ import tempfile
 from pathlib import Path
 
 import pytest
+from cookiecutter.exceptions import FailedHookException
 from cookiecutter.main import cookiecutter
 
 TEMPLATE_ROOT = Path(__file__).resolve().parent.parent
@@ -57,15 +58,18 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert (project_dir / ".github" / "workflows" / "python_tests.yaml").exists()
     assert (project_dir / ".github" / "workflows" / "docs.yaml").exists()
 
-    # Verify precommit task removed
+    # Verify precommit task removed and format-check added
     poe_text = (project_dir / "poe_tasks.toml").read_text()
     assert "tasks.precommit" not in poe_text
     assert '"precommit"' not in poe_text
+    assert "tasks.format-check" in poe_text
 
     # Verify markdown-exec and Python 3.15 in pyproject.toml
     pyproject_text = (project_dir / "pyproject.toml").read_text()
     assert "markdown-exec" in pyproject_text
     assert "Programming Language :: Python :: 3.15" in pyproject_text
+    assert "rich>=" in pyproject_text
+    assert "typer>=" in pyproject_text
 
     # Verify markdown-exec fences in zensical.toml
     zensical_text = (project_dir / "zensical.toml").read_text()
@@ -82,9 +86,23 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert '"py"' in rumdl_text
     assert '"ruff:check"' in rumdl_text
 
+    # Verify CI workflow has quality and test split
+    ci_text = (project_dir / ".github" / "workflows" / "python_tests.yaml").read_text()
+    assert "quality:" in ci_text
+    assert "test:" in ci_text
+    assert "poe format-check" in ci_text
+
+    # Verify Tach setup
+    tach_text = (project_dir / "tach.toml").read_text()
+    assert 'source_roots = [ "src" ]' in tach_text
+    assert 'path       = "demo_app"' in tach_text
+
     # Verify Elevator Pitch present in generated README and repo README
-    assert "Elevator Pitch" in (project_dir / "README.md").read_text()
+    readme_text = (project_dir / "README.md").read_text()
+    assert "Elevator Pitch" in readme_text
     assert "Elevator Pitch" in (TEMPLATE_ROOT / "README.md").read_text()
+    assert "CLI Layer" in readme_text
+    assert "license-MIT" in readme_text
 
 
 def test_python_315_generation(temp_output_dir: Path) -> None:
@@ -104,6 +122,16 @@ def test_python_315_generation(temp_output_dir: Path) -> None:
     assert project_dir.exists()
     pyproject_text = (project_dir / "pyproject.toml").read_text()
     assert 'requires-python = ">=3.15"' in pyproject_text
+    assert "Programming Language :: Python :: 3.12" not in pyproject_text
+    assert "Programming Language :: Python :: 3.13" not in pyproject_text
+    assert "Programming Language :: Python :: 3.14" not in pyproject_text
+    assert "Programming Language :: Python :: 3.15" in pyproject_text
+
+    ci_text = (project_dir / ".github" / "workflows" / "python_tests.yaml").read_text()
+    assert '["3.15"]' in ci_text
+
+    readme_text = (project_dir / "README.md").read_text()
+    assert "python-3.15+-blue.svg" in readme_text
 
 
 def test_no_cli_generation(temp_output_dir: Path) -> None:
@@ -125,6 +153,18 @@ def test_no_cli_generation(temp_output_dir: Path) -> None:
     assert not (project_dir / "src" / "pure_library" / "cli.py").exists()
     assert not (project_dir / "tests" / "test_cli.py").exists()
 
+    pyproject_text = (project_dir / "pyproject.toml").read_text()
+    assert "dependencies = [  ]" in pyproject_text or "dependencies = []" in pyproject_text
+    assert "typer" not in pyproject_text
+    assert "rich" not in pyproject_text
+
+    tach_text = (project_dir / "tach.toml").read_text()
+    assert '"cli"' not in tach_text
+    assert 'layers                       = [ "core" ]' in tach_text
+
+    readme_text = (project_dir / "README.md").read_text()
+    assert "CLI Layer" not in readme_text
+
 
 def test_no_github_actions(temp_output_dir: Path) -> None:
     """Test generating a project without GitHub actions."""
@@ -142,6 +182,8 @@ def test_no_github_actions(temp_output_dir: Path) -> None:
 
     assert project_dir.exists()
     assert not (project_dir / ".github").exists()
+    readme_text = (project_dir / "README.md").read_text()
+    assert "[![CI]" not in readme_text
 
 
 def test_no_license(temp_output_dir: Path) -> None:
@@ -160,3 +202,20 @@ def test_no_license(temp_output_dir: Path) -> None:
 
     assert project_dir.exists()
     assert not (project_dir / "LICENSE").exists()
+    readme_text = (project_dir / "README.md").read_text()
+    assert "badge/license" not in readme_text
+    assert "All rights reserved." in readme_text
+    assert "[LICENSE](LICENSE)" not in readme_text
+
+
+def test_package_name_keyword_validation(temp_output_dir: Path) -> None:
+    """Test that python keywords are rejected as package names."""
+    with pytest.raises(FailedHookException):
+        cookiecutter(
+            str(TEMPLATE_ROOT),
+            no_input=True,
+            output_dir=str(temp_output_dir),
+            extra_context={
+                "project_name": "def",
+            },
+        )

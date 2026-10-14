@@ -35,6 +35,10 @@
     cmd  = "ruff format"
     help = "Format Python code with Ruff."
 
+[tasks.format-check]
+    cmd  = "ruff format --check"
+    help = "Verify Python code formatting with Ruff without modifying files."
+
 [tasks.lint-md]
     cmd  = "rumdl check"
     help = "Lint markdown documentation with rumdl."
@@ -55,14 +59,14 @@
     default_item_type = "cmd"
     help              = "Auto-fix linting and formatting issues."
     ignore_fail       = "return_non_zero"
-    sequence          = [ "ruff check --fix --unsafe-fixes", "ruff format", "rumdl fmt" ]
+    sequence          = [ "ruff check --fix", "ruff format", "rumdl fmt" ]
 
 [tasks.code-quality]
     help = "Execute the full code quality verification pipeline."
     ignore_fail = "return_non_zero"
     sequence = [
-        "fix",
         "lint",
+        "format-check",
         "lint-md",
         "type-check",
         "complexity",
@@ -90,7 +94,7 @@
     help = "Live-preview documentation with Zensical and MathJax."
 
 [tasks.docs-build]
-    cmd  = "zensical build --strict"
+    cmd  = "zensical build --strict --clean"
     help = "Build production static documentation into site/."
 
 [tasks.publish-docs]
@@ -105,7 +109,7 @@
   }
   trap cleanup EXIT
 
-  zensical build --strict
+  zensical build --strict --clean
 
   git checkout --orphan temp-deploy-docs
   git rm -rf . --cached --quiet
@@ -121,7 +125,7 @@
     sequence = [
         "code-quality",
         "test",
-        { cmd = "rm -rf dist" },
+        { cmd = "python -c \"import shutil; shutil.rmtree('dist', ignore_errors=True)\"" },
         { cmd = "uv build" },
         { cmd = "uv publish" },
         "publish-docs",

@@ -18,21 +18,25 @@ exclude = [
     "**/site",
 ]
 interfaces = [  ]
-source_roots = [ ".", "src" ]
+source_roots = [ "src" ]
 
 forbid_circular_dependencies = true
 ignore_type_checking_imports = false
+{% if cookiecutter.include_cli == "yes" -%}
 layers                       = [ "cli", "core" ]
+{%- else -%}
+layers                       = [ "core" ]
+{%- endif %}
 respect_gitignore            = true
 
 [[modules]]
     depends_on = [  ]
     layer      = "core"
-    path       = "src.{{ cookiecutter.package_name }}"
+    path       = "{{ cookiecutter.package_name }}"
 
 {% if cookiecutter.include_cli == "yes" -%}
 [[modules]]
-    depends_on = [ "src.{{ cookiecutter.package_name }}" ]
+    depends_on = [ "{{ cookiecutter.package_name }}" ]
     layer      = "cli"
-    path       = "src.{{ cookiecutter.package_name }}.cli"
+    path       = "{{ cookiecutter.package_name }}.cli"
 {%- endif %}

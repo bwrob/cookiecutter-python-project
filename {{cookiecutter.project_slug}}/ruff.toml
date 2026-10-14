@@ -8,8 +8,7 @@
 # mode, and docstring formatting for spotless, uniform Python style.
 # ==============================================================================
 
-line-length    = 88
-target-version = "py{{ cookiecutter.python_version.replace('.', '') }}"
+line-length = 88
 
 [lint]
     exclude = [ ".venv", "site", "dist" ]
@@ -31,7 +30,7 @@ target-version = "py{{ cookiecutter.python_version.replace('.', '') }}"
             "boolean-type-hint-positional-argument",
             "line-too-long",
         ]
-        "tests/**/*" = [ "assert", "docstring-missing-returns", "print", "PT" ]
+        "tests/**/*" = [ "assert", "docstring-missing-returns", "print" ]
 
 [format]
     docstring-code-format = true

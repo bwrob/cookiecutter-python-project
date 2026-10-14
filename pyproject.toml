@@ -34,3 +34,6 @@ package = false
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 norecursedirs = ["{{cookiecutter.project_slug}}", ".*", "build", "dist"]
+
+[tool.ruff]
+extend-exclude = ["*cookiecutter*"]

@@ -1,4 +1,4 @@
-{% raw %}name: Package Tests
+name: Package Tests
 
 env:
   UV_NO_SYNC: true
@@ -13,65 +13,79 @@ on:
     branches: ["main"]
 
 jobs:
-  test:
-    name: 🐍 Python Tests and Quality Matrix
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.12", "3.13", "3.14", "3.15"]
-
+  quality:
+    name: 🎨 Code Quality & Static Analysis
+    runs-on: ubuntu-latest
     steps:
       - name: 🛠️ Check out repository
         uses: actions/checkout@v4
 
-      - name: 🛠️ Install uv and use Python ${{ matrix.python-version }}
+      - name: 🛠️ Install uv and setup Python
         uses: astral-sh/setup-uv@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "{{ cookiecutter.python_version }}"
           enable-cache: true
 
       - name: 🛠️ Install project dependencies
         run: uv sync --dev
 
       - name: 🐍 Run ruff linter check
-        if: always()
         run: uv run poe lint
 
       - name: 🐍 Run ruff formatter check
-        if: always()
-        run: uv run ruff format --check .
+        run: uv run poe format-check
 
       - name: 🐍 Run pyrefly static type checker
-        if: always()
         run: uv run poe type-check
 
       - name: 🧮 Run complexipy complexity check
-        if: always()
         run: uv run poe complexity
 
       - name: 📝 Run rumdl markdown linter
-        if: always()
         run: uv run poe lint-md
 
       - name: 📐 Run tach architecture check
-        if: always()
         run: uv run poe dependencies
 
+  test:
+    name: 🐍 Python Tests Matrix
+    runs-on: {% raw %}${{ matrix.os }}{% endraw %}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version:
+          {%- if cookiecutter.python_version == "3.12" %} ["3.12", "3.13", "3.14", "3.15"]
+          {%- elif cookiecutter.python_version == "3.13" %} ["3.13", "3.14", "3.15"]
+          {%- elif cookiecutter.python_version == "3.14" %} ["3.14", "3.15"]
+          {%- else %} ["3.15"]
+          {%- endif %}
+
+    steps:
+      - name: 🛠️ Check out repository
+        uses: actions/checkout@v4
+
+      - name: 🛠️ Install uv and use Python {% raw %}${{ matrix.python-version }}{% endraw %}
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: {% raw %}${{ matrix.python-version }}{% endraw %}
+          enable-cache: true
+
+      - name: 🛠️ Install project dependencies
+        run: uv sync --dev
+
       - name: 🧪 Run pytest suite
-        if: always()
         run: uv run poe test
 
   check:
     name: 🛠️ All Checks Status
     if: always()
     needs:
+      - quality
       - test
     runs-on: ubuntu-latest
     steps:
-      - name: Decide whether all required matrix jobs succeeded
+      - name: Decide whether all required jobs succeeded
         uses: re-actors/alls-green@release/v1
         with:
-          jobs: ${{ toJSON(needs) }}
-{%- endraw %}
+          jobs: {% raw %}${{ toJSON(needs) }}{% endraw %}

@@ -10,11 +10,6 @@
 ---
 fail_fast: false
 repos:
-  - repo: https://github.com/pre-commit/pre-commit
-    rev: v4.6.2
-    hooks:
-      - id: validate_manifest
-        name: "🛠️ pre-commit · Validate pre-commit configuration"
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
@@ -54,18 +49,12 @@ repos:
         name: "🐍 validate-pyproject · Validate pyproject.toml"
         additional_dependencies:
           - validate-pyproject-schema-store[all]
-  - repo: https://github.com/myint/eradicate
-    rev: 3.0.1
-    hooks:
-      - id: eradicate
-        name: "🐍 eradicate · Remove dead code"
-        args: []
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.17.0
     hooks:
       - id: ruff-check
         name: "🐍 ruff · Check Python code"
-        args: [--fix, --config, ./ruff.toml, --unsafe-fixes]
+        args: [--fix, --config, ./ruff.toml]
       - id: ruff-format
         name: "🐍 ruff · Format Python code"
         args: [--config, ./ruff.toml]
@@ -97,16 +86,19 @@ repos:
         entry: uv run pyrefly check
         language: system
         pass_filenames: false
+        files: \.(py|pyi)$
       - id: complexipy
         name: "🧮 complexipy · Cognitive complexity check"
         entry: uv run complexipy src tests
         language: system
         pass_filenames: false
+        files: \.(py|pyi)$
       - id: tach
         name: "📐 tach · Architecture boundaries check"
         entry: uv run tach check
         language: system
         pass_filenames: false
+        files: (\.(py|pyi)$|^tach\.toml$)
   - repo: https://github.com/astral-sh/uv-pre-commit
     rev: 0.12.7
     hooks:

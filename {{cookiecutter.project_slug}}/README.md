@@ -4,13 +4,16 @@
   <img src="docs/assets/python-logo.svg" alt="Python Logo" width="100">
 </p>
 
+{% if cookiecutter.include_github_actions == "yes" -%}
 [![CI](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/actions/workflows/python_tests.yaml/badge.svg)](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/actions/workflows/python_tests.yaml)
-[![Python: 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
-
+{%- endif %}
+[![Python: {{ cookiecutter.python_version }}+](https://img.shields.io/badge/python-{{ cookiecutter.python_version }}+-blue.svg)](https://www.python.org/downloads/)
 [![Code Style: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Type Checked: Pyrefly](https://img.shields.io/badge/types-pyrefly-blueviolet.svg)](https://github.com/facebook/pyrefly)
 [![Coverage: pytest-cov](https://img.shields.io/badge/coverage-80%25%2B-brightgreen.svg)](.coveragerc)
+{% if cookiecutter.license != "None" -%}
 [![License: {{ cookiecutter.license }}](https://img.shields.io/badge/license-{{ cookiecutter.license }}-green.svg)](LICENSE)
+{%- endif %}
 
 {{ cookiecutter.description }}
 
@@ -127,6 +130,7 @@ uv run poe docs-serve
 
 Architecture rules are defined and enforced with **Tach**:
 
+{% if cookiecutter.include_cli == "yes" -%}
 ```mermaid
 flowchart TD
     CLI["CLI Layer"]
@@ -134,6 +138,13 @@ flowchart TD
     CLI --> CORE
     CORE --> EXT["External Dependencies"]
 ```
+{%- else -%}
+```mermaid
+flowchart TD
+    CORE["Core Layer"]
+    CORE --> EXT["External Dependencies"]
+```
+{%- endif %}
 
 Run `uv run poe dependencies` to validate that no layer violations or circular
 dependencies occur.
@@ -152,11 +163,12 @@ Inline equations like $E = mc^2$ and $\Omega(n)$ are supported out of the box.
 
 | Task | Command | Description |
 |---|---|---|
-| **Quality** | `uv run poe code-quality` | Runs auto-fix, format, lint, type-check, complexity, and tach |
+| **Quality** | `uv run poe code-quality` | Runs lint, format-check, lint-md, type-check, complexity, tach |
 | **Test** | `uv run poe test` | Executes pytest with doctests and coverage thresholds |
 | **Coverage** | `uv run poe coverage` | Creates detailed HTML coverage report |
 | **Lint** | `uv run poe lint` | Checks code against all Ruff rules |
 | **Format** | `uv run poe format` | Formats code with Ruff |
+| **Format Check** | `uv run poe format-check` | Verifies code format with Ruff without modifying files |
 | **Markdown** | `uv run poe lint-md` | Lints markdown files with rumdl |
 | **Types** | `uv run poe type-check` | Performs strict type analysis with Pyrefly |
 | **Complexity** | `uv run poe complexity` | Evaluates cognitive complexity with complexipy |
@@ -181,4 +193,8 @@ Inline equations like $E = mc^2$ and $\Omega(n)$ are supported out of the box.
 
 ## License
 
+{% if cookiecutter.license != "None" -%}
 Distributed under the {{ cookiecutter.license }} License. See [LICENSE](LICENSE) for details.
+{%- else -%}
+All rights reserved.
+{%- endif %}

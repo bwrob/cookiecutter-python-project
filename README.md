@@ -105,6 +105,7 @@ Run tasks via `uv run poe <task>`:
 | `coverage` | `pytest --cov --cov-report=html` | Generates HTML report in `htmlcov/` |
 | `lint` | `ruff check --config ruff.toml` | Lints Python source code |
 | `format` | `ruff format` | Formats Python code |
+| `format-check` | `ruff format --check` | Verifies code format without modifying files |
 | `lint-md` | `rumdl check` | Lints markdown documentation |
 | `format-md` | `rumdl fmt` | Formats markdown and code snippets |
 | `type-check` | `pyrefly check` | Performs strict type analysis |
@@ -112,9 +113,9 @@ Run tasks via `uv run poe <task>`:
 | `dependencies` | `tach check` | Validates architecture boundaries |
 | `dependency-graph` | `tach show --mermaid -o docs/dependency_graph.mmd` | Generates Mermaid diagram |
 | `fix` | `ruff check --fix && ruff format && rumdl fmt` | Auto-fixes lint and format issues |
-| `code-quality` | Runs `fix`, `lint`, `lint-md`, `type-check`, `complexity`, `dependencies` | Full quality check sequence |
+| `code-quality` | Runs `lint`, `format-check`, `lint-md`, `type-check`, `complexity`, `dependencies` | Full quality check sequence |
 | `docs-serve` | `zensical serve --strict` | Starts local documentation server |
-| `docs-build` | `zensical build --strict` | Builds static site into `site/` |
+| `docs-build` | `zensical build --strict --clean` | Builds static site into `site/` |
 | `publish-docs` | Deploys docs to GitHub Pages | Deploys docs to `gh-pages` branch |
 | `publish` | Runs checks, builds with `uv build`, publishes with `uv publish` | Release package to PyPI |
 
@@ -125,7 +126,7 @@ Run tasks via `uv run poe <task>`:
 Run the automated Cookiecutter test suite:
 
 ```bash
-uv run --with pytest,cookiecutter pytest tests
+uv run pytest
 ```
 
 ---

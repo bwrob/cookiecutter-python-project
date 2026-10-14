@@ -1,8 +1,9 @@
 """Unit tests for the command-line interface."""
 
+import pytest
 from typer.testing import CliRunner
 
-from {{ cookiecutter.package_name }}.cli import app
+from {{ cookiecutter.package_name }}.cli import app, main
 
 runner = CliRunner()
 
@@ -26,3 +27,11 @@ def test_cli_greet() -> None:
     result = runner.invoke(app, ["greet", "Developer"])
     assert result.exit_code == 0
     assert "Hello, Developer!" in result.stdout
+
+
+def test_cli_main(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Test main entry point invocation."""
+    monkeypatch.setattr("sys.argv", ["{{ cookiecutter.project_slug }}", "--help"])
+    with pytest.raises(SystemExit) as exc_info:
+        main()
+    assert exc_info.value.code == 0
