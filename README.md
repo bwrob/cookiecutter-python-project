@@ -113,8 +113,8 @@ Run tasks via `uv run poe <task>`:
 | `dependency-graph` | `tach show --mermaid -o docs/dependency_graph.mmd` | Generates Mermaid diagram |
 | `fix` | `ruff check --fix && ruff format && rumdl fmt` | Auto-fixes lint and format issues |
 | `code-quality` | Runs `fix`, `lint`, `lint-md`, `type-check`, `complexity`, `dependencies` | Full quality check sequence |
-| `docs-serve` | `zensical serve` | Starts local documentation server |
-| `docs-build` | `zensical build` | Builds static site into `site/` |
+| `docs-serve` | `zensical serve --strict` | Starts local documentation server |
+| `docs-build` | `zensical build --strict` | Builds static site into `site/` |
 | `publish-docs` | Deploys docs to GitHub Pages | Deploys docs to `gh-pages` branch |
 | `publish` | Runs checks, builds with `uv build`, publishes with `uv publish` | Release package to PyPI |
 

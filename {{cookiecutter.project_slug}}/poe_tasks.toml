@@ -86,11 +86,11 @@
     # ------------------------------------------------------------------------------
 
 [tasks.docs-serve]
-    cmd  = "zensical serve"
+    cmd  = "zensical serve --strict"
     help = "Live-preview documentation with Zensical and MathJax."
 
 [tasks.docs-build]
-    cmd  = "zensical build"
+    cmd  = "zensical build --strict"
     help = "Build production static documentation into site/."
 
 [tasks.publish-docs]
@@ -105,7 +105,7 @@
   }
   trap cleanup EXIT
 
-  zensical build
+  zensical build --strict
 
   git checkout --orphan temp-deploy-docs
   git rm -rf . --cached --quiet

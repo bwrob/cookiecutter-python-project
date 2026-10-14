@@ -71,6 +71,12 @@ def test_default_generation(temp_output_dir: Path) -> None:
     zensical_text = (project_dir / "zensical.toml").read_text()
     assert "markdown_exec.validator" in zensical_text
 
+    # Verify --strict in zensical commands
+    assert "zensical serve --strict" in poe_text
+    assert "zensical build --strict" in poe_text
+    docs_yaml_text = (project_dir / ".github" / "workflows" / "docs.yaml").read_text()
+    assert "zensical build --clean --strict" in docs_yaml_text
+
     # Verify python aliases in rumdl.toml
     rumdl_text = (project_dir / "rumdl.toml").read_text()
     assert '"py"' in rumdl_text
