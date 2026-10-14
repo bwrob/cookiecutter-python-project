@@ -8,8 +8,8 @@
 # Python code blocks with Ruff.
 # ==============================================================================
 
-disable = ["MD060", "MD063", "MD078", "MD090", "MD093"]
-enable  = ["ALL"]
+disable = [ "MD060", "MD063", "MD078", "MD090", "MD093" ]
+enable = [ "ALL" ]
 exclude = [
     ".git",
     ".github",
@@ -21,9 +21,9 @@ exclude = [
     "site",
     "dist",
 ]
-extend-enable     = ["MD080", "MD083"]
-flavor            = "gfm"
-line-length       = 88
+extend-enable = [ "MD080", "MD083" ]
+flavor = "gfm"
+line-length = 88
 respect-gitignore = true
 
 # --- Code Block Tools (Format & Lint Python & JSON in Markdown) ---
@@ -33,30 +33,30 @@ respect-gitignore = true
     on-missing-tool-binary = "warn"
 
     [code-block-tools.language-aliases]
-        "bash"      = "shell"
-        "python3"   = "python"
-        "py"        = "python"
-        "{bash}"    = "shell"
-        "{json}"    = "json"
-        "{python}"  = "python"
-        "{py}"      = "python"
+        "bash"     = "shell"
+        "py"       = "python"
+        "python3"  = "python"
+        "{bash}"   = "shell"
+        "{json}"   = "json"
+        "{python}" = "python"
+        "{py}"     = "python"
 
     [code-block-tools.languages.python]
-        format = ["ruff:format"]
-        lint   = ["ruff:check"]
+        format = [ "ruff:format" ]
+        lint   = [ "ruff:check" ]
 
     [code-block-tools.languages.json]
-        format = ["jq"]
+        format = [ "jq" ]
 
     [code-block-tools.tools."ruff:format"]
-        command = ["ruff", "format", "--line-length=79", "-"]
+        command = [ "ruff", "format", "--line-length=79", "-" ]
 
     [code-block-tools.tools."ruff:check"]
         command = [
             "ruff",
             "check",
             "--output-format=concise",
-            "--ignore=INP001,F821,D,ANN,FBT,E402,B018,S101,TRY,EM,PL,N,ERA,S,EXE,RET,SIM,PTH,F841,B,E501,C4,FURB,PIE,RUF,UP,F401,F403,I,SLF,T201,T203",
+            "--ignore=INP001,F821,D,ANN,FBT,E402,B018,S101,TRY,EM,PL,N,ERA,S,EXE,RET,SIM,PTH,F841,B,E501,C4,FURB,PIE,RUF,UP,F401,F403,I,SLF,T201,T203,TC,CPY",
             "-",
         ]
 
@@ -146,4 +146,4 @@ respect-gitignore = true
     minimum-before = 1
 
 [MD059]
-    prohibited-texts = ["click here", "here", "link", "read more"]
+    prohibited-texts = [ "click here", "here", "link", "read more" ]

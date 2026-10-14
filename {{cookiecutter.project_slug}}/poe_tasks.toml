@@ -9,97 +9,93 @@
 # ==============================================================================
 
 [executor]
-type = "uv"
+    type = "uv"
 
-# ------------------------------------------------------------------------------
-# Testing & Code Coverage
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # Testing & Code Coverage
+    # ------------------------------------------------------------------------------
 
 [tasks.test]
-cmd  = "pytest --cov --cov-report=term-missing --cov-report=xml"
-help = "Run tests with coverage measurement (pytest + pytest-cov)."
+    cmd  = "pytest --cov --cov-report=term-missing --cov-report=xml"
+    help = "Run tests with coverage measurement (pytest + pytest-cov)."
 
 [tasks.coverage]
-cmd  = "pytest --cov --cov-report=html --cov-report=term-missing --cov-report=xml"
-help = "Generate interactive HTML coverage report in htmlcov/."
+    cmd  = "pytest --cov --cov-report=html --cov-report=term-missing --cov-report=xml"
+    help = "Generate interactive HTML coverage report in htmlcov/."
 
-# ------------------------------------------------------------------------------
-# Quality: Formatting, Linting, & Static Typing
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # Quality: Formatting, Linting, & Static Typing
+    # ------------------------------------------------------------------------------
 
 [tasks.lint]
-cmd  = "ruff check --config ruff.toml"
-help = "Lint Python source code with Ruff."
+    cmd  = "ruff check --config ruff.toml"
+    help = "Lint Python source code with Ruff."
 
 [tasks.format]
-cmd  = "ruff format"
-help = "Format Python code with Ruff."
+    cmd  = "ruff format"
+    help = "Format Python code with Ruff."
 
 [tasks.lint-md]
-cmd  = "rumdl check"
-help = "Lint markdown documentation with rumdl."
+    cmd  = "rumdl check"
+    help = "Lint markdown documentation with rumdl."
 
 [tasks.format-md]
-cmd  = "rumdl fmt"
-help = "Format markdown and embedded code snippets with rumdl."
+    cmd  = "rumdl fmt"
+    help = "Format markdown and embedded code snippets with rumdl."
 
 [tasks.type-check]
-cmd  = "pyrefly check"
-help = "Strict static type checking with Pyrefly."
+    cmd  = "pyrefly check"
+    help = "Strict static type checking with Pyrefly."
 
 [tasks.complexity]
-cmd  = "complexipy src tests"
-help = "Verify cognitive complexity limits with complexipy."
+    cmd  = "complexipy src tests"
+    help = "Verify cognitive complexity limits with complexipy."
 
 [tasks.fix]
-default_item_type = "cmd"
-help              = "Auto-fix linting and formatting issues."
-ignore_fail       = "return_non_zero"
-sequence          = [
-    "ruff check --fix --unsafe-fixes",
-    "ruff format",
-    "rumdl fmt",
-]
+    default_item_type = "cmd"
+    help              = "Auto-fix linting and formatting issues."
+    ignore_fail       = "return_non_zero"
+    sequence          = [ "ruff check --fix --unsafe-fixes", "ruff format", "rumdl fmt" ]
 
 [tasks.code-quality]
-help        = "Execute the full code quality verification pipeline."
-ignore_fail = "return_non_zero"
-sequence    = [
-    "fix",
-    "lint",
-    "lint-md",
-    "type-check",
-    "complexity",
-    "dependencies",
-]
+    help = "Execute the full code quality verification pipeline."
+    ignore_fail = "return_non_zero"
+    sequence = [
+        "fix",
+        "lint",
+        "lint-md",
+        "type-check",
+        "complexity",
+        "dependencies",
+    ]
 
-# ------------------------------------------------------------------------------
-# Architecture & Modular Boundaries
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # Architecture & Modular Boundaries
+    # ------------------------------------------------------------------------------
 
 [tasks.dependencies]
-cmd  = "tach check"
-help = "Validate modular architecture layer boundaries with Tach."
+    cmd  = "tach check"
+    help = "Validate modular architecture layer boundaries with Tach."
 
 [tasks.dependency-graph]
-cmd  = "tach show --mermaid -o docs/dependency_graph.mmd"
-help = "Export architecture dependency graph in Mermaid format."
+    cmd  = "tach show --mermaid -o docs/dependency_graph.mmd"
+    help = "Export architecture dependency graph in Mermaid format."
 
-# ------------------------------------------------------------------------------
-# Documentation & Publishing
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # Documentation & Publishing
+    # ------------------------------------------------------------------------------
 
 [tasks.docs-serve]
-cmd  = "zensical serve"
-help = "Live-preview documentation with Zensical and MathJax."
+    cmd  = "zensical serve"
+    help = "Live-preview documentation with Zensical and MathJax."
 
 [tasks.docs-build]
-cmd  = "zensical build"
-help = "Build production static documentation into site/."
+    cmd  = "zensical build"
+    help = "Build production static documentation into site/."
 
 [tasks.publish-docs]
-help  = "Build and deploy Zensical docs to gh-pages via clean orphan branch."
-shell = """
+    help = "Build and deploy Zensical docs to gh-pages via clean orphan branch."
+    shell = """
   START_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
   cleanup() {
@@ -121,12 +117,12 @@ shell = """
 """
 
 [tasks.publish]
-help     = "Build wheels with uv and publish package and docs."
-sequence = [
-    "code-quality",
-    "test",
-    { cmd = "rm -rf dist" },
-    { cmd = "uv build" },
-    { cmd = "uv publish" },
-    "publish-docs",
-]
+    help = "Build wheels with uv and publish package and docs."
+    sequence = [
+        "code-quality",
+        "test",
+        { cmd = "rm -rf dist" },
+        { cmd = "uv build" },
+        { cmd = "uv publish" },
+        "publish-docs",
+    ]

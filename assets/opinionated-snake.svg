@@ -1,187 +1,148 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
   <defs>
-    <!-- Background Space Gradient -->
-    <radialGradient id="skyGrad" cx="50%" cy="30%" r="70%">
-      <stop offset="0%" stop-color="#111827"/>
-      <stop offset="50%" stop-color="#0b0f19"/>
-      <stop offset="100%" stop-color="#020617"/>
+    <!-- Deep Cosmic Obsidian Void Gradient -->
+    <radialGradient id="spaceVoid" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#080c14"/>
+      <stop offset="100%" stop-color="#020408"/>
+    </radialGradient>
+
+    <!-- Star Core Radiant Bloom -->
+    <radialGradient id="starBloom" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="25%" stop-color="#e0f2fe" stop-opacity="0.95"/>
+      <stop offset="55%" stop-color="#38bdf8" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
     </radialGradient>
 
     <!-- Celestial Zenith Beams -->
-    <linearGradient id="zenithBeam" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.35"/>
-      <stop offset="40%" stop-color="#06b6d4" stop-opacity="0.12"/>
-      <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+    <linearGradient id="verticalBeam" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.6"/>
+      <stop offset="35%" stop-color="#38bdf8" stop-opacity="0.2"/>
+      <stop offset="75%" stop-color="#06b6d4" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#020408" stop-opacity="0"/>
     </linearGradient>
 
-    <!-- Star Glow -->
-    <radialGradient id="starGlow" cx="50%" cy="50%" r="50%">
+    <!-- Primary Diamond Facet Gradient (Crisp Stellar White & Ice Cyan) -->
+    <linearGradient id="facetWhite" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="25%" stop-color="#38bdf8" stop-opacity="0.9"/>
-      <stop offset="60%" stop-color="#06b6d4" stop-opacity="0.4"/>
-      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0"/>
-    </radialGradient>
+      <stop offset="100%" stop-color="#bae6fd"/>
+    </linearGradient>
 
-    <!-- Celestial Astrolabe Ring Gradient -->
-    <linearGradient id="astrolabeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="facetCyan" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="30%" stop-color="#06b6d4"/>
-      <stop offset="70%" stop-color="#10b981"/>
-      <stop offset="100%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#0284c7"/>
     </linearGradient>
 
-    <!-- Ascending Snake Gradient (Emerald to Cyan) -->
-    <linearGradient id="snakeBody" x1="0%" y1="100%" x2="0%" y2="0%">
-      <stop offset="0%" stop-color="#047857"/>
-      <stop offset="45%" stop-color="#059669"/>
-      <stop offset="75%" stop-color="#0d9488"/>
-      <stop offset="100%" stop-color="#06b6d4"/>
+    <!-- Secondary Facet Gradient (Silver Slate) -->
+    <linearGradient id="facetSilver" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#64748b"/>
     </linearGradient>
 
-    <!-- Solar Gold Underbelly Gradient -->
-    <linearGradient id="snakeBelly" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#b45309"/>
-      <stop offset="40%" stop-color="#d97706"/>
-      <stop offset="80%" stop-color="#f59e0b"/>
-      <stop offset="100%" stop-color="#fbbf24"/>
+    <!-- Ring Accent Gradient -->
+    <linearGradient id="celestialRing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.7"/>
+      <stop offset="35%" stop-color="#38bdf8" stop-opacity="0.3"/>
+      <stop offset="70%" stop-color="#0ea5e9" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0.8"/>
     </linearGradient>
 
-    <!-- Sunglasses Glass -->
-    <linearGradient id="shadesGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1e293b"/>
-      <stop offset="100%" stop-color="#020617"/>
-    </linearGradient>
-
-    <!-- Sunglasses Glare -->
-    <linearGradient id="glareGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
-      <stop offset="40%" stop-color="#38bdf8" stop-opacity="0.8"/>
-      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
-    </linearGradient>
-
-    <!-- Drop Shadows -->
-    <filter id="shadowFilter" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.65"/>
-    </filter>
-
-    <filter id="glowFilter" x="-30%" y="-30%" width="160%" height="160%">
+    <!-- Filter Effects -->
+    <filter id="zenithGlow" x="-30%" y="-30%" width="160%" height="160%">
       <feGaussianBlur stdDeviation="4" result="blur"/>
       <feComposite in="SourceGraphic" in2="blur" operator="over"/>
     </filter>
+
+    <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.75"/>
+    </filter>
   </defs>
 
-  <!-- Base Medallion -->
-  <circle cx="200" cy="200" r="190" fill="url(#skyGrad)"/>
+  <!-- Base Celestial Medallion -->
+  <circle cx="200" cy="200" r="188" fill="url(#spaceVoid)"/>
 
-  <!-- Celestial Horizon & Zenith Beam -->
-  <polygon points="200,45 255,270 145,270" fill="url(#zenithBeam)"/>
+  <!-- Guiding Light Column projecting down from the Northern Star -->
+  <polygon points="200,60 235,320 165,320" fill="url(#verticalBeam)"/>
 
-  <!-- Astrolabe / Celestial Sphere Coordinate Grid -->
-  <!-- Outer Ring with Tick Ring -->
-  <circle cx="200" cy="200" r="184" fill="none" stroke="url(#astrolabeGrad)" stroke-width="3" filter="url(#shadowFilter)"/>
-  <circle cx="200" cy="200" r="176" fill="none" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="2 6"/>
-  <circle cx="200" cy="200" r="168" fill="none" stroke="#334155" stroke-width="1" stroke-opacity="0.6"/>
+  <!-- Astronomical Astrolabe & Coordinate Grid Rings -->
+  <circle cx="200" cy="200" r="182" fill="none" stroke="url(#celestialRing)" stroke-width="1.5"/>
+  <circle cx="200" cy="200" r="172" fill="none" stroke="#1e293b" stroke-width="1" stroke-dasharray="3 6"/>
+  <circle cx="200" cy="200" r="148" fill="none" stroke="#334155" stroke-width="0.75" stroke-opacity="0.4"/>
+  <circle cx="200" cy="200" r="95" fill="none" stroke="#1e293b" stroke-width="0.75" stroke-dasharray="2 4"/>
 
-  <!-- Celestial Meridian (Vertical North-South Line to Zenith) -->
-  <line x1="200" y1="20" x2="200" y2="380" stroke="#38bdf8" stroke-width="1" stroke-dasharray="3 4" stroke-opacity="0.4"/>
-  <!-- Horizon Parallel (Equator) -->
-  <ellipse cx="200" cy="200" rx="168" ry="46" fill="none" stroke="#334155" stroke-width="1" stroke-dasharray="4 6" stroke-opacity="0.5"/>
-  <!-- Upper Altitude Parallel (Closer to Zenith) -->
-  <ellipse cx="200" cy="120" rx="140" ry="32" fill="none" stroke="#38bdf8" stroke-width="1" stroke-dasharray="2 5" stroke-opacity="0.35"/>
+  <!-- Celestial Horizon & Meridian Lines -->
+  <line x1="200" y1="20" x2="200" y2="380" stroke="#38bdf8" stroke-width="1" stroke-dasharray="4 6" stroke-opacity="0.35"/>
+  <line x1="20" y1="200" x2="380" y2="200" stroke="#334155" stroke-width="0.75" stroke-dasharray="4 6" stroke-opacity="0.35"/>
 
-  <!-- Zenith Apex Marker Indicator at Top ($90^\circ$) -->
-  <polygon points="200,12 205,22 195,22" fill="#38bdf8"/>
-  <text x="200" y="32" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', monospace" font-size="8" font-weight="800" fill="#38bdf8" letter-spacing="1">90° ZENITH</text>
+  <!-- Compass Cardinal Ticks (Guiding to Zenith) -->
+  <polygon points="200,16 204,26 196,26" fill="#38bdf8"/>
+  <line x1="200" y1="372" x2="200" y2="382" stroke="#475569" stroke-width="1.5"/>
+  <line x1="18" y1="200" x2="28" y2="200" stroke="#475569" stroke-width="1.5"/>
+  <line x1="372" y1="200" x2="382" y2="200" stroke="#475569" stroke-width="1.5"/>
 
-  <!-- Constellation Coordinates & Zenith Sparkles -->
-  <circle cx="95" cy="110" r="1.5" fill="#f8fafc" opacity="0.6"/>
-  <circle cx="120" cy="85" r="2" fill="#38bdf8" opacity="0.75"/>
-  <line x1="95" y1="110" x2="120" y2="85" stroke="#38bdf8" stroke-width="0.75" stroke-opacity="0.35"/>
-  <circle cx="300" cy="100" r="2" fill="#fbbf24" opacity="0.8"/>
-  <circle cx="280" cy="70" r="1.5" fill="#f8fafc" opacity="0.6"/>
-  <line x1="300" y1="100" x2="280" y2="70" stroke="#fbbf24" stroke-width="0.75" stroke-opacity="0.35"/>
-  <circle cx="310" cy="160" r="1.5" fill="#38bdf8" opacity="0.5"/>
+  <!-- Guiding Navigation Constellation Points -->
+  <circle cx="105" cy="115" r="1.5" fill="#94a3b8" opacity="0.6"/>
+  <circle cx="128" cy="90" r="2" fill="#e0f2fe" opacity="0.75"/>
+  <line x1="105" y1="115" x2="128" y2="90" stroke="#38bdf8" stroke-width="0.75" stroke-opacity="0.3"/>
 
-  <!-- THE ASCENDING ZENITH SERPENT -->
-  <g filter="url(#shadowFilter)">
-    <!-- Lower Coil (Solar Gold Accent Underbody) -->
-    <path d="M 125 295 C 95 240, 130 185, 205 195 C 275 205, 305 275, 245 315 C 200 345, 140 330, 125 295 Z"
-          fill="url(#snakeBelly)" opacity="0.95"/>
-    <path d="M 145 300 C 125 265, 155 220, 215 225 C 265 235, 280 285, 235 310 C 200 325, 160 320, 145 300 Z"
-          fill="#090d16" opacity="0.35"/>
+  <circle cx="295" cy="115" r="1.5" fill="#94a3b8" opacity="0.6"/>
+  <circle cx="272" cy="90" r="2" fill="#e0f2fe" opacity="0.75"/>
+  <line x1="295" y1="115" x2="272" y2="90" stroke="#38bdf8" stroke-width="0.75" stroke-opacity="0.3"/>
 
-    <!-- Ascending Spire: Main Body Spiral Rising toward Zenith -->
-    <path d="M 195 325 C 285 330, 315 235, 275 175 C 245 125, 185 140, 180 85"
-          fill="none" stroke="url(#snakeBody)" stroke-width="38" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- THE ZENITH GUIDING STAR (NORTHERN STAR / POLARIS) -->
+  <g filter="url(#dropShadow)" transform="translate(200, 185)">
+    <!-- Ambient Starlight Glow -->
+    <circle cx="0" cy="0" r="60" fill="url(#starBloom)"/>
 
-    <!-- Front Belly Segment Contour (Pythonic duality) -->
-    <path d="M 225 260 C 255 220, 260 170, 230 135"
-          fill="none" stroke="url(#snakeBelly)" stroke-width="8" stroke-linecap="round" opacity="0.9"/>
+    <!-- Concentric Guiding Light Ring -->
+    <circle cx="0" cy="0" r="42" fill="none" stroke="#38bdf8" stroke-width="1" stroke-dasharray="2 4" stroke-opacity="0.5"/>
 
-    <!-- Snake Head: Poised, Sharp, Directed Straight toward Zenith -->
-    <!-- Head Base Polygon / Wedge -->
-    <path d="M 175 88 C 150 82, 138 98, 145 116 C 152 134, 182 144, 218 132 C 242 122, 244 102, 230 88 C 215 74, 192 78, 175 88 Z"
-          fill="url(#snakeBody)"/>
+    <!-- 4 Diagonal Faceted Diamond Rays -->
+    <g transform="rotate(45)">
+      <!-- Top-right ray -->
+      <polygon points="0,0 6,-8 0,-52 -6,-8" fill="url(#facetSilver)" opacity="0.9"/>
+      <polygon points="0,0 8,6 52,0 8,-6" fill="url(#facetSilver)" opacity="0.75"/>
+      <polygon points="0,0 6,8 0,52 -6,8" fill="url(#facetSilver)" opacity="0.9"/>
+      <polygon points="0,0 -8,6 -52,0 -8,-6" fill="url(#facetSilver)" opacity="0.75"/>
+    </g>
 
-    <!-- Geometric Brow Ridge (Sharp, Analytical, Opinionated) -->
-    <path d="M 148 94 L 182 86 L 225 90" fill="none" stroke="#06b6d4" stroke-width="3" stroke-linecap="round"/>
-    <path d="M 146 116 C 165 128, 195 130, 222 118" fill="none" stroke="#047857" stroke-width="3.5" stroke-linecap="round"/>
+    <!-- 4 Primary Cardinal Faceted Rays (Reaching toward Zenith) -->
+    <!-- Upward Ray (The Zenith Apex Ray - Elongated to Zenith) -->
+    <polygon points="0,0 10,-14 0,-105 -10,-14" fill="url(#facetWhite)" filter="url(#zenithGlow)"/>
+    <polygon points="0,0 0,-105 10,-14" fill="#ffffff" opacity="0.9"/>
+    <polygon points="0,0 0,-105 -10,-14" fill="url(#facetCyan)" opacity="0.9"/>
 
-    <!-- Forked Tongue Reaching Up toward Zenith -->
-    <path d="M 142 110 L 115 106 L 100 94 M 115 106 L 100 118"
-          fill="none" stroke="#f43f5e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Downward Ray (Guiding Ray) -->
+    <polygon points="0,0 9,12 0,72 -9,12" fill="url(#facetWhite)"/>
+    <polygon points="0,0 0,72 9,12" fill="#ffffff" opacity="0.85"/>
+    <polygon points="0,0 0,72 -9,12" fill="url(#facetCyan)" opacity="0.85"/>
 
-    <!-- OPINIONATED SLEEK SUNGLASSES / VISOR -->
-    <!-- Left Lens -->
-    <polygon points="156,98 185,94 182,118 158,116" fill="url(#shadesGrad)" stroke="#090d16" stroke-width="2.5"/>
-    <!-- Right Lens -->
-    <polygon points="191,94 220,92 216,114 189,118" fill="url(#shadesGrad)" stroke="#090d16" stroke-width="2.5"/>
-    <!-- Sunglasses Bridge -->
-    <line x1="183" y1="97" x2="193" y2="97" stroke="#090d16" stroke-width="3.5" stroke-linecap="round"/>
-    <!-- Brow Bar -->
-    <line x1="152" y1="97" x2="223" y2="92" stroke="#090d16" stroke-width="2" stroke-linecap="round"/>
+    <!-- Right Horizontal Ray -->
+    <polygon points="0,0 12,-9 72,0 12,9" fill="url(#facetWhite)"/>
+    <polygon points="0,0 72,0 12,-9" fill="#ffffff" opacity="0.85"/>
+    <polygon points="0,0 72,0 12,9" fill="url(#facetCyan)" opacity="0.85"/>
 
-    <!-- Razor Sharp Glare Reflections (Cool attitude) -->
-    <polygon points="160,99 168,98 162,116 158,116" fill="url(#glareGrad)" opacity="0.9"/>
-    <polygon points="171,97 174,96 168,116 166,116" fill="url(#glareGrad)" opacity="0.6"/>
-    <polygon points="195,95 203,94 197,115 193,115" fill="url(#glareGrad)" opacity="0.9"/>
-    <polygon points="206,94 209,93 203,114 201,114" fill="url(#glareGrad)" opacity="0.6"/>
+    <!-- Left Horizontal Ray -->
+    <polygon points="0,0 -12,-9 -72,0 -12,9" fill="url(#facetWhite)"/>
+    <polygon points="0,0 -72,0 -12,-9" fill="#ffffff" opacity="0.85"/>
+    <polygon points="0,0 -72,0 -12,9" fill="url(#facetCyan)" opacity="0.85"/>
 
-    <!-- Smug, Confident Smirk -->
-    <path d="M 172 126 Q 186 133 204 125" fill="none" stroke="#064e3b" stroke-width="3" stroke-linecap="round"/>
+    <!-- Core Star Diamond Centerpiece -->
+    <polygon points="0,-16 12,0 0,16 -12,0" fill="#ffffff" filter="url(#zenithGlow)"/>
+    <polygon points="0,-12 9,0 0,12 -9,0" fill="#38bdf8"/>
+    <circle cx="0" cy="0" r="4" fill="#ffffff"/>
   </g>
 
-  <!-- THE CELESTIAL ZENITH STAR (Directly above the serpent's gaze) -->
-  <g filter="url(#glowFilter)" transform="translate(200, 52)">
-    <!-- Star Glow Backing -->
-    <circle cx="0" cy="0" r="24" fill="url(#starGlow)"/>
-    <!-- 8-Point Zenith Star Core -->
-    <polygon points="0,-18 4,-5 18,0 4,5 0,18 -4,5 -18,0 -4,-5" fill="#ffffff"/>
-    <polygon points="0,-14 3,-4 14,0 3,4 0,14 -3,4 -14,0 -3,-4" fill="#38bdf8"/>
-    <!-- Diagonal Subtle Rays -->
-    <polygon points="0,-10 2,-2 10,0 2,2 0,10 -2,2 -10,0 -2,-2" fill="#ffffff" transform="rotate(45)"/>
-    <circle cx="0" cy="0" r="3" fill="#ffffff"/>
-  </g>
-
-  <!-- Constellation Accent Sparks -->
-  <polygon points="325,120 327,125 332,127 327,129 325,134 323,129 318,127 323,125" fill="#38bdf8" opacity="0.85"/>
-  <polygon points="75,180 77,184 81,186 77,188 75,192 73,188 69,186 73,184" fill="#fbbf24" opacity="0.8"/>
-
-  <!-- Precision Bottom Emblem Banner -->
-  <g filter="url(#shadowFilter)">
-    <!-- Hex / Beveled Banner Housing -->
-    <polygon points="105,332 295,332 315,355 295,376 105,376 85,355"
-             fill="#0b0f19" stroke="url(#astrolabeGrad)" stroke-width="2"/>
-    <!-- Inner Accent Line -->
-    <line x1="115" y1="337" x2="285" y2="337" stroke="#334155" stroke-width="1"/>
-    <!-- Banner Typography -->
-    <text x="200" y="361" text-anchor="middle"
-          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'SF Pro Display', sans-serif"
-          font-size="16" font-weight="900" letter-spacing="6" fill="#f8fafc">
+  <!-- Clean, Modern Minimalist Typographic Plinth -->
+  <g filter="url(#dropShadow)">
+    <text x="200" y="348" text-anchor="middle"
+          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', 'SF Pro Display', sans-serif"
+          font-size="16" font-weight="800" letter-spacing="10" fill="#f8fafc">
       ZENITH
     </text>
-    <!-- Coordinate Subtext Dots -->
-    <circle cx="118" cy="355" r="2.5" fill="#38bdf8"/>
-    <circle cx="282" cy="355" r="2.5" fill="#10b981"/>
+    <!-- Coordinate Subtitle Dots -->
+    <circle cx="132" cy="343" r="1.5" fill="#38bdf8"/>
+    <circle cx="268" cy="343" r="1.5" fill="#38bdf8"/>
   </g>
 </svg>

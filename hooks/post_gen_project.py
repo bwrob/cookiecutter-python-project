@@ -17,6 +17,7 @@ CONFIG_FILES_WITH_HEADERS = [
     "pytest.ini",
     ".taplo.toml",
     ".pre-commit-config.yaml",
+    ".prettierrc.yaml",
 ]
 
 

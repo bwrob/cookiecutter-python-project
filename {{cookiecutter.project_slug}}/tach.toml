@@ -8,8 +8,16 @@
 # circular dependencies from creeping in.
 # ==============================================================================
 
-exclude      = [ "**/*__pycache__", "**/*egg-info", "**/docs", "**/tests", "**/venv", "**/.venv", "**/site" ]
-interfaces   = [  ]
+exclude = [
+    "**/*__pycache__",
+    "**/*egg-info",
+    "**/docs",
+    "**/tests",
+    "**/venv",
+    "**/.venv",
+    "**/site",
+]
+interfaces = [  ]
 source_roots = [ ".", "src" ]
 
 forbid_circular_dependencies = true

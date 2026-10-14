@@ -41,7 +41,12 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert (project_dir / "rumdl.toml").exists()
     assert (project_dir / "tach.toml").exists()
     assert (project_dir / ".coveragerc").exists()
+    assert (project_dir / ".gitattributes").exists()
+    assert (project_dir / ".prettierrc.yaml").exists()
     assert (project_dir / ".pre-commit-config.yaml").exists()
+    assert (
+        project_dir / ".agents" / "skills" / "python-style-guide" / "SKILL.md"
+    ).exists()
     assert (project_dir / "src" / "demo_app" / "__init__.py").exists()
     assert (project_dir / "src" / "demo_app" / "cli.py").exists()
     assert (project_dir / "tests" / "test_core.py").exists()
@@ -50,6 +55,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert (project_dir / "docs" / "javascripts" / "mathjax.js").exists()
     assert (project_dir / "docs" / "assets" / "python-logo.svg").exists()
     assert (project_dir / ".github" / "workflows" / "python_tests.yaml").exists()
+    assert (project_dir / ".github" / "workflows" / "docs.yaml").exists()
 
     # Verify precommit task removed
     poe_text = (project_dir / "poe_tasks.toml").read_text()

@@ -9,99 +9,99 @@
 # ==============================================================================
 
 [project]
-site_url         = "https://{{ cookiecutter.github_username }}.github.io/{{ cookiecutter.project_slug }}/"
-site_name        = "{{ cookiecutter.project_name }}"
-site_description = "{{ cookiecutter.description }}"
-site_author      = "{{ cookiecutter.author_name }}"
-repo_url         = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}"
-repo_name        = "{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}"
-edit_uri         = "edit/main/docs/"
+    edit_uri         = "edit/main/docs/"
+    repo_name        = "{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}"
+    repo_url         = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}"
+    site_author      = "{{ cookiecutter.author_name }}"
+    site_description = "{{ cookiecutter.description }}"
+    site_name        = "{{ cookiecutter.project_name }}"
+    site_url         = "https://{{ cookiecutter.github_username }}.github.io/{{ cookiecutter.project_slug }}/"
 
-nav = [
-    { "Get Started" = "index.md" },
-    { "Guide"       = "getting-started.md" },
-    { "Reference"   = "reference.md" },
-]
+    nav = [
+        { "Get Started" = "index.md" },
+        { "Guide" = "getting-started.md" },
+        { "Reference" = "reference.md" },
+    ]
 
-extra_javascript = [
-    "javascripts/mathjax.js",
-    "https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js",
-]
+    extra_javascript = [
+        "javascripts/mathjax.js",
+        "https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js",
+    ]
 
-[project.theme]
-language = "en"
-logo     = "assets/python-logo.svg"
-features = [
-    "announce.dismiss",
-    "content.action.edit",
-    "content.action.view",
-    "content.code.annotate",
-    "content.code.copy",
-    "content.code.select",
-    "content.footnote.tooltips",
-    "content.tabs.link",
-    "content.tooltips",
-    "navigation.footer",
-    "navigation.indexes",
-    "navigation.instant",
-    "navigation.instant.prefetch",
-    "navigation.path",
-    "navigation.sections",
-    "navigation.top",
-    "navigation.tracking",
-    "search.highlight",
-]
+    [project.theme]
+        features = [
+            "announce.dismiss",
+            "content.action.edit",
+            "content.action.view",
+            "content.code.annotate",
+            "content.code.copy",
+            "content.code.select",
+            "content.footnote.tooltips",
+            "content.tabs.link",
+            "content.tooltips",
+            "navigation.footer",
+            "navigation.indexes",
+            "navigation.instant",
+            "navigation.instant.prefetch",
+            "navigation.path",
+            "navigation.sections",
+            "navigation.top",
+            "navigation.tracking",
+            "search.highlight",
+        ]
+        language = "en"
+        logo = "assets/python-logo.svg"
 
-[[project.theme.palette]]
-media       = "(prefers-color-scheme)"
-toggle.icon = "lucide/sun-moon"
-toggle.name = "Switch to light mode"
+        [[project.theme.palette]]
+            media       = "(prefers-color-scheme)"
+            toggle.icon = "lucide/sun-moon"
+            toggle.name = "Switch to light mode"
 
-[[project.theme.palette]]
-media       = "(prefers-color-scheme: light)"
-scheme      = "default"
-toggle.icon = "lucide/sun"
-toggle.name = "Switch to dark mode"
+        [[project.theme.palette]]
+            media       = "(prefers-color-scheme: light)"
+            scheme      = "default"
+            toggle.icon = "lucide/sun"
+            toggle.name = "Switch to dark mode"
 
-[[project.theme.palette]]
-media       = "(prefers-color-scheme: dark)"
-scheme      = "slate"
-toggle.icon = "lucide/moon"
-toggle.name = "Switch to system preference"
+        [[project.theme.palette]]
+            media       = "(prefers-color-scheme: dark)"
+            scheme      = "slate"
+            toggle.icon = "lucide/moon"
+            toggle.name = "Switch to system preference"
 
-[[project.extra.social]]
-icon = "fontawesome/brands/github"
-link = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}"
+    [[project.extra.social]]
+        icon = "fontawesome/brands/github"
+        link = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}"
 
-[project.markdown_extensions]
-abbr                           = {}
-admonition                     = {}
-attr_list                      = {}
-def_list                       = {}
-footnotes                      = {}
-md_in_html                     = {}
-toc.permalink                  = true
-pymdownx.arithmatex.generic    = true
-pymdownx.betterem              = {}
-pymdownx.caret                 = {}
-pymdownx.details               = {}
-pymdownx.emoji.emoji_generator = "zensical.extensions.emoji.to_svg"
-pymdownx.emoji.emoji_index     = "zensical.extensions.emoji.twemoji"
-pymdownx.highlight.anchor_linenums     = true
-pymdownx.highlight.line_spans          = "__span"
-pymdownx.highlight.pygments_lang_class = true
-pymdownx.inlinehilite          = {}
-pymdownx.keys                  = {}
-pymdownx.magiclink             = {}
-pymdownx.mark                  = {}
-pymdownx.smartsymbols          = {}
-pymdownx.superfences.custom_fences = [
-    { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
-    { name = "python", class = "python", validator = "markdown_exec.validator", format = "markdown_exec.formatter" },
-    { name = "bash", class = "bash", validator = "markdown_exec.validator", format = "markdown_exec.formatter" },
-    { name = "sh", class = "sh", validator = "markdown_exec.validator", format = "markdown_exec.formatter" },
-]
-pymdownx.tabbed.alternate_style    = true
-pymdownx.tabbed.combine_header_slug = true
-pymdownx.tasklist.custom_checkbox  = true
-pymdownx.tilde                     = {}
+    [project.markdown_extensions]
+        abbr = {}
+        admonition = {}
+        attr_list = {}
+        def_list = {}
+        footnotes = {}
+        md_in_html = {}
+        pymdownx.arithmatex.generic = true
+        pymdownx.betterem = {}
+        pymdownx.caret = {}
+        pymdownx.details = {}
+        pymdownx.emoji.emoji_generator = "zensical.extensions.emoji.to_svg"
+        pymdownx.emoji.emoji_index = "zensical.extensions.emoji.twemoji"
+        pymdownx.highlight.anchor_linenums = true
+        pymdownx.highlight.line_spans = "__span"
+        pymdownx.highlight.pygments_lang_class = true
+        pymdownx.inlinehilite = {}
+        pymdownx.keys = {}
+        pymdownx.magiclink = {}
+        pymdownx.mark = {}
+        pymdownx.smartsymbols = {}
+        pymdownx.superfences.custom_fences = [
+            { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+            { name = "python", class = "python", validator = "markdown_exec.validator", format = "markdown_exec.formatter" },
+            { name = "bash", class = "bash", validator = "markdown_exec.validator", format = "markdown_exec.formatter" },
+            { name = "sh", class = "sh", validator = "markdown_exec.validator", format = "markdown_exec.formatter" },
+        ]
+        pymdownx.tabbed.alternate_style = true
+        pymdownx.tabbed.combine_header_slug = true
+        pymdownx.tasklist.custom_checkbox = true
+        pymdownx.tilde = {}
+        toc.permalink = true

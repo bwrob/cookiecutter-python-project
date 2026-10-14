@@ -12,7 +12,7 @@ line-length    = 88
 target-version = "py{{ cookiecutter.python_version.replace('.', '') }}"
 
 [lint]
-    exclude = [".venv", "site", "dist"]
+    exclude = [ ".venv", "site", "dist" ]
     ignore = [
         "blank-line-before-class",
         "COM",
@@ -23,20 +23,15 @@ target-version = "py{{ cookiecutter.python_version.replace('.', '') }}"
         "too-many-branches",
     ]
     preview = true
-    select  = ["ALL"]
+    select = [ "ALL" ]
 
-[lint.per-file-ignores]
-    "src/*/cli.py" = [
-        "boolean-positional-value-in-call",
-        "boolean-type-hint-positional-argument",
-        "line-too-long",
-    ]
-    "tests/**/*" = [
-        "assert",
-        "docstring-missing-returns",
-        "print",
-        "PT",
-    ]
+    [lint.per-file-ignores]
+        "src/*/cli.py" = [
+            "boolean-positional-value-in-call",
+            "boolean-type-hint-positional-argument",
+            "line-too-long",
+        ]
+        "tests/**/*" = [ "assert", "docstring-missing-returns", "print", "PT" ]
 
 [format]
     docstring-code-format = true
