@@ -6,6 +6,7 @@
 
 [![CI](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/actions/workflows/python_tests.yaml/badge.svg)](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/actions/workflows/python_tests.yaml)
 [![Python: 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
+
 [![Code Style: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Type Checked: Pyrefly](https://img.shields.io/badge/types-pyrefly-blueviolet.svg)](https://github.com/facebook/pyrefly)
 [![Coverage: pytest-cov](https://img.shields.io/badge/coverage-80%25%2B-brightgreen.svg)](.coveragerc)
