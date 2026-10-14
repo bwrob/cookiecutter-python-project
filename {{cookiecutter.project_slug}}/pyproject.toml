@@ -1,0 +1,69 @@
+# ==============================================================================
+# Python Project Specification (pyproject.toml)
+#
+# Tool: PEP 517 / PEP 621 Standard Packaging via uv_build
+# Purpose: Declarative project metadata, dependencies, scripts, and build system.
+# Why it's in Zenith: Uses uv's native high-performance build backend (uv_build)
+# and modern dependency groups (dev) for lightning-fast, reproducible installs.
+# ==============================================================================
+
+[project]
+name = "{{ cookiecutter.project_slug }}"
+version = "{{ cookiecutter.version }}"
+description = "{{ cookiecutter.description }}"
+readme = "README.md"
+requires-python = ">={{ cookiecutter.python_version }}"
+authors = [
+    { name = "{{ cookiecutter.author_name }}", email = "{{ cookiecutter.author_email }}" },
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "rich>=14.0.0",
+    "typer>=0.16.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}"
+Documentation = "https://{{ cookiecutter.github_username }}.github.io/{{ cookiecutter.project_slug }}/"
+Issues = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/issues"
+Repository = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}.git"
+
+{% if cookiecutter.include_cli == "yes" -%}
+[project.scripts]
+{{ cookiecutter.project_slug }} = "{{ cookiecutter.package_name }}.cli:main"
+{%- endif %}
+
+[build-system]
+requires = ["uv_build>=0.12.7,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "complexipy>=8.0.0",
+    "markdown-exec>=1.12.0",
+    "poethepoet>=0.42.0",
+    "pre-commit>=4.5.0",
+    "pyrefly>=1.3.0",
+    "pytest>=9.0.0",
+    "pytest-cov>=7.0.0",
+    "ruff>=0.17.0",
+    "rumdl>=0.2.75",
+    "tach>=0.35.0",
+    "zensical>=0.0.70",
+]
+
+[tool.uv]
+package = true
+
+[tool.poe]
+include = "poe_tasks.toml"

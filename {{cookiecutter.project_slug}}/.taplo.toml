@@ -1,0 +1,17 @@
+# ==============================================================================
+# Taplo Configuration (.taplo.toml)
+#
+# Tool: Taplo (https://taplo.tamasfe.dev/)
+# Purpose: A versatile TOML toolkit, linter, and code formatter.
+# Why it's in Zenith: Enforces consistent 4-space indentation, aligned key-value
+# entries, and table ordering across all project TOML configuration files.
+# ==============================================================================
+
+[formatting]
+    align_entries   = true
+    compact_arrays  = false
+    compact_entries = false
+    indent_entries  = true
+    indent_string   = "    "
+    indent_tables   = true
+    reorder_keys    = true

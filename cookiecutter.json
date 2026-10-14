@@ -1,0 +1,20 @@
+{
+  "project_name": "Zenith Python Project",
+  "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '-').replace('_', '-') }}",
+  "package_name": "{{ cookiecutter.project_slug.lower().replace('-', '_') }}",
+  "description": "An opinionated, strict Python project powered by uv, ruff, pyrefly, and zensical.",
+  "author_name": "Bartosz Marcin Wróblewski",
+  "author_email": "bartosz.marcin.wroblewski@gmail.com",
+  "github_username": "bwrob",
+  "version": "0.1.0",
+  "python_version": ["3.13", "3.12", "3.14", "3.15"],
+  "license": ["MIT", "Apache-2.0", "BSD-3-Clause", "None"],
+  "include_cli": ["yes", "no"],
+  "include_github_actions": ["yes", "no"],
+  "_copy_without_render": [
+    "docs/assets/*",
+    "*.svg",
+    "*.png",
+    "*.ico"
+  ]
+}

@@ -207,6 +207,11 @@ tempCodeRunnerFile.py
 
 # Ruff stuff:
 .ruff_cache/
+.rumdl_cache/
+.complexipy_cache/
+.pyrefly/
+.tach_cache/
+site/
 
 # PyPI configuration file
 .pypirc

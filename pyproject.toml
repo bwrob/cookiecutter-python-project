@@ -1,0 +1,36 @@
+[project]
+name = "cookiecutter-zenith"
+version = "0.1.0"
+description = "Zenith: An opinionated, strict Cookiecutter template for modern Python projects using uv, ruff, pyrefly, complexipy, zensical, rumdl, tach, and poethepoet."
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [
+  { name = "Bartosz Marcin Wróblewski", email = "bartosz.marcin.wroblewski@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
+  "Topic :: Software Development :: Build Tools",
+  "Topic :: Software Development :: Code Generators",
+]
+dependencies = ["cookiecutter>=2.7.0"]
+
+[project.urls]
+Homepage = "https://github.com/bwrob/cookiecutter-zenith"
+Repository = "https://github.com/bwrob/cookiecutter-zenith.git"
+
+[dependency-groups]
+dev = ["pre-commit>=4.0.0", "pytest>=8.0.0", "ruff>=0.17.0"]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+norecursedirs = ["{{cookiecutter.project_slug}}", ".*", "build", "dist"]

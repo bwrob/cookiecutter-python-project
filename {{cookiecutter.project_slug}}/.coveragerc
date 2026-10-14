@@ -1,0 +1,39 @@
+# ==============================================================================
+# Coverage Configuration (.coveragerc)
+#
+# Tool: Coverage.py / pytest-cov (https://coverage.readthedocs.io/)
+# Purpose: Code coverage measurement and reporting tool for Python tests.
+# Why it's in Zenith: Automatically invoked by the test runner to track branch
+# coverage, exclude boilerplate lines (typing guards, repr, abstract methods), and
+# enforce a strict minimum threshold (80%+) before code can be accepted.
+# ==============================================================================
+
+[run]
+branch = true
+source =
+    src/{{ cookiecutter.package_name }}
+omit =
+    tests/*
+    */site-packages/*
+
+[report]
+show_missing = true
+skip_covered = false
+fail_under = 80
+exclude_also =
+    pragma: no cover
+    def __repr__
+    if self\.debug:
+    raise AssertionError
+    raise NotImplementedError
+    if 0:
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+    class .*\bProtocol\):
+    @(abc\.)?abstractmethod
+
+[html]
+directory = htmlcov
+
+[xml]
+output = coverage.xml

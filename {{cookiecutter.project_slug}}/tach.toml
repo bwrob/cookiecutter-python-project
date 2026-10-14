@@ -1,0 +1,30 @@
+# ==============================================================================
+# Tach Configuration (tach.toml)
+#
+# Tool: Tach (https://github.com/gauge-sh/tach)
+# Purpose: Modular architecture and dependency boundary enforcement for Python.
+# Why it's in Zenith: Enforces architectural boundaries between package modules
+# (e.g. CLI layer depends on Core, but Core must never depend on CLI) and prevents
+# circular dependencies from creeping in.
+# ==============================================================================
+
+exclude      = [ "**/*__pycache__", "**/*egg-info", "**/docs", "**/tests", "**/venv", "**/.venv", "**/site" ]
+interfaces   = [  ]
+source_roots = [ ".", "src" ]
+
+forbid_circular_dependencies = true
+ignore_type_checking_imports = false
+layers                       = [ "cli", "core" ]
+respect_gitignore            = true
+
+[[modules]]
+    depends_on = [  ]
+    layer      = "core"
+    path       = "src.{{ cookiecutter.package_name }}"
+
+{% if cookiecutter.include_cli == "yes" -%}
+[[modules]]
+    depends_on = [ "src.{{ cookiecutter.package_name }}" ]
+    layer      = "cli"
+    path       = "src.{{ cookiecutter.package_name }}.cli"
+{%- endif %}
