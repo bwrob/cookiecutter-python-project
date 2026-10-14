@@ -5,7 +5,8 @@
 # Purpose: Modern, fast static documentation site generator configured with TOML.
 # Why it's in Zenith: Provides instant live-reloading documentation with native
 # dark/light/system mode switching, Lucide icons, Mermaid diagrams, client-side
-# MathJax integration for LaTeX math, and markdown-exec for dynamic code execution.
+# MathJax integration for LaTeX math, markdown-exec for dynamic code execution,
+# and mkdocstrings for automated Python API documentation generation.
 # ==============================================================================
 
 [project]
@@ -105,3 +106,12 @@
         pymdownx.tasklist.custom_checkbox = true
         pymdownx.tilde = {}
         toc.permalink = true
+
+    [project.plugins.mkdocstrings]
+        default_handler = "python"
+
+    [project.plugins.mkdocstrings.handlers.python]
+        paths = ["src"]
+        options.docstring_style = "numpy"
+        options.show_root_heading = true
+        options.show_source = true

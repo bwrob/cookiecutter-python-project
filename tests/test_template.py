@@ -41,6 +41,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert (project_dir / "zensical.toml").exists()
     assert (project_dir / "rumdl.toml").exists()
     assert (project_dir / "tach.toml").exists()
+    assert (project_dir / "typos.toml").exists()
     assert (project_dir / ".coveragerc").exists()
     assert (project_dir / ".gitattributes").exists()
     assert (project_dir / ".prettierrc.yaml").exists()
@@ -51,10 +52,12 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert (project_dir / "src" / "demo_app" / "__init__.py").exists()
     assert (project_dir / "src" / "demo_app" / "cli.py").exists()
     assert (project_dir / "tests" / "test_core.py").exists()
+    assert (project_dir / "tests" / "__snapshots__" / "test_core.ambr").exists()
     assert (project_dir / "tests" / "test_cli.py").exists()
     assert (project_dir / "docs" / "index.md").exists()
     assert (project_dir / "docs" / "javascripts" / "mathjax.js").exists()
     assert (project_dir / "docs" / "assets" / "python-logo.svg").exists()
+    assert (project_dir / "docs" / "assets" / "python-logo.typ").exists()
     assert (project_dir / ".github" / "workflows" / "python_tests.yaml").exists()
     assert (project_dir / ".github" / "workflows" / "docs.yaml").exists()
 
@@ -63,23 +66,48 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "tasks.precommit" not in poe_text
     assert '"precommit"' not in poe_text
     assert "tasks.format-check" in poe_text
+    assert "tasks.typos" in poe_text
+    assert "tasks.test-fast" in poe_text
+    assert "tasks.test-snapshot-update" in poe_text
+    assert "tasks.docs-logo" in poe_text
 
     # Verify markdown-exec and Python 3.15 in pyproject.toml
     pyproject_text = (project_dir / "pyproject.toml").read_text()
     assert "markdown-exec" in pyproject_text
     assert "Programming Language :: Python :: 3.15" in pyproject_text
+    assert "hypothesis" in pyproject_text
+    assert "pytest-randomly" in pyproject_text
+    assert "pytest-xdist" in pyproject_text
+    assert "syrupy" in pyproject_text
+    assert "typos" in pyproject_text
+    assert "typst" in pyproject_text
     assert "rich>=" in pyproject_text
     assert "typer>=" in pyproject_text
+    assert "default-groups = [" in pyproject_text
+    assert "test = [" in pyproject_text
+    assert "lint = [" in pyproject_text
+    assert "docs = [" in pyproject_text
+    assert "mkdocstrings[python]" in pyproject_text
 
-    # Verify markdown-exec fences in zensical.toml
+    # Verify markdown-exec fences and mkdocstrings plugin in zensical.toml
     zensical_text = (project_dir / "zensical.toml").read_text()
     assert "markdown_exec.validator" in zensical_text
+    assert "[project.plugins.mkdocstrings]" in zensical_text
+
+    # Verify docs reference and mermaid diagrams
+    ref_text = (project_dir / "docs" / "reference.md").read_text()
+    assert "::: demo_app.core" in ref_text
+    assert "::: demo_app.cli" in ref_text
+    getting_started_text = (project_dir / "docs" / "getting-started.md").read_text()
+    assert "sequenceDiagram" in getting_started_text
+    assert "stateDiagram-v2" in getting_started_text
 
     # Verify --strict in zensical commands
     assert "zensical serve --strict" in poe_text
     assert "zensical build --strict" in poe_text
     docs_yaml_text = (project_dir / ".github" / "workflows" / "docs.yaml").read_text()
     assert "zensical build --clean --strict" in docs_yaml_text
+    assert "uv sync --only-group docs" in docs_yaml_text
 
     # Verify python aliases in rumdl.toml
     rumdl_text = (project_dir / "rumdl.toml").read_text()
@@ -91,6 +119,11 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "quality:" in ci_text
     assert "test:" in ci_text
     assert "poe format-check" in ci_text
+    assert "poe typos" in ci_text
+
+    # Verify pre-commit config has typos
+    precommit_text = (project_dir / ".pre-commit-config.yaml").read_text()
+    assert "crate-ci/typos" in precommit_text
 
     # Verify Tach setup
     tach_text = (project_dir / "tach.toml").read_text()
@@ -164,6 +197,10 @@ def test_no_cli_generation(temp_output_dir: Path) -> None:
 
     readme_text = (project_dir / "README.md").read_text()
     assert "CLI Layer" not in readme_text
+
+    ref_text = (project_dir / "docs" / "reference.md").read_text()
+    assert "::: pure_library.core" in ref_text
+    assert "::: pure_library.cli" not in ref_text
 
 
 def test_no_github_actions(temp_output_dir: Path) -> None:

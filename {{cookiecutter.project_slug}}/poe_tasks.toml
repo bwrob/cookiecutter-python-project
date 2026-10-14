@@ -19,6 +19,14 @@
     cmd  = "pytest --cov --cov-report=term-missing --cov-report=xml"
     help = "Run tests with coverage measurement (pytest + pytest-cov)."
 
+[tasks.test-fast]
+    cmd  = "pytest -n auto --cov --cov-report=term-missing --cov-report=xml"
+    help = "Run tests in parallel across CPU cores with pytest-xdist."
+
+[tasks.test-snapshot-update]
+    cmd  = "pytest --snapshot-update"
+    help = "Update syrupy test snapshots."
+
 [tasks.coverage]
     cmd  = "pytest --cov --cov-report=html --cov-report=term-missing --cov-report=xml"
     help = "Generate interactive HTML coverage report in htmlcov/."
@@ -47,6 +55,14 @@
     cmd  = "rumdl fmt"
     help = "Format markdown and embedded code snippets with rumdl."
 
+[tasks.typos]
+    cmd  = "typos"
+    help = "Check source code and documentation for typos."
+
+[tasks.typos-fix]
+    cmd  = "typos -w"
+    help = "Automatically fix typos across the codebase."
+
 [tasks.type-check]
     cmd  = "pyrefly check"
     help = "Strict static type checking with Pyrefly."
@@ -59,7 +75,7 @@
     default_item_type = "cmd"
     help              = "Auto-fix linting and formatting issues."
     ignore_fail       = "return_non_zero"
-    sequence          = [ "ruff check --fix", "ruff format", "rumdl fmt" ]
+    sequence          = [ "ruff check --fix", "ruff format", "rumdl fmt", "typos -w" ]
 
 [tasks.code-quality]
     help = "Execute the full code quality verification pipeline."
@@ -68,6 +84,7 @@
         "lint",
         "format-check",
         "lint-md",
+        "typos",
         "type-check",
         "complexity",
         "dependencies",
@@ -96,6 +113,10 @@
 [tasks.docs-build]
     cmd  = "zensical build --strict --clean"
     help = "Build production static documentation into site/."
+
+[tasks.docs-logo]
+    cmd  = "typst compile docs/assets/python-logo.typ docs/assets/python-logo.svg"
+    help = "Compile documentation logotype SVG with Typst."
 
 [tasks.publish-docs]
     help = "Build and deploy Zensical docs to gh-pages via clean orphan branch."

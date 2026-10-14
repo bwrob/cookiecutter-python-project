@@ -56,21 +56,38 @@
 
 [dependency-groups]
     dev = [
-        "complexipy>=8.0.0",
-        "markdown-exec>=1.12.0",
         "poethepoet>=0.42.0",
+        { include-group = "test" },
+        { include-group = "lint" },
+        { include-group = "docs" },
+    ]
+    docs = [
+        "markdown-exec>=1.12.0",
+        "mkdocstrings[python]>=0.28.0",
+        "typst>=0.13.0",
+        "zensical>=0.0.70",
+    ]
+    lint = [
+        "complexipy>=8.0.0",
         "pre-commit>=4.5.0",
         "pyrefly>=1.3.0",
-        "pytest>=9.0.0",
-        "pytest-cov>=7.0.0",
         "ruff>=0.17.0",
         "rumdl>=0.2.75",
         "tach>=0.35.0",
-        "zensical>=0.0.70",
+        "typos>=1.30.0",
+    ]
+    test = [
+        "hypothesis>=6.125.0",
+        "pytest>=9.0.0",
+        "pytest-cov>=7.0.0",
+        "pytest-randomly>=3.16.0",
+        "pytest-xdist>=3.8.0",
+        "syrupy>=6.1.0",
     ]
 
 [tool.uv]
-    package = true
+    default-groups = [ "dev", "test", "lint", "docs" ]
+    package        = true
 
 [tool.poe]
     include = "poe_tasks.toml"

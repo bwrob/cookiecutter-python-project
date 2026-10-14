@@ -16,6 +16,7 @@ CONFIG_FILES_WITH_HEADERS = [
     ".coveragerc",
     "pytest.ini",
     ".taplo.toml",
+    "typos.toml",
     ".pre-commit-config.yaml",
     ".prettierrc.yaml",
 ]

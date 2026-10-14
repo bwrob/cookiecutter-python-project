@@ -27,7 +27,7 @@ jobs:
           enable-cache: true
 
       - name: 🛠️ Install project dependencies
-        run: uv sync --dev
+        run: uv sync
 
       - name: 🐍 Run ruff linter check
         run: uv run poe lint
@@ -43,6 +43,9 @@ jobs:
 
       - name: 📝 Run rumdl markdown linter
         run: uv run poe lint-md
+
+      - name: 🔤 Run typos spell checker
+        run: uv run poe typos
 
       - name: 📐 Run tach architecture check
         run: uv run poe dependencies
@@ -72,7 +75,7 @@ jobs:
           enable-cache: true
 
       - name: 🛠️ Install project dependencies
-        run: uv sync --dev
+        run: uv sync
 
       - name: 🧪 Run pytest suite
         run: uv run poe test

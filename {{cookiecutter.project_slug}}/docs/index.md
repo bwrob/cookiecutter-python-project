@@ -1,7 +1,7 @@
 # {{ cookiecutter.project_name }}
 
 <p align="center">
-  <img src="assets/python-logo.svg" alt="Python Logo" width="80">
+  <img src="assets/python-logo.svg" alt="Python Logotype" width="120">
 </p>
 
 Welcome to the documentation for **{{ cookiecutter.project_name }}**.
@@ -25,6 +25,9 @@ flowchart LR
 - **Architecture Enforcement**: [Tach](https://github.com/gauge-sh/tach)
 - **Task Runner**: [Poe the Poet](https://github.com/nat-n/poethepoet)
 - **Executable Docs**: [markdown-exec](https://github.com/pawamoy/markdown-exec)
+- **API Documentation**: [mkdocstrings](https://mkdocstrings.github.io/)
+- **Diagrams & Visualizations**: [Mermaid](https://mermaid.js.org/)
+- **Document Typography**: [Typst](https://typst.app/)
 
 ## Mathematical Notation
 
