@@ -1,4 +1,4 @@
-"""Tests for the cookiecutter-python-project template."""
+"""Tests for the cookiecutter-python-zenith template."""
 
 import tempfile
 from pathlib import Path

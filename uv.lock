@@ -211,7 +211,7 @@ wheels = [
 ]
 
 [[package]]
-name = "cookiecutter-zenith"
+name = "cookiecutter-python-zenith"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

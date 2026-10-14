@@ -39,13 +39,13 @@ with `complexipy`, and documentation with `zensical`. Every check runs through
 Generate a new project with `uvx`:
 
 ```bash
-uvx cookiecutter https://github.com/bwrob/cookiecutter-python-project.git
+uvx cookiecutter https://github.com/bwrob/cookiecutter-python-zenith.git
 ```
 
 Or using a local `cookiecutter` install:
 
 ```bash
-cookiecutter gh:bwrob/cookiecutter-python-project
+cookiecutter gh:bwrob/cookiecutter-python-zenith
 ```
 
 ### Initializing the Project

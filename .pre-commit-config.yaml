@@ -2,7 +2,7 @@
 # Repository Pre-commit Configuration (.pre-commit-config.yaml)
 #
 # Tool: Pre-commit (https://pre-commit.com/)
-# Purpose: Git hook management for the cookiecutter-zenith template repository.
+# Purpose: Git hook management for the cookiecutter-python-zenith template repository.
 # Note: Excludes unrendered Jinja template directory ({{cookiecutter.project_slug}}/)
 # ==============================================================================
 
