@@ -3,6 +3,7 @@
 import pytest
 from typer.testing import CliRunner
 
+from {{ cookiecutter.package_name }}.__main__ import main as module_main
 from {{ cookiecutter.package_name }}.cli import app, main
 
 runner = CliRunner()
@@ -41,4 +42,12 @@ def test_cli_main(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr("sys.argv", ["{{ cookiecutter.project_slug }}", "--help"])
     with pytest.raises(SystemExit) as exc_info:
         main()
+    assert exc_info.value.code == 0
+
+
+def test_cli_module_main(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Test module invocation via python -m {{ cookiecutter.package_name }}."""
+    monkeypatch.setattr("sys.argv", ["{{ cookiecutter.project_slug }}", "--help"])
+    with pytest.raises(SystemExit) as exc_info:
+        module_main()
     assert exc_info.value.code == 0

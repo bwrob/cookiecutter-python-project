@@ -162,6 +162,7 @@ Inline equations like $E = mc^2$ and $\Omega(n)$ are supported out of the box.
 | **Docs** | `uv run poe docs-serve` | Starts local Zensical documentation server |
 | **Build Docs** | `uv run poe docs-build` | Compiles documentation into `site/` |
 | **Logotype** | `uv run poe docs-logo` | Compiles documentation logotype SVG with Typst |
+| **Verify Wheel** | `uv run poe verify-wheel` | Verifies clean package and entry-point imports in an isolated wheel environment |
 
 ## Configuration Blueprint
 

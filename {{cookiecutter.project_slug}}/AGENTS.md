@@ -40,8 +40,9 @@ Before editing code or running tasks, ensure a clean, isolated environment:
 
 ## Project Instructions Discovery & Compatibility
 
-- **Dual Discovery**: A `CLAUDE.md` symlink (`ln -s AGENTS.md CLAUDE.md`) is maintained in the repository root. This guarantees compatibility across Claude Code, Antigravity, Cursor, Copilot, and other agent systems.
+- **Dual Discovery & Settings**: A `CLAUDE.md` symlink (`ln -s AGENTS.md CLAUDE.md`) and `.gemini/settings.json` (`contextFileName: "AGENTS.md"`) are maintained in the repository root for seamless compatibility across Claude Code, Antigravity, Gemini CLI, Cursor, Copilot, and other agent systems.
 - **Scope Hierarchy**: When exploring subdirectories, check for nested `AGENTS.md` or `CLAUDE.md` files; localized instructions take precedence within their scope.
+- **Workflow & Tool Guidance**: Consult `.agents/skills/` for lifecycle workflow skills (`project-setup`, `code-review`, `git-workflow`) and tool-specific guidance (`tool-*/SKILL.md`, `python-style-guide`).
 
 ## Architecture & Code Design
 

@@ -21,7 +21,7 @@ interfaces = [  ]
 source_roots = [ "src" ]
 
 forbid_circular_dependencies = true
-ignore_type_checking_imports = false
+ignore_type_checking_imports = true
 {% if cookiecutter.include_cli in [True, "yes", "true", "True", "1"] %}
 layers                       = [ "cli", "core" ]
 {% else %}
@@ -35,6 +35,11 @@ respect_gitignore            = true
     path       = "{{ cookiecutter.package_name }}"
 
 {% if cookiecutter.include_cli in [True, "yes", "true", "True", "1"] %}
+[[modules]]
+    depends_on = [ "{{ cookiecutter.package_name }}.cli" ]
+    layer      = "cli"
+    path       = "{{ cookiecutter.package_name }}.__main__"
+
 [[modules]]
     depends_on = [ "{{ cookiecutter.package_name }}" ]
     layer      = "cli"

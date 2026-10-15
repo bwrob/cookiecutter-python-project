@@ -58,7 +58,7 @@ def to_bool(val: object) -> bool:
 
 
 def setup_agent_instructions() -> None:
-    """Ensure CLAUDE.md points to AGENTS.md for dual agent compatibility."""
+    """Ensure CLAUDE.md points to AGENTS.md and .gemini/settings.json exists for agent compatibility."""
     agents_path = os.path.join(PROJECT_DIR, "AGENTS.md")
     claude_path = os.path.join(PROJECT_DIR, "CLAUDE.md")
     if os.path.isfile(agents_path) and not os.path.lexists(claude_path):
@@ -67,6 +67,13 @@ def setup_agent_instructions() -> None:
         except (OSError, NotImplementedError):
             # Fallback for platforms or environments without symlink privileges
             shutil.copyfile(agents_path, claude_path)
+
+    gemini_dir = os.path.join(PROJECT_DIR, ".gemini")
+    os.makedirs(gemini_dir, exist_ok=True)
+    gemini_settings = os.path.join(gemini_dir, "settings.json")
+    if not os.path.isfile(gemini_settings):
+        with open(gemini_settings, "w", encoding="utf-8") as f:
+            f.write('{\n  "contextFileName": "AGENTS.md"\n}\n')
 
 
 def main() -> None:
@@ -81,6 +88,8 @@ def main() -> None:
 
     if not include_cli:
         remove_file("src", package_name, "cli.py")
+        remove_file("src", package_name, "_lazy.py")
+        remove_file("src", package_name, "__main__.py")
         remove_file("tests", "test_cli.py")
         remove_file("docs", "javascripts", "termynal.js")
         remove_file("docs", "stylesheets", "termynal.css")

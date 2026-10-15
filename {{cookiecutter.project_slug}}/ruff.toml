@@ -8,10 +8,11 @@
 # mode, and docstring formatting for spotless, uniform Python style.
 # ==============================================================================
 
+exclude = [ ".venv", "site", "dist", "scripts" ]
 line-length = 88
 
 [lint]
-    exclude = [ ".venv", "site", "dist" ]
+    exclude = [ ".venv", "site", "dist", "scripts" ]
     ignore = [
         "blank-line-before-class",
         "COM",
@@ -29,7 +30,9 @@ line-length = 88
 
 
     [lint.per-file-ignores]
+        "src/*/__init__.py" = [ "non-empty-init-module" ]
         "src/*/cli.py" = [
+            "boolean-default-value-positional-argument",
             "boolean-positional-value-in-call",
             "boolean-type-hint-positional-argument",
             "line-too-long",

@@ -52,7 +52,15 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert (project_dir / ".pre-commit-config.yaml").exists()
     assert (project_dir / ".editorconfig").exists()
     assert (project_dir / ".zizmor.yml").exists()
+    assert (project_dir / ".gemini" / "settings.json").exists()
+    assert (
+        '"contextFileName": "AGENTS.md"'
+        in (project_dir / ".gemini" / "settings.json").read_text()
+    )
     for skill in [
+        "code-review",
+        "git-workflow",
+        "project-setup",
         "python-style-guide",
         "tool-complexipy",
         "tool-poethepoet",
@@ -69,6 +77,10 @@ def test_default_generation(temp_output_dir: Path) -> None:
         "tool-zizmor",
     ]:
         assert (project_dir / ".agents" / "skills" / skill / "SKILL.md").exists()
+    setup_skill_text = (
+        project_dir / ".agents" / "skills" / "project-setup" / "SKILL.md"
+    ).read_text()
+    assert "disable-model-invocation: true" in setup_skill_text
     poe_text = (project_dir / "poe_tasks.toml").read_text()
     assert "[tasks.zizmor]" in poe_text
     assert '"zizmor"' in poe_text
@@ -88,7 +100,13 @@ def test_default_generation(temp_output_dir: Path) -> None:
             project_dir / ".agents" / "skills" / "tool-pytest" / "references" / ref
         ).exists()
     assert (project_dir / "src" / "demo_app" / "__init__.py").exists()
+    assert (project_dir / "src" / "demo_app" / "_lazy.py").exists()
     assert (project_dir / "src" / "demo_app" / "cli.py").exists()
+    assert (project_dir / "src" / "demo_app" / "__main__.py").exists()
+    init_text = (project_dir / "src" / "demo_app" / "__init__.py").read_text()
+    assert "_lazy" in init_text
+    assert "_LAZY_MEMBERS" in init_text
+    assert "accessors(globals(), _LAZY_MEMBERS)" in init_text
     assert (
         project_dir
         / "src"
@@ -107,11 +125,26 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert (project_dir / "docs" / "stylesheets" / "termynal.css").exists()
     assert (project_dir / "docs" / "assets" / "python-logo.svg").exists()
     assert (project_dir / "docs" / "assets" / "python-logo.typ").exists()
+    assert (project_dir / "scripts" / "verify_wheel.py").exists()
     assert (project_dir / ".github" / "workflows" / "python_tests.yaml").exists()
     assert (project_dir / ".github" / "workflows" / "guard-dependencies.yaml").exists()
     assert (project_dir / ".github" / "workflows" / "docs.yaml").exists()
     assert (project_dir / ".github" / "workflows" / "publish.yaml").exists()
     assert (project_dir / ".github" / "workflows" / "test_redistribute.yaml").exists()
+    assert (
+        "UV_EXCLUDE_NEWER"
+        in (project_dir / ".github" / "workflows" / "publish.yaml").read_text()
+    )
+    assert (
+        "python scripts/verify_wheel.py"
+        in (project_dir / ".github" / "workflows" / "publish.yaml").read_text()
+    )
+    assert (
+        "python scripts/verify_wheel.py"
+        in (
+            project_dir / ".github" / "workflows" / "test_redistribute.yaml"
+        ).read_text()
+    )
     assert (project_dir / ".github" / "dependabot.yml").exists()
     assert (
         'package-ecosystem: "uv"'
@@ -130,6 +163,8 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "tasks.test-fast" in poe_text
     assert "tasks.test-lowest" in poe_text
     assert "tasks.test-sdist" in poe_text
+    assert "tasks.verify-wheel" in poe_text
+    assert "python scripts/verify_wheel.py" in poe_text
     assert "tasks.test-snapshot-update" in poe_text
     assert "tasks.zizmor" in poe_text
     assert "tasks.sync-skills" in poe_text
@@ -152,6 +187,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "zizmor" in pyproject_text
     assert "rich>=" in pyproject_text
     assert "typer>=" in pyproject_text
+    assert 'demo-app = "demo_app.__main__:main"' in pyproject_text
     assert "default-groups = [" in pyproject_text
     assert "test = [" in pyproject_text
     assert "lint = [" in pyproject_text
@@ -205,6 +241,13 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "test-lowest:" in ci_text
     assert "poe format-check" in ci_text
     assert "poe typos" in ci_text
+    assert "UV_EXCLUDE_NEWER" in ci_text
+    assert (
+        "UV_EXCLUDE_NEWER"
+        in (
+            project_dir / ".github" / "workflows" / "test_redistribute.yaml"
+        ).read_text()
+    )
 
     # Verify pre-commit config has typos
     precommit_text = (project_dir / ".pre-commit-config.yaml").read_text()
@@ -214,6 +257,8 @@ def test_default_generation(temp_output_dir: Path) -> None:
     tach_text = (project_dir / "tach.toml").read_text()
     assert 'source_roots = [ "src" ]' in tach_text
     assert 'path       = "demo_app"' in tach_text
+    assert 'path       = "demo_app.__main__"' in tach_text
+    assert "ignore_type_checking_imports = true" in tach_text
 
     # Verify hardened pytest.ini, ruff ban-relative-imports, coveragerc overload, and AI policy
     pytest_text = (project_dir / "pytest.ini").read_text()
@@ -226,6 +271,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     ruff_text = (project_dir / "ruff.toml").read_text()
     assert 'ban-relative-imports = "all"' in ruff_text
     assert "keep-runtime-typing = true" in ruff_text
+    assert "non-empty-init-module" in ruff_text
 
     coverage_text = (project_dir / ".coveragerc").read_text()
     assert "@overload" in coverage_text
@@ -245,6 +291,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "Elevator Pitch" in (TEMPLATE_ROOT / "README.md").read_text()
     assert "CLI Layer" in readme_text
     assert "license-MIT" in readme_text
+    assert "Verify Wheel" in readme_text
 
     # Verify AGENTS.md content
     agents_text = (project_dir / "AGENTS.md").read_text()
@@ -306,6 +353,11 @@ def test_no_cli_generation(temp_output_dir: Path) -> None:
     assert project_dir.exists()
     assert (project_dir / "src" / "pure_library" / "core.py").exists()
     assert not (project_dir / "src" / "pure_library" / "cli.py").exists()
+    assert not (project_dir / "src" / "pure_library" / "_lazy.py").exists()
+    assert not (project_dir / "src" / "pure_library" / "__main__.py").exists()
+    no_cli_init = (project_dir / "src" / "pure_library" / "__init__.py").read_text()
+    assert "_lazy" not in no_cli_init
+    assert "_LAZY_MEMBERS" not in no_cli_init
     assert not (project_dir / "tests" / "test_cli.py").exists()
     assert not (project_dir / "docs" / "javascripts" / "termynal.js").exists()
     assert not (project_dir / "docs" / "stylesheets" / "termynal.css").exists()
@@ -503,3 +555,97 @@ def test_slugify_special_characters(temp_output_dir: Path) -> None:
     assert project_dir.name == "zenith-s-cool-tool-v2"
     assert (project_dir / "src" / "zenith_s_cool_tool_v2" / "__init__.py").exists()
     assert (project_dir / "src" / "zenith_s_cool_tool_v2" / "core.py").exists()
+
+
+def test_verify_wheel_execution(temp_output_dir: Path) -> None:
+    """Test that scripts/verify_wheel.py builds and verifies the wheel in an isolated venv."""
+    import subprocess
+    import sys
+
+    project_dir = Path(
+        cookiecutter(
+            str(TEMPLATE_ROOT),
+            no_input=True,
+            output_dir=str(temp_output_dir),
+            extra_context={
+                "project_name": "Wheel Smoke App",
+                "include_cli": "yes",
+            },
+        )
+    )
+
+    verify_script = project_dir / "scripts" / "verify_wheel.py"
+    assert verify_script.exists()
+
+    # Execute verify_wheel.py directly inside the generated project
+    result = subprocess.run(
+        [sys.executable, str(verify_script)],
+        cwd=str(project_dir),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, (
+        f"verify_wheel.py failed:\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
+    )
+    assert "Wheel verification successful" in result.stdout
+
+
+def test_lazy_load_behavior(temp_output_dir: Path) -> None:
+    """Test that PEP 562 lazy loading prevents eager submodule imports."""
+    import subprocess
+    import sys
+
+    project_dir = Path(
+        cookiecutter(
+            str(TEMPLATE_ROOT),
+            no_input=True,
+            output_dir=str(temp_output_dir),
+            extra_context={
+                "project_name": "Lazy App",
+                "include_cli": "yes",
+            },
+        )
+    )
+
+    verify_code = """
+import sys
+import os
+
+sys.path.insert(0, os.path.abspath("src"))
+import lazy_app
+
+# 1. lazy_app.cli and lazy_app.__main__ must NOT be imported eagerly on package import
+assert "lazy_app.cli" not in sys.modules, "lazy_app.cli was imported eagerly!"
+assert "lazy_app.__main__" not in sys.modules, "lazy_app.__main__ was imported eagerly!"
+
+# 2. Accessing core function directly via lazy resolution works
+greeting = lazy_app.get_greeting("Antigravity")
+assert greeting == "Hello, Antigravity!"
+assert "lazy_app.core" in sys.modules
+assert "lazy_app.cli" not in sys.modules, "lazy_app.cli was imported by get_greeting!"
+
+# 3. dir() returns lazily exported members and globals
+members = dir(lazy_app)
+assert "app" in members
+assert "get_greeting" in members
+assert "__version__" in members
+
+# 4. Unknown attribute raises AttributeError
+try:
+    lazy_app.nonexistent_symbol
+except AttributeError:
+    pass
+else:
+    raise AssertionError("AttributeError not raised for missing member")
+"""
+    result = subprocess.run(
+        [sys.executable, "-c", verify_code],
+        cwd=str(project_dir),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, (
+        f"Lazy loading test failed:\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
+    )

@@ -51,8 +51,14 @@
   uv sync --group test
   uv run poe test
   uv build --wheel
+  python scripts/verify_wheel.py
   echo "✅ Source distribution verified successfully!"
 """
+
+[tasks.verify-wheel]
+    cmd  = "python scripts/verify_wheel.py"
+    help = "Build wheel and verify clean imports in an isolated virtual environment."
+
 
     # ------------------------------------------------------------------------------
     # Quality: Formatting, Linting, & Static Typing
@@ -218,6 +224,7 @@
         "test",
         { script = "shutil:rmtree('dist', ignore_errors=1)" },
         { cmd = "uv build" },
+        "verify-wheel",
         { cmd = "uv publish" },
         "publish-docs",
     ]
