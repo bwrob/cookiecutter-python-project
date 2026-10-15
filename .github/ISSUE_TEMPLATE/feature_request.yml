@@ -1,12 +1,12 @@
 name: 💡 Feature Request
-description: Suggest an idea or feature enhancement for cookiecutter-python-zenith
+description: Suggest an idea or feature enhancement for Zenith
 title: "[Feature]: "
 labels: ["enhancement"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thank you for helping evolve cookiecutter-python-zenith!
+        Thank you for helping evolve Zenith!
   - type: textarea
     id: problem
     attributes:

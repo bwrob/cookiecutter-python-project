@@ -1,5 +1,5 @@
 [project]
-name = "cookiecutter-python-zenith"
+name = "zenith"
 version = "0.1.0"
 description = "Zenith: An opinionated, strict Cookiecutter template for modern Python projects using uv, ruff, pyrefly, complexipy, zensical, rumdl, tach, and poethepoet."
 readme = "README.md"
@@ -23,8 +23,8 @@ classifiers = [
 dependencies = ["cookiecutter>=2.7.0"]
 
 [project.urls]
-Homepage = "https://github.com/bwrob/cookiecutter-python-zenith"
-Repository = "https://github.com/bwrob/cookiecutter-python-zenith.git"
+Homepage = "https://github.com/bwrob/zenith"
+Repository = "https://github.com/bwrob/zenith.git"
 
 [dependency-groups]
 dev = ["pre-commit>=4.0.0", "pytest>=8.0.0", "ruff>=0.17.0"]

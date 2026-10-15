@@ -50,17 +50,19 @@ Pytest and coverage behavior are configured through root configuration files.
 
 ```ini
 [pytest]
-testpaths = tests
-python_files = test_*.py
-python_classes = Test*
-python_functions = test_*
+testpaths = tests src
 addopts =
+    --verbose
     --doctest-modules
+    --import-mode=importlib
+    --strict-config
     --strict-markers
-    -ra
-markers =
-    slow: marks tests as slow (deselect with '-m "not slow"')
-    integration: external or integration tests
+xfail_strict = true
+filterwarnings =
+    error
+doctest_optionflags =
+    NORMALIZE_WHITESPACE
+    ELLIPSIS
 ```
 
 ### `.coveragerc`
@@ -82,6 +84,8 @@ exclude_lines =
     if TYPE_CHECKING:
     raise NotImplementedError
     if __name__ == .__main__.:
+    @overload
+    @(typing\.)?overload
 ```
 
 ---

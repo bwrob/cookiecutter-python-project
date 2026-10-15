@@ -31,6 +31,8 @@ exclude_also =
     if TYPE_CHECKING:
     class .*\bProtocol\):
     @(abc\.)?abstractmethod
+    @overload
+    @(typing\.)?overload
 
 [html]
 directory = htmlcov

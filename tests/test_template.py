@@ -1,4 +1,4 @@
-"""Tests for the cookiecutter-python-zenith template."""
+"""Tests for the Zenith template."""
 
 import tempfile
 from pathlib import Path
@@ -44,6 +44,8 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert (project_dir / "typos.toml").exists()
     assert (project_dir / "AGENTS.md").exists()
     assert (project_dir / "CLAUDE.md").exists()
+    assert (project_dir / "AI_POLICY.md").exists()
+    assert (project_dir / "pytest.ini").exists()
     assert (project_dir / ".coveragerc").exists()
     assert (project_dir / ".gitattributes").exists()
     assert (project_dir / ".prettierrc.yaml").exists()
@@ -137,6 +139,9 @@ def test_default_generation(temp_output_dir: Path) -> None:
     # Verify markdown-exec fences and mkdocstrings plugin in zensical.toml
     zensical_text = (project_dir / "zensical.toml").read_text()
     assert "markdown_exec.validator" in zensical_text
+    assert "[project.validation]" in zensical_text
+    assert "invalid_links" in zensical_text
+    assert "invalid_link_anchors" in zensical_text
     assert "[project.plugins.mkdocstrings]" in zensical_text
     assert "navigation.instant.preview" in zensical_text
     assert "search.suggest" in zensical_text
@@ -186,6 +191,29 @@ def test_default_generation(temp_output_dir: Path) -> None:
     tach_text = (project_dir / "tach.toml").read_text()
     assert 'source_roots = [ "src" ]' in tach_text
     assert 'path       = "demo_app"' in tach_text
+
+    # Verify hardened pytest.ini, ruff ban-relative-imports, coveragerc overload, and AI policy
+    pytest_text = (project_dir / "pytest.ini").read_text()
+    assert "--import-mode=importlib" in pytest_text
+    assert "--strict-config" in pytest_text
+    assert "--strict-markers" in pytest_text
+    assert "xfail_strict" in pytest_text
+    assert "filterwarnings" in pytest_text
+
+    ruff_text = (project_dir / "ruff.toml").read_text()
+    assert 'ban-relative-imports = "all"' in ruff_text
+
+    coverage_text = (project_dir / ".coveragerc").read_text()
+    assert "@overload" in coverage_text
+
+    ai_policy_text = (project_dir / "AI_POLICY.md").read_text()
+    assert "Human-in-the-Loop" in ai_policy_text
+    assert (TEMPLATE_ROOT / "AI_POLICY.md").exists()
+
+    pr_template_text = (
+        project_dir / ".github" / "PULL_REQUEST_TEMPLATE.md"
+    ).read_text()
+    assert "AI Assistance Disclosure" in pr_template_text
 
     # Verify Elevator Pitch present in generated README and repo README
     readme_text = (project_dir / "README.md").read_text()

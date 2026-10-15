@@ -1,27 +1,28 @@
 ---
 description: >
   Authoritative workflow for inspecting, auditing, and benchmarking mature
-  Python project setups to extract best practices and propose improvements.
+  Python project setups and development skills to extract best practices and
+  propose improvements.
 name: inspect-module-setup
-version: 1.0.0
+version: 1.1.0
 ---
 
 # Inspect Module Setup (`inspect-module-setup`)
 
 This skill defines the structured workflow for auditing, benchmarking, and
-reverse-engineering the architecture, configuration, toolchains, and CI/CD
-practices of mature Python projects.
+reverse-engineering the architecture, configuration, toolchains, CI/CD, and
+agent skills of mature Python projects.
 
 Use this skill whenever benchmarking Zenith against best-in-class repositories,
-evaluating modern tooling shifts in the Python ecosystem, or preparing
-actionable improvement proposals.
+evaluating modern tooling shifts in the Python ecosystem, analyzing agent skills
+used during development, or preparing actionable improvement proposals.
 
 ---
 
-## 1. The 8-Pillar Audit Framework
+## 1. The 9-Pillar Audit Framework
 
-Inspect target projects across eight foundational dimensions of modern Python
-engineering.
+Inspect target projects across nine foundational dimensions of modern Python
+engineering and AI-assisted development.
 
 ### Pillar 1: Packaging & Build System
 
@@ -131,6 +132,30 @@ Review project health, contributor onboarding, and community policies:
   `CODE_OF_CONDUCT.md`.
 - **Dependency Automation**: Inspect Renovate or Dependabot configurations.
 
+### Pillar 9: Agent Skills & AI Development Workflows
+
+Examine how the target repository equips AI agents and developers with custom skills,
+instructions, guardrails, and operational tooling:
+
+- **Agent Skills & Custom Capabilities**: Check for repository agent skills
+  (`.agents/skills/`, `.agent/skills/`, `.cursor/skills/`, `.gemini/skills/`).
+  Identify domain-specific workflows, benchmark harnesses, code generators, or
+  diagnostic scripts packaged as skills.
+- **Agent Instructions & Discovery**: Inspect `AGENTS.md`, `CLAUDE.md`,
+  `.cursorrules`, `.cursor/rules/`, `.windsurfrules`, and
+  `.github/copilot-instructions.md`. Evaluate instruction hierarchy, localized
+  subfolder instructions, and discovery symlinks (e.g. `CLAUDE.md -> AGENTS.md`).
+- **AI Governance & Contribution Policies**: Inspect AI usage policies
+  (`AI_POLICY.md`), PR template disclosure checklists (`pull_request_template.md`),
+  bot-gating rules, and verification mandates (e.g., local test verification,
+  anti-slop policies).
+- **Tooling Protocols & Extensions**: Check for Model Context Protocol (MCP)
+  server definitions (`mcp.json`, `.cursor/mcp.json`), subagents, sidecars, and
+  custom agent runners.
+- **Knowledge Encapsulation**: Identify how maintainers encode domain idioms,
+  architectural invariants, and anti-patterns into guidelines so both human
+  contributors and AI coding assistants generate idiomatic, verified code.
+
 ---
 
 ## 2. Ingestion & Extraction Workflow
@@ -160,6 +185,12 @@ cat pyproject.toml
 ls -la ruff.toml .ruff.toml pyrefly.toml mypy.ini tach.toml \
   .pre-commit-config.yaml 2>/dev/null
 
+# Agent skills, instructions, and AI policies
+ls -la AGENTS.md CLAUDE.md AI_POLICY.md .cursorrules .windsurfrules \
+  .github/copilot-instructions.md 2>/dev/null
+ls -la .agents/skills/ .agent/skills/ .cursor/rules/ .cursor/skills/ 2>/dev/null
+ls -la tools/ scripts/ 2>/dev/null
+
 # Documentation configs (Zensical / MkDocs / Sphinx)
 ls -la zensical.toml mkdocs.yml mkdocs.yaml docs/ 2>/dev/null
 
@@ -172,8 +203,8 @@ ls -la .github/workflows/
 
 ### Step 3: Extract Notable Patterns
 
-Identify non-obvious configurations, clever flags, and patterns worthy of
-adoption or adaptation.
+Identify non-obvious configurations, clever flags, specialized skills, and
+architectural patterns worthy of adoption or adaptation in Zenith.
 
 ---
 
@@ -198,22 +229,22 @@ When proposing template improvements based on an audit, structure the output as
 follows:
 
 ```markdown
-# Improvement Proposal: [Area / Feature] (Learned from [Project Name])
+# Improvement Proposal: [Area / Feature / Skill] (Learned from [Project Name])
 
 ## 1. Executive Summary
-Brief summary of the discovered pattern and why Zenith benefits from it.
+Brief summary of the discovered pattern, skill, or workflow and why Zenith benefits from it.
 
 ## 2. Benchmark Source & Context
 - Target Project: `[org/repo]`
-- Discovered Pattern: `[e.g., Trusted Publishing OIDC / PEP 735 groups]`
+- Discovered Pattern: `[e.g., Trusted Publishing OIDC / PEP 735 groups / AI Policy / Custom Agent Skill]`
 
 ## 3. Gap Analysis (Target vs. Zenith)
 | Capability | Target Repo Pattern | Zenith Current State | Advantage |
 | --- | --- | --- | --- |
 
 ## 4. Proposed Changes
-- Exact configuration diffs or new template files.
-- Updates to `cookiecutter.json`, hooks, or `{{cookiecutter.project_slug}}`.
+- Exact configuration diffs, new template files, or new agent skills (`.agents/skills/tool-*`).
+- Updates to `cookiecutter.json`, hooks, `AGENTS.md`, or `{{cookiecutter.project_slug}}`.
 
 ## 5. Verification Plan
 - Unit tests (`uv run pytest`).

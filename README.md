@@ -40,13 +40,13 @@ with `complexipy`, and documentation with `zensical`. Every check runs through
 Generate a new project with `uvx`:
 
 ```bash
-uvx cookiecutter https://github.com/bwrob/cookiecutter-python-zenith.git
+uvx cookiecutter https://github.com/bwrob/zenith.git
 ```
 
 Or using a local `cookiecutter` install:
 
 ```bash
-cookiecutter gh:bwrob/cookiecutter-python-zenith
+cookiecutter gh:bwrob/zenith
 ```
 
 ### Initializing the Project
@@ -89,7 +89,7 @@ uv run poe docs-serve
 
 | Variable | Default | Description |
 |---|---|---|
-| `project_name` | `Zenith Python Project` | Project title used in docs and README |
+| `project_name` | `Zenith` | Project title used in docs and README |
 | `project_slug` | *derived from name* | Repository and PyPI package name |
 | `package_name` | *derived from slug* | Python import name (`import <package_name>`) |
 | `description` | *default description* | Package summary string |

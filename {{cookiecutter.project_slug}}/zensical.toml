@@ -24,6 +24,17 @@
         { "Reference" = "reference.md" },
     ]
 
+    [project.validation]
+        invalid_links         = true
+        invalid_link_anchors  = true
+        shadowed_definitions  = true
+        shadowed_footnotes    = true
+        unresolved_footnotes  = true
+        unresolved_references = true
+        unused_definitions    = true
+        unused_footnotes      = true
+
+
     {% if cookiecutter.include_cli in [True, "yes", "true", "True", "1"] %}
     extra_css = [
         "stylesheets/termynal.css",

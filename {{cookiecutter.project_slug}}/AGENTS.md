@@ -33,6 +33,8 @@ Before editing code or running tasks, ensure a clean, isolated environment:
   - `uv run poe clean` (to purge build artifacts and stale caches)
 - **Tool Guidance**: For tool usage and common configuration changes,
   consult the corresponding skill in `.agents/skills/tool-*/SKILL.md`.
+- **AI Contribution Policy**: All contributions must adhere to `AI_POLICY.md`
+  for human review, local test verification, and tool disclosure.
 
 ## Project Instructions Discovery & Compatibility
 
@@ -44,6 +46,7 @@ Before editing code or running tasks, ensure a clean, isolated environment:
 Refer to `.agents/skills/python-style-guide/SKILL.md` for complete guidelines.
 
 - **Python Version**: Python {{ cookiecutter.python_version }}+.
+- **Imports**: Use canonical absolute imports exclusively (`from {{ cookiecutter.package_name }}.module import ...`). Relative imports are strictly banned via Ruff (`ban-relative-imports = "all"`).
 - **Type Annotations**: Use modern PEP 695 type parameter syntax exclusively
   (`type Alias = ...`, `def func[T](...)`). Never use legacy `TypeVar` or
   `Optional`. Import collection abstractions from `collections.abc`.
@@ -70,9 +73,12 @@ Refer to `.agents/skills/python-style-guide/SKILL.md` for complete guidelines.
 ## Testing & Documentation
 
 - **Testing**: Write unit tests with `pytest`. Use `hypothesis` for property-based
-  exploration and `syrupy` for snapshot assertions.
+  exploration and `syrupy` for snapshot assertions. `pytest.ini` enforces zero-tolerance
+  warning gates (`filterwarnings = error`), import isolation (`--import-mode=importlib`),
+  and strict marker validation (`--strict-markers`).
 - **Documentation**: Site is built with Zensical. API references are generated
-  automatically from docstrings with `mkdocstrings`.
+  automatically from docstrings with `mkdocstrings`. Build-time link and reference
+  validation is strictly enforced via `[project.validation]`.
 - **Diagrams**: Use Mermaid code blocks (```mermaid) for architecture and sequence
   diagrams.
 

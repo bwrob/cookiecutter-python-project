@@ -1,7 +1,7 @@
 # AGENTS.md
 
 Operational guidelines, architectural conventions, and workflows for AI coding
-assistants working on the **cookiecutter-python-zenith** template repository.
+assistants working on the **Zenith** template repository.
 
 ## Pre-flight Checks
 
@@ -28,6 +28,9 @@ Before editing code or executing tasks, ensure an isolated, clean working enviro
   - `uv run ruff check`
   - `uv run ruff format --check`
   - `uv run pre-commit run --all-files`
+- **AI Contribution Policy**: Consult and adhere to `AI_POLICY.md` for human review,
+  local verification, and tool disclosure guidelines.
+
 
 ## Project Instructions Discovery & Compatibility
 

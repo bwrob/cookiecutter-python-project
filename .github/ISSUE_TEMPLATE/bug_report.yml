@@ -1,5 +1,5 @@
 name: 🐛 Bug Report
-description: File a bug report to help us improve cookiecutter-python-zenith
+description: File a bug report to help us improve Zenith
 title: "[Bug]: "
 labels: ["bug"]
 body:

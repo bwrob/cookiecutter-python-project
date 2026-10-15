@@ -24,6 +24,10 @@ line-length = 88
     preview = true
     select = [ "ALL" ]
 
+    [lint.flake8-tidy-imports]
+        ban-relative-imports = "all"
+
+
     [lint.per-file-ignores]
         "src/*/cli.py" = [
             "boolean-positional-value-in-call",

@@ -1,5 +1,5 @@
 {
-  "project_name": "Zenith Python Project",
+  "project_name": "Zenith",
   "project_slug": "{{ cookiecutter.project_name | slugify }}",
   "package_name": "{{ cookiecutter.project_slug | slugify(separator='_') }}",
   "description": "An opinionated, strict Python project powered by uv, ruff, pyrefly, and zensical.",

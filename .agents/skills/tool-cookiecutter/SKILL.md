@@ -19,7 +19,7 @@ In this repository, Cookiecutter defines the core generation pipeline for the
 A complete modern Cookiecutter repository comprises five key architectural components:
 
 ```text
-cookiecutter-python-project/
+zenith/
 ├── cookiecutter.json               # Template configuration, variables, __prompts__, _jinja2_env_vars
 ├── hooks/                          # Lifecycle scripts (Python / Shell)
 │   ├── pre_prompt.py               # (2.4+) Runs before questions; validates environment/tools
@@ -80,7 +80,7 @@ Validate that a generated project satisfies all quality gates:
 uv run cookiecutter . --no-input -o /tmp/smoke-test
 
 # 2. Sync dependencies and run full quality and test suite
-cd /tmp/smoke-test/zenith-python-project
+cd /tmp/smoke-test/zenith
 uv sync
 uv run poe code-quality
 uv run poe test
@@ -100,7 +100,7 @@ Cookiecutter 2.2+ supports descriptive prompt questions and option labels via th
 
 ```json
 {
-  "project_name": "Zenith Python Project",
+  "project_name": "Zenith",
   "license": ["MIT", "Apache-2.0", "BSD-3-Clause", "None"],
   "include_cli": true,
   "__prompts__": {

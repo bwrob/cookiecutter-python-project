@@ -58,6 +58,17 @@ nav = [
     { "Reference" = "reference.md" },
 ]
 
+# Strict Build-Time Validation
+[project.validation]
+invalid_links = true
+invalid_link_anchors = true
+unresolved_references = true
+unresolved_footnotes = true
+unused_definitions = true
+unused_footnotes = true
+shadowed_definitions = true
+shadowed_footnotes = true
+
 # Client-Side JavaScript (e.g. MathJax)
 extra_javascript = [
     "javascripts/mathjax.js",

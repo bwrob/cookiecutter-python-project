@@ -20,3 +20,14 @@
 - [ ] Full quality pipeline passes with zero warnings (`uv run poe code-quality`)
 - [ ] Strict type checking passes (`uv run poe type-check`)
 - [ ] Documentation builds cleanly (`uv run poe docs-build`)
+
+## AI Assistance Disclosure
+
+<!-- Select the applicable option and describe any AI tooling used (e.g. Claude Code, Antigravity, Cursor). -->
+
+- [ ] No AI tools were used in preparing this pull request.
+- [ ] AI tools were used:
+  - Tool(s): `<!-- e.g. Claude Code / Antigravity / Cursor / Copilot -->`
+  - Scope: `<!-- e.g. test scaffolding / refactoring / initial draft -->`
+  - [ ] I confirm that I have reviewed, edited, and locally verified all changes myself (`uv run poe code-quality`), adhering to `AI_POLICY.md`.
+
