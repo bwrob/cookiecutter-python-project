@@ -1,0 +1,31 @@
+# ==============================================================================
+# EditorConfig (.editorconfig)
+#
+# Tool: EditorConfig (https://editorconfig.org/)
+# Purpose: Maintain consistent coding styles between different editors and IDEs.
+# Why it's in Zenith: Enforces universal cross-editor consistency for indentation,
+# line endings, and file encodings across all developer machines and CI runners.
+# ==============================================================================
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{json,yaml,yml}]
+indent_size = 2
+
+[*.{toml,typ}]
+indent_size = 4
+
+[*.md]
+indent_size = 2
+trim_trailing_whitespace = false
+
+[Makefile]
+indent_style = tab

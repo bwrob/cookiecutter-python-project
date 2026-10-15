@@ -87,8 +87,9 @@ slug.
 
 > [!IMPORTANT]
 > **Repo-Only Skills**:
-> `tool-cookiecutter` and `update-tools` belong **strictly** to the root
-> template repository. **NEVER** copy them into `{{cookiecutter.project_slug}}`.
+> `tool-cookiecutter`, `update-tools`, and `inspect-module-setup` belong
+> **strictly** to the root template repository. **NEVER** copy them into
+> `{{cookiecutter.project_slug}}`.
 
 Sync only the project-facing skills to the template slug:
 

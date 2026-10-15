@@ -19,6 +19,7 @@ CONFIG_FILES_WITH_HEADERS = [
     "typos.toml",
     ".pre-commit-config.yaml",
     ".prettierrc.yaml",
+    ".editorconfig",
 ]
 
 

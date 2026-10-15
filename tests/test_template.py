@@ -47,6 +47,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert (project_dir / ".gitattributes").exists()
     assert (project_dir / ".prettierrc.yaml").exists()
     assert (project_dir / ".pre-commit-config.yaml").exists()
+    assert (project_dir / ".editorconfig").exists()
     for skill in [
         "python-style-guide",
         "tool-complexipy",
@@ -84,6 +85,12 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert (project_dir / "docs" / "assets" / "python-logo.typ").exists()
     assert (project_dir / ".github" / "workflows" / "python_tests.yaml").exists()
     assert (project_dir / ".github" / "workflows" / "docs.yaml").exists()
+    assert (project_dir / ".github" / "workflows" / "publish.yaml").exists()
+    assert (project_dir / ".github" / "dependabot.yml").exists()
+    assert (project_dir / ".github" / "PULL_REQUEST_TEMPLATE.md").exists()
+    assert (project_dir / ".github" / "ISSUE_TEMPLATE" / "bug_report.yml").exists()
+    assert (project_dir / ".github" / "ISSUE_TEMPLATE" / "feature_request.yml").exists()
+    assert (project_dir / ".github" / "ISSUE_TEMPLATE" / "config.yml").exists()
 
     # Verify precommit task removed and format-check added
     poe_text = (project_dir / "poe_tasks.toml").read_text()
@@ -99,6 +106,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     pyproject_text = (project_dir / "pyproject.toml").read_text()
     assert "markdown-exec" in pyproject_text
     assert "Programming Language :: Python :: 3.15" in pyproject_text
+    assert "Typing :: Typed" in pyproject_text
     assert "hypothesis" in pyproject_text
     assert "pytest-randomly" in pyproject_text
     assert "pytest-sugar" in pyproject_text
@@ -118,6 +126,11 @@ def test_default_generation(temp_output_dir: Path) -> None:
     zensical_text = (project_dir / "zensical.toml").read_text()
     assert "markdown_exec.validator" in zensical_text
     assert "[project.plugins.mkdocstrings]" in zensical_text
+    assert "navigation.instant.preview" in zensical_text
+    assert "search.suggest" in zensical_text
+    assert "toc.follow" in zensical_text
+    assert "signature_crossrefs = true" in zensical_text
+    assert 'members_order = "source"' in zensical_text
 
     # Verify docs reference and mermaid diagrams
     ref_text = (project_dir / "docs" / "reference.md").read_text()
@@ -141,6 +154,8 @@ def test_default_generation(temp_output_dir: Path) -> None:
 
     # Verify CI workflow has quality and test split
     ci_text = (project_dir / ".github" / "workflows" / "python_tests.yaml").read_text()
+    assert "concurrency:" in ci_text
+    assert "cancel-in-progress: true" in ci_text
     assert "quality:" in ci_text
     assert "test:" in ci_text
     assert "poe format-check" in ci_text
