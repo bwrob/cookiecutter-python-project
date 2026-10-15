@@ -3,6 +3,14 @@
 Operational guidelines, architectural conventions, and workflows for AI coding
 assistants working in **{{ cookiecutter.project_name }}**.
 
+## Pre-flight Checks
+
+Before editing code or running tasks, ensure a clean, isolated environment:
+
+1. Check repository status with `git status`. Do not make edits when uncommitted changes exist without explicit user consent.
+2. Confirm remotes and branches before committing or pushing changes. Use git worktrees or dedicated feature branches for non-trivial tasks.
+3. Run all commands inside the hermetic project environment using `uv run <command>` or `uv run poe <task>`. Never use global or system Python environments directly.
+
 ## Operational Workflows
 
 - **Environment & Packages**: Always use **`uv`**. Never use `pip`, `poetry`, or
@@ -24,6 +32,11 @@ assistants working in **{{ cookiecutter.project_name }}**.
   - `uv run poe fix` (to auto-fix formatting and spelling where applicable)
 - **Tool Guidance**: For tool usage and common configuration changes,
   consult the corresponding skill in `.agents/skills/tool-*/SKILL.md`.
+
+## Project Instructions Discovery & Compatibility
+
+- **Dual Discovery**: A `CLAUDE.md` symlink (`ln -s AGENTS.md CLAUDE.md`) is maintained in the repository root. This guarantees compatibility across Claude Code, Antigravity, Cursor, Copilot, and other agent systems.
+- **Scope Hierarchy**: When exploring subdirectories, check for nested `AGENTS.md` or `CLAUDE.md` files; localized instructions take precedence within their scope.
 
 ## Architecture & Code Design
 
@@ -57,3 +70,12 @@ Refer to `.agents/skills/python-style-guide/SKILL.md` for complete guidelines.
   automatically from docstrings with `mkdocstrings`.
 - **Diagrams**: Use Mermaid code blocks (```mermaid) for architecture and sequence
   diagrams.
+
+## Investigating CI Failures
+
+When diagnosing GitHub Actions failures:
+
+1. Enumerate recent runs: `gh run list --limit 5`
+2. Inspect failing step logs directly: `gh run view <run-id> --log-failed`
+3. Avoid downloading full job logs when annotations and failed step summaries are sufficient.
+

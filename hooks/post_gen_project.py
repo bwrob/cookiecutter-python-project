@@ -56,6 +56,18 @@ def to_bool(val: object) -> bool:
     return str(val).lower() in ("true", "yes", "1", "t", "y", "on")
 
 
+def setup_agent_instructions() -> None:
+    """Ensure CLAUDE.md points to AGENTS.md for dual agent compatibility."""
+    agents_path = os.path.join(PROJECT_DIR, "AGENTS.md")
+    claude_path = os.path.join(PROJECT_DIR, "CLAUDE.md")
+    if os.path.isfile(agents_path) and not os.path.lexists(claude_path):
+        try:
+            os.symlink("AGENTS.md", claude_path)
+        except (OSError, NotImplementedError):
+            # Fallback for platforms or environments without symlink privileges
+            shutil.copyfile(agents_path, claude_path)
+
+
 def main() -> None:
     include_cli = to_bool("{{ cookiecutter.include_cli }}")
     include_github_actions = to_bool("{{ cookiecutter.include_github_actions }}")
@@ -74,6 +86,8 @@ def main() -> None:
 
     if license_type.lower() == "none":
         remove_file("LICENSE")
+
+    setup_agent_instructions()
 
 
 if __name__ == "__main__":

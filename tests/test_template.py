@@ -43,6 +43,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert (project_dir / "tach.toml").exists()
     assert (project_dir / "typos.toml").exists()
     assert (project_dir / "AGENTS.md").exists()
+    assert (project_dir / "CLAUDE.md").exists()
     assert (project_dir / ".coveragerc").exists()
     assert (project_dir / ".gitattributes").exists()
     assert (project_dir / ".prettierrc.yaml").exists()
@@ -181,6 +182,11 @@ def test_default_generation(temp_output_dir: Path) -> None:
     agents_text = (project_dir / "AGENTS.md").read_text()
     assert "uv run poe --help" in agents_text
     assert "`cli` -> `core` -> external dependencies" in agents_text
+    assert (project_dir / "CLAUDE.md").read_text() == agents_text
+    if hasattr(Path, "is_symlink") and (project_dir / "CLAUDE.md").is_symlink():
+        import os
+
+        assert os.readlink(project_dir / "CLAUDE.md") == "AGENTS.md"
 
 
 def test_python_315_generation(temp_output_dir: Path) -> None:
@@ -250,6 +256,7 @@ def test_no_cli_generation(temp_output_dir: Path) -> None:
     assert "::: pure_library.cli" not in ref_text
 
     agents_text = (project_dir / "AGENTS.md").read_text()
+    assert (project_dir / "CLAUDE.md").exists()
     assert "The `core` module must never import from `cli`" not in agents_text
     assert "`core` -> external dependencies" in agents_text
 
