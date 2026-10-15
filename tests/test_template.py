@@ -48,18 +48,18 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert (project_dir / ".prettierrc.yaml").exists()
     assert (project_dir / ".pre-commit-config.yaml").exists()
     for skill in [
-        "complexipy",
-        "poethepoet",
-        "pyrefly",
-        "pytest",
         "python-style-guide",
-        "ruff",
-        "rumdl",
-        "tach",
-        "typos",
-        "typst",
-        "uv",
-        "zensical",
+        "tool-complexipy",
+        "tool-poethepoet",
+        "tool-pyrefly",
+        "tool-pytest",
+        "tool-ruff",
+        "tool-rumdl",
+        "tool-tach",
+        "tool-typos",
+        "tool-typst",
+        "tool-uv",
+        "tool-zensical",
     ]:
         assert (project_dir / ".agents" / "skills" / skill / "SKILL.md").exists()
     assert (project_dir / "src" / "demo_app" / "__init__.py").exists()

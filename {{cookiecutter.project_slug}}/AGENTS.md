@@ -22,6 +22,8 @@ assistants working in **{{ cookiecutter.project_name }}**.
   - `uv run poe test` (or `uv run poe test-fast`)
   - `uv run poe code-quality`
   - `uv run poe fix` (to auto-fix formatting and spelling where applicable)
+- **Tool Guidance**: For tool usage and common configuration changes,
+  consult the corresponding skill in `.agents/skills/tool-*/SKILL.md`.
 
 ## Architecture & Code Design
 
