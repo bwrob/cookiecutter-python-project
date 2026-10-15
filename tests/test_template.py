@@ -150,6 +150,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "::: demo_app.cli" in ref_text
     getting_started_text = (project_dir / "docs" / "getting-started.md").read_text()
     assert 'class="termy"' in getting_started_text
+    assert 'class="termy"' in (project_dir / "docs" / "index.md").read_text()
     assert "sequenceDiagram" in getting_started_text
     assert "stateDiagram-v2" in getting_started_text
 
@@ -255,6 +256,7 @@ def test_no_cli_generation(temp_output_dir: Path) -> None:
     assert not (project_dir / "docs" / "stylesheets").exists()
     assert "termynal" not in (project_dir / "zensical.toml").read_text()
     assert "termy" not in (project_dir / "docs" / "getting-started.md").read_text()
+    assert "termy" not in (project_dir / "docs" / "index.md").read_text()
 
     pyproject_text = (project_dir / "pyproject.toml").read_text()
     assert (
