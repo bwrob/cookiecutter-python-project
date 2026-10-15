@@ -42,13 +42,26 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert (project_dir / "rumdl.toml").exists()
     assert (project_dir / "tach.toml").exists()
     assert (project_dir / "typos.toml").exists()
+    assert (project_dir / "AGENTS.md").exists()
     assert (project_dir / ".coveragerc").exists()
     assert (project_dir / ".gitattributes").exists()
     assert (project_dir / ".prettierrc.yaml").exists()
     assert (project_dir / ".pre-commit-config.yaml").exists()
-    assert (
-        project_dir / ".agents" / "skills" / "python-style-guide" / "SKILL.md"
-    ).exists()
+    for skill in [
+        "complexipy",
+        "poethepoet",
+        "pyrefly",
+        "pytest",
+        "python-style-guide",
+        "ruff",
+        "rumdl",
+        "tach",
+        "typos",
+        "typst",
+        "uv",
+        "zensical",
+    ]:
+        assert (project_dir / ".agents" / "skills" / skill / "SKILL.md").exists()
     assert (project_dir / "src" / "demo_app" / "__init__.py").exists()
     assert (project_dir / "src" / "demo_app" / "cli.py").exists()
     assert (project_dir / "tests" / "test_core.py").exists()
@@ -137,6 +150,11 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "CLI Layer" in readme_text
     assert "license-MIT" in readme_text
 
+    # Verify AGENTS.md content
+    agents_text = (project_dir / "AGENTS.md").read_text()
+    assert "uv run poe --help" in agents_text
+    assert "`cli` -> `core` -> external dependencies" in agents_text
+
 
 def test_python_315_generation(temp_output_dir: Path) -> None:
     """Test generating a project with Python 3.15."""
@@ -201,6 +219,10 @@ def test_no_cli_generation(temp_output_dir: Path) -> None:
     ref_text = (project_dir / "docs" / "reference.md").read_text()
     assert "::: pure_library.core" in ref_text
     assert "::: pure_library.cli" not in ref_text
+
+    agents_text = (project_dir / "AGENTS.md").read_text()
+    assert "The `core` module must never import from `cli`" not in agents_text
+    assert "`core` -> external dependencies" in agents_text
 
 
 def test_no_github_actions(temp_output_dir: Path) -> None:

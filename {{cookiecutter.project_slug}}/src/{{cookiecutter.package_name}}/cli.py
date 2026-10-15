@@ -24,7 +24,9 @@ def version_callback(value: bool) -> None:
 
     """
     if value:
-        msg = f"[bold cyan]{{ cookiecutter.project_slug }}[/bold cyan] version [green]{__version__}[/green]"
+        msg = (
+            f"[bold cyan]{{ cookiecutter.project_slug }}[/bold cyan] version [green]{__version__}[/green]"
+        )
         console.print(msg)
         raise typer.Exit
 

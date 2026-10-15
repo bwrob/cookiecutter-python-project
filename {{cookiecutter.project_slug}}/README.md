@@ -198,6 +198,7 @@ Inline equations like $E = mc^2$ and $\Omega(n)$ are supported out of the box.
 | `rumdl.toml` | Rigid markdown rules and embedded code block checkers |
 | `typos.toml` | Typos spell check exclusions and dictionary rules |
 | `tach.toml` | Modular architecture layer hierarchy |
+| `AGENTS.md` | Operational instructions and guardrails for AI coding assistants |
 | `.coveragerc` | Coverage thresholds (80%+ target) and exclusions |
 | `pytest.ini` | Test paths and verbose output options |
 
