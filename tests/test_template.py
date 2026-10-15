@@ -62,6 +62,17 @@ def test_default_generation(temp_output_dir: Path) -> None:
         "tool-zensical",
     ]:
         assert (project_dir / ".agents" / "skills" / skill / "SKILL.md").exists()
+    for ref in [
+        "hypothesis.md",
+        "pytest-cov.md",
+        "pytest-randomly.md",
+        "pytest-sugar.md",
+        "pytest-xdist.md",
+        "syrupy.md",
+    ]:
+        assert (
+            project_dir / ".agents" / "skills" / "tool-pytest" / "references" / ref
+        ).exists()
     assert (project_dir / "src" / "demo_app" / "__init__.py").exists()
     assert (project_dir / "src" / "demo_app" / "cli.py").exists()
     assert (project_dir / "tests" / "test_core.py").exists()
@@ -90,6 +101,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "Programming Language :: Python :: 3.15" in pyproject_text
     assert "hypothesis" in pyproject_text
     assert "pytest-randomly" in pyproject_text
+    assert "pytest-sugar" in pyproject_text
     assert "pytest-xdist" in pyproject_text
     assert "syrupy" in pyproject_text
     assert "typos" in pyproject_text

@@ -1,5 +1,5 @@
 ---
-description: Authoritative guide for pytest testing stack (xdist, syrupy, hypothesis).
+description: Authoritative guide for modern pytest testing stack and plugins.
 name: tool-pytest
 version: 1.0.0
 ---
@@ -10,6 +10,7 @@ Zenith equips `pytest` with a modern, high-speed testing toolchain:
 
 - **Parallel Execution**: `pytest-xdist` (`-n auto`) for multi-core speed.
 - **Flakiness Detection**: `pytest-randomly` for randomized execution order.
+- **Visual Progress & Fast Feedback**: `pytest-sugar` for real-time progress.
 - **Snapshot Testing**: `syrupy` for clean, declarative snapshot assertions.
 - **Property-Based Testing**: `hypothesis` for generative edge-case discovery.
 - **Branch Coverage**: `pytest-cov` enforcing an 80%+ coverage threshold.
@@ -177,3 +178,22 @@ exclude_lines =
     if self\.debug:
     raise AssertionError
 ```
+
+---
+
+## 5. Plugin Reference Guides
+
+For in-depth guides, options, and advanced configurations for each plugin:
+
+- [pytest-xdist](references/pytest-xdist.md): Parallel execution and worker
+  distribution.
+- [pytest-randomly](references/pytest-randomly.md): Randomized test ordering
+  and seed control.
+- [pytest-sugar](references/pytest-sugar.md): Real-time progress bars and
+  instant failure reporting.
+- [pytest-cov](references/pytest-cov.md): Coverage measurement, branch analysis,
+  and thresholds.
+- [syrupy](references/syrupy.md): Snapshot testing with Amber (`.ambr`)
+  snapshots.
+- [hypothesis](references/hypothesis.md): Property-based testing and generative
+  strategies.
