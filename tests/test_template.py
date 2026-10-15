@@ -111,6 +111,8 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "tasks.test-lowest" in poe_text
     assert "tasks.test-snapshot-update" in poe_text
     assert "tasks.docs-logo" in poe_text
+    assert "tasks.clean" in poe_text
+    assert "tasks._clean-dist" in poe_text
 
     # Verify markdown-exec and Python 3.15 in pyproject.toml
     pyproject_text = (project_dir / "pyproject.toml").read_text()

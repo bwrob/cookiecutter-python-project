@@ -111,6 +111,39 @@
     help = "Export architecture dependency graph in Mermaid format."
 
     # ------------------------------------------------------------------------------
+    # Project Maintenance & Cleanup
+    # ------------------------------------------------------------------------------
+
+[tasks._clean-dist]
+    script = "shutil:rmtree('dist', ignore_errors=1)"
+
+[tasks._clean-build]
+    script = "shutil:rmtree('build', ignore_errors=1)"
+
+[tasks._clean-site]
+    script = "shutil:rmtree('site', ignore_errors=1)"
+
+[tasks._clean-coverage]
+    script = "shutil:rmtree('htmlcov', ignore_errors=1)"
+
+[tasks._clean-pytest]
+    script = "shutil:rmtree('.pytest_cache', ignore_errors=1)"
+
+[tasks._clean-ruff]
+    script = "shutil:rmtree('.ruff_cache', ignore_errors=1)"
+
+[tasks.clean]
+    help = "Remove build artifacts, cache directories, and test coverage outputs."
+    sequence = [
+        "_clean-dist",
+        "_clean-build",
+        "_clean-site",
+        "_clean-coverage",
+        "_clean-pytest",
+        "_clean-ruff",
+    ]
+
+    # ------------------------------------------------------------------------------
     # Documentation & Publishing
     # ------------------------------------------------------------------------------
 
@@ -152,9 +185,10 @@
 [tasks.publish]
     help = "Build wheels with uv and publish package and docs."
     sequence = [
+        "clean",
         "code-quality",
         "test",
-        { cmd = "python -c \"import shutil; shutil.rmtree('dist', ignore_errors=True)\"" },
+        { script = "shutil:rmtree('dist', ignore_errors=1)" },
         { cmd = "uv build" },
         { cmd = "uv publish" },
         "publish-docs",
