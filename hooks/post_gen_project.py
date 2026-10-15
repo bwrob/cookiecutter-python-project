@@ -80,6 +80,9 @@ def main() -> None:
     if not include_cli:
         remove_file("src", package_name, "cli.py")
         remove_file("tests", "test_cli.py")
+        remove_file("docs", "javascripts", "termynal.js")
+        remove_file("docs", "stylesheets", "termynal.css")
+        remove_dir("docs", "stylesheets")
 
     if not include_github_actions:
         remove_dir(".github")

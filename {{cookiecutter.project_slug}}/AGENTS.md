@@ -53,6 +53,10 @@ Refer to `.agents/skills/python-style-guide/SKILL.md` for complete guidelines.
   hierarchies.
 - **Functional Style**: Write pure, composable, idempotent functions with
   explicit inputs and outputs. Avoid in-place mutation.
+- **CLI Framework**: Use **Typer** exclusively for any command-line interfaces
+  or CLI tools. Never use `argparse`, `click`, or manual `sys.argv` parsing.
+  Always declare CLI parameters using PEP 593 `typing.Annotated` and explicit
+  `typer.Typer()` applications (consult `.agents/skills/tool-typer/SKILL.md`).
 {% if cookiecutter.include_cli in [True, "yes", "true", "True", "1"] %}
 - **Layer Boundaries**: The application follows strict layer boundaries:
   `cli` -> `core` -> external dependencies. The `core` module must never import

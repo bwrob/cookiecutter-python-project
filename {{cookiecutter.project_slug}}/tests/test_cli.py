@@ -29,6 +29,13 @@ def test_cli_greet() -> None:
     assert "Hello, Developer!" in result.stdout
 
 
+def test_cli_greet_default() -> None:
+    """Test CLI greet subcommand with default argument."""
+    result = runner.invoke(app, ["greet"])
+    assert result.exit_code == 0
+    assert "Hello, World!" in result.stdout
+
+
 def test_cli_main(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test main entry point invocation."""
     monkeypatch.setattr("sys.argv", ["{{ cookiecutter.project_slug }}", "--help"])

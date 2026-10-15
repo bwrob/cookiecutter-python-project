@@ -77,12 +77,25 @@ jobs:
       - name: 🧪 Run pytest suite
         run: uv run poe test
 
+  test-lowest:
+    name: 🔬 Lowest Direct Dependencies Verification
+    runs-on: ubuntu-latest
+    steps:
+{% include "ci/_setup_uv.yaml" %}
+
+      - name: 🛠️ Install lowest-direct project dependencies
+        run: uv sync --resolution lowest-direct
+
+      - name: 🧪 Run pytest suite against lowest dependencies
+        run: uv run poe test
+
   check:
     name: 🛠️ All Checks Status
     if: always()
     needs:
       - quality
       - test
+      - test-lowest
     runs-on: ubuntu-latest
     steps:
       - name: Decide whether all required jobs succeeded

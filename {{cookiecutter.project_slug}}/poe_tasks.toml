@@ -31,6 +31,14 @@
     cmd  = "pytest --cov --cov-report=html --cov-report=term-missing --cov-report=xml"
     help = "Generate interactive HTML coverage report in htmlcov/."
 
+[tasks.test-lowest]
+    help = "Verify test suite against minimum declared dependency versions (lowest-direct)."
+    sequence = [
+        { cmd = "uv sync --resolution lowest-direct" },
+        { cmd = "pytest --cov --cov-report=term-missing" },
+        { cmd = "uv sync" },
+    ]
+
     # ------------------------------------------------------------------------------
     # Quality: Formatting, Linting, & Static Typing
     # ------------------------------------------------------------------------------

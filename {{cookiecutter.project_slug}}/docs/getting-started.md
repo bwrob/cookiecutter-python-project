@@ -30,9 +30,29 @@ print(message)
 
 Run commands directly via `uv`:
 
-```bash
-uv run {{ cookiecutter.project_slug }} greet "World"
+<div class="termy">
+
+```console
+$ uv run {{ cookiecutter.project_slug }} greet "World"
+
+✨ Hello, World!
+
+// Inspect CLI options and help
+$ uv run {{ cookiecutter.project_slug }} --help
+
+<b>Usage: </b><b>{{ cookiecutter.project_slug }} [OPTIONS] COMMAND [ARGS]...</b>
+
+╭─ Options ─────────────────────────────────────────╮
+│ --version  -v        Show version and exit.       │
+│ --help               Show this message and exit.  │
+╰───────────────────────────────────────────────────╯
+╭─ Commands ────────────────────────────────────────╮
+│ greet                Display a personalized       │
+│                      greeting.                    │
+╰───────────────────────────────────────────────────╯
 ```
+
+</div>
 {% endif %}
 
 ## Development Workflow

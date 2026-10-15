@@ -58,6 +58,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
         "tool-ruff",
         "tool-rumdl",
         "tool-tach",
+        "tool-typer",
         "tool-typos",
         "tool-typst",
         "tool-uv",
@@ -82,12 +83,19 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert (project_dir / "tests" / "test_cli.py").exists()
     assert (project_dir / "docs" / "index.md").exists()
     assert (project_dir / "docs" / "javascripts" / "mathjax.js").exists()
+    assert (project_dir / "docs" / "javascripts" / "termynal.js").exists()
+    assert (project_dir / "docs" / "stylesheets" / "termynal.css").exists()
     assert (project_dir / "docs" / "assets" / "python-logo.svg").exists()
     assert (project_dir / "docs" / "assets" / "python-logo.typ").exists()
     assert (project_dir / ".github" / "workflows" / "python_tests.yaml").exists()
+    assert (project_dir / ".github" / "workflows" / "guard-dependencies.yaml").exists()
     assert (project_dir / ".github" / "workflows" / "docs.yaml").exists()
     assert (project_dir / ".github" / "workflows" / "publish.yaml").exists()
     assert (project_dir / ".github" / "dependabot.yml").exists()
+    assert (
+        'package-ecosystem: "uv"'
+        in (project_dir / ".github" / "dependabot.yml").read_text()
+    )
     assert (project_dir / ".github" / "PULL_REQUEST_TEMPLATE.md").exists()
     assert (project_dir / ".github" / "ISSUE_TEMPLATE" / "bug_report.yml").exists()
     assert (project_dir / ".github" / "ISSUE_TEMPLATE" / "feature_request.yml").exists()
@@ -100,6 +108,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "tasks.format-check" in poe_text
     assert "tasks.typos" in poe_text
     assert "tasks.test-fast" in poe_text
+    assert "tasks.test-lowest" in poe_text
     assert "tasks.test-snapshot-update" in poe_text
     assert "tasks.docs-logo" in poe_text
 
@@ -132,12 +141,15 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "toc.follow" in zensical_text
     assert "signature_crossrefs = true" in zensical_text
     assert 'members_order = "source"' in zensical_text
+    assert "stylesheets/termynal.css" in zensical_text
+    assert "javascripts/termynal.js" in zensical_text
 
     # Verify docs reference and mermaid diagrams
     ref_text = (project_dir / "docs" / "reference.md").read_text()
     assert "::: demo_app.core" in ref_text
     assert "::: demo_app.cli" in ref_text
     getting_started_text = (project_dir / "docs" / "getting-started.md").read_text()
+    assert 'class="termy"' in getting_started_text
     assert "sequenceDiagram" in getting_started_text
     assert "stateDiagram-v2" in getting_started_text
 
@@ -159,6 +171,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "cancel-in-progress: true" in ci_text
     assert "quality:" in ci_text
     assert "test:" in ci_text
+    assert "test-lowest:" in ci_text
     assert "poe format-check" in ci_text
     assert "poe typos" in ci_text
 
@@ -181,6 +194,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     # Verify AGENTS.md content
     agents_text = (project_dir / "AGENTS.md").read_text()
     assert "uv run poe --help" in agents_text
+    assert "Use **Typer** exclusively for any command-line interfaces" in agents_text
     assert "`cli` -> `core` -> external dependencies" in agents_text
     assert (project_dir / "CLAUDE.md").read_text() == agents_text
     if hasattr(Path, "is_symlink") and (project_dir / "CLAUDE.md").is_symlink():
@@ -236,6 +250,11 @@ def test_no_cli_generation(temp_output_dir: Path) -> None:
     assert (project_dir / "src" / "pure_library" / "core.py").exists()
     assert not (project_dir / "src" / "pure_library" / "cli.py").exists()
     assert not (project_dir / "tests" / "test_cli.py").exists()
+    assert not (project_dir / "docs" / "javascripts" / "termynal.js").exists()
+    assert not (project_dir / "docs" / "stylesheets" / "termynal.css").exists()
+    assert not (project_dir / "docs" / "stylesheets").exists()
+    assert "termynal" not in (project_dir / "zensical.toml").read_text()
+    assert "termy" not in (project_dir / "docs" / "getting-started.md").read_text()
 
     pyproject_text = (project_dir / "pyproject.toml").read_text()
     assert (
@@ -257,6 +276,7 @@ def test_no_cli_generation(temp_output_dir: Path) -> None:
 
     agents_text = (project_dir / "AGENTS.md").read_text()
     assert (project_dir / "CLAUDE.md").exists()
+    assert "Use **Typer** exclusively for any command-line interfaces" in agents_text
     assert "The `core` module must never import from `cli`" not in agents_text
     assert "`core` -> external dependencies" in agents_text
 

@@ -1,5 +1,7 @@
 """Command line interface for {{ cookiecutter.project_slug }}."""
 
+from typing import Annotated
+
 import typer
 from rich.console import Console
 
@@ -10,6 +12,7 @@ app = typer.Typer(
     name="{{ cookiecutter.project_slug }}",
     help="{{ cookiecutter.description }}",
     no_args_is_help=True,
+    rich_markup_mode="rich",
 )
 console = Console()
 
@@ -33,21 +36,26 @@ def version_callback(value: bool) -> None:
 
 @app.callback()
 def main_callback(
-    _version: bool = typer.Option(
-        False,
-        "--version",
-        "-v",
-        help="Show version and exit.",
-        callback=version_callback,
-        is_eager=True,
-    ),
+    _version: Annotated[
+        bool,
+        typer.Option(
+            "--version",
+            "-v",
+            help="Show version and exit.",
+            callback=version_callback,
+            is_eager=True,
+        ),
+    ] = False,
 ) -> None:
     """Entry point callback for global options."""
 
 
 @app.command()
 def greet(
-    name: str = typer.Argument("World", help="The name to greet."),
+    name: Annotated[
+        str,
+        typer.Argument(help="The name to greet."),
+    ] = "World",
 ) -> None:
     """Display a personalized greeting."""
     greeting = get_greeting(name)
