@@ -1,0 +1,46 @@
+name: Source Distribution Verification
+
+env:
+  UV_NO_SYNC: true
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+concurrency:
+  group: {% raw %}${{ github.workflow }}-${{ github.ref }}{% endraw %}
+  cancel-in-progress: true
+
+jobs:
+  test-sdist:
+    name: 📦 Sdist Extraction & Redistribution Smoke Test
+    runs-on: ubuntu-latest
+    steps:
+{% include "ci/_setup_uv.yaml" %}
+
+      - name: 🛠️ Install project dependencies
+        run: uv sync
+
+      - name: 📦 Build source distribution
+        run: uv build --sdist
+
+      - name: 📂 Extract sdist to isolated sandbox
+        run: |
+          mkdir -p dist/extracted
+          tar -xzf dist/*.tar.gz -C dist/extracted
+
+      - name: 🧪 Run test suite from inside extracted distribution
+        run: |
+          cd dist/extracted/*
+          uv sync --group test
+          uv run poe test
+
+      - name: 🎡 Verify wheel builds from sdist
+        run: |
+          cd dist/extracted/*
+          uv build --wheel

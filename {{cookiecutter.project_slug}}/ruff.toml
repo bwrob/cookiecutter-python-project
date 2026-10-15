@@ -36,5 +36,8 @@ line-length = 88
         ]
         "tests/**/*" = [ "assert", "docstring-missing-returns", "print" ]
 
+    [lint.pyupgrade]
+        keep-runtime-typing = true
+
 [format]
     docstring-code-format = true

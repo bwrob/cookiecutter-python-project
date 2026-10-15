@@ -126,7 +126,8 @@ The interactive prompt automatically validates user responses (`y/n/yes/no/true/
   ```json
   {
     "include_cli": true,
-    "include_github_actions": true
+    "include_ci_testing": true,
+    "include_ci_publishing": true
   }
   ```
 - In Jinja template files:

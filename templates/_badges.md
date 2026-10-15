@@ -1,4 +1,4 @@
-{% if cookiecutter.include_github_actions in [True, "yes", "true", "True", "1"] %}
+{% if cookiecutter.include_ci_testing in [True, "yes", "true", "True", "1"] %}
 [![CI](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/actions/workflows/python_tests.yaml/badge.svg)](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/actions/workflows/python_tests.yaml)
 {% endif %}
 [![Python: {{ cookiecutter.python_version }}+](https://img.shields.io/badge/python-{{ cookiecutter.python_version }}+-blue.svg)](https://www.python.org/downloads/)

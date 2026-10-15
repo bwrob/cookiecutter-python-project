@@ -39,6 +39,21 @@
         { cmd = "uv sync" },
     ]
 
+[tasks.test-sdist]
+    help = "Build source distribution, extract it, and run tests from the extracted archive."
+    shell = """
+  set -euo pipefail
+  uv build --sdist
+  rm -rf dist/extracted
+  mkdir -p dist/extracted
+  tar -xzf dist/*.tar.gz -C dist/extracted
+  cd dist/extracted/*
+  uv sync --group test
+  uv run poe test
+  uv build --wheel
+  echo "✅ Source distribution verified successfully!"
+"""
+
     # ------------------------------------------------------------------------------
     # Quality: Formatting, Linting, & Static Typing
     # ------------------------------------------------------------------------------
@@ -79,6 +94,12 @@
     cmd  = "complexipy src tests"
     help = "Verify cognitive complexity limits with complexipy."
 
+{% if cookiecutter.include_ci_testing in [True, "yes", "true", "True", "1"] or cookiecutter.include_ci_publishing in [True, "yes", "true", "True", "1"] %}
+[tasks.zizmor]
+    cmd  = "zizmor --config .zizmor.yml --pedantic --min-severity informational .github/workflows"
+    help = "Audit GitHub Actions workflows for security vulnerabilities with zizmor."
+{% endif %}
+
 [tasks.fix]
     default_item_type = "cmd"
     help              = "Auto-fix linting and formatting issues."
@@ -95,6 +116,9 @@
         "typos",
         "type-check",
         "complexity",
+{% if cookiecutter.include_ci_testing in [True, "yes", "true", "True", "1"] or cookiecutter.include_ci_publishing in [True, "yes", "true", "True", "1"] %}
+        "zizmor",
+{% endif %}
         "dependencies",
     ]
 
@@ -132,6 +156,9 @@
 [tasks._clean-ruff]
     script = "shutil:rmtree('.ruff_cache', ignore_errors=1)"
 
+[tasks._clean-temp]
+    script = "shutil:rmtree('.temp', ignore_errors=1)"
+
 [tasks.clean]
     help = "Remove build artifacts, cache directories, and test coverage outputs."
     sequence = [
@@ -141,6 +168,7 @@
         "_clean-coverage",
         "_clean-pytest",
         "_clean-ruff",
+        "_clean-temp",
     ]
 
     # ------------------------------------------------------------------------------
@@ -193,3 +221,12 @@
         { cmd = "uv publish" },
         "publish-docs",
     ]
+
+    # ------------------------------------------------------------------------------
+    # AI Coding Assistants & Agent Skills
+    # ------------------------------------------------------------------------------
+
+[tasks.sync-skills]
+    cmd  = "uvx library-skills --all -y"
+    help = "Synchronize agent skills from installed library dependencies via library-skills."
+

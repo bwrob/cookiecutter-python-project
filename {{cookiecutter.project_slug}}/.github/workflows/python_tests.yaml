@@ -47,6 +47,9 @@ jobs:
       - name: 📐 Run tach architecture check
         run: uv run poe dependencies
 
+      - name: 🛡️ Run zizmor GitHub Actions security audit
+        run: uv run poe zizmor
+
   test:
     name: 🐍 Python Tests Matrix
     runs-on: {% raw %}${{ matrix.os }}{% endraw %}
@@ -64,6 +67,8 @@ jobs:
     steps:
       - name: 🛠️ Check out repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: 🛠️ Install uv and use Python {% raw %}${{ matrix.python-version }}{% endraw %}
         uses: astral-sh/setup-uv@v5

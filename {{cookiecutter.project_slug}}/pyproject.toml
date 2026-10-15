@@ -76,6 +76,7 @@
         "rumdl>=0.2.75",
         "tach>=0.35.0",
         "typos>=1.30.0",
+        "zizmor>=1.23.0",
     ]
     test = [
         "hypothesis>=6.125.0",
@@ -90,6 +91,17 @@
 [tool.uv]
     default-groups = [ "dev", "test", "lint", "docs" ]
     package        = true
+
+[tool.uv.build-backend]
+    source-include = [
+        "tests/**",
+        "poe_tasks.toml",
+        "ruff.toml",
+        "pytest.ini",
+        ".coveragerc",
+        "tach.toml",
+        ".zizmor.yml",
+    ]
 
 [tool.poe]
     include = "poe_tasks.toml"

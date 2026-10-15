@@ -1,7 +1,7 @@
 name: Guard Dependencies
 
 on:
-  pull_request_target:
+  pull_request_target: # zizmor: ignore[dangerous-triggers] -- This workflow only reads context.payload metadata, never checks out PR code
     branches:
       - main
     paths:
@@ -10,13 +10,19 @@ on:
 
 permissions:
   contents: read
-  issues: write
-  pull-requests: write
+
+concurrency:
+  group: {% raw %}${{ github.workflow }}-${{ github.ref }}{% endraw %}
+  cancel-in-progress: true
 
 jobs:
   guard-dependencies:
     name: 🛡️ Verify Dependency Modification Author
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write # Needed to comment on unauthorized dependency pull requests
+      pull-requests: write # Needed to close unauthorized dependency pull requests
     steps:
       - name: Verify PR author permissions
         uses: actions/github-script@v7

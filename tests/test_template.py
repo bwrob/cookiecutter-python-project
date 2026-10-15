@@ -51,6 +51,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert (project_dir / ".prettierrc.yaml").exists()
     assert (project_dir / ".pre-commit-config.yaml").exists()
     assert (project_dir / ".editorconfig").exists()
+    assert (project_dir / ".zizmor.yml").exists()
     for skill in [
         "python-style-guide",
         "tool-complexipy",
@@ -65,8 +66,16 @@ def test_default_generation(temp_output_dir: Path) -> None:
         "tool-typst",
         "tool-uv",
         "tool-zensical",
+        "tool-zizmor",
     ]:
         assert (project_dir / ".agents" / "skills" / skill / "SKILL.md").exists()
+    poe_text = (project_dir / "poe_tasks.toml").read_text()
+    assert "[tasks.zizmor]" in poe_text
+    assert '"zizmor"' in poe_text
+    assert (
+        "zizmor --config .zizmor.yml --pedantic --min-severity informational .github/workflows"
+        in poe_text
+    )
     for ref in [
         "hypothesis.md",
         "pytest-cov.md",
@@ -80,6 +89,15 @@ def test_default_generation(temp_output_dir: Path) -> None:
         ).exists()
     assert (project_dir / "src" / "demo_app" / "__init__.py").exists()
     assert (project_dir / "src" / "demo_app" / "cli.py").exists()
+    assert (
+        project_dir
+        / "src"
+        / "demo_app"
+        / ".agents"
+        / "skills"
+        / "demo-app"
+        / "SKILL.md"
+    ).exists()
     assert (project_dir / "tests" / "test_core.py").exists()
     assert (project_dir / "tests" / "__snapshots__" / "test_core.ambr").exists()
     assert (project_dir / "tests" / "test_cli.py").exists()
@@ -93,6 +111,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert (project_dir / ".github" / "workflows" / "guard-dependencies.yaml").exists()
     assert (project_dir / ".github" / "workflows" / "docs.yaml").exists()
     assert (project_dir / ".github" / "workflows" / "publish.yaml").exists()
+    assert (project_dir / ".github" / "workflows" / "test_redistribute.yaml").exists()
     assert (project_dir / ".github" / "dependabot.yml").exists()
     assert (
         'package-ecosystem: "uv"'
@@ -108,10 +127,12 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "tasks.precommit" not in poe_text
     assert '"precommit"' not in poe_text
     assert "tasks.format-check" in poe_text
-    assert "tasks.typos" in poe_text
     assert "tasks.test-fast" in poe_text
     assert "tasks.test-lowest" in poe_text
+    assert "tasks.test-sdist" in poe_text
     assert "tasks.test-snapshot-update" in poe_text
+    assert "tasks.zizmor" in poe_text
+    assert "tasks.sync-skills" in poe_text
     assert "tasks.docs-logo" in poe_text
     assert "tasks.clean" in poe_text
     assert "tasks._clean-dist" in poe_text
@@ -128,6 +149,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "syrupy" in pyproject_text
     assert "typos" in pyproject_text
     assert "typst" in pyproject_text
+    assert "zizmor" in pyproject_text
     assert "rich>=" in pyproject_text
     assert "typer>=" in pyproject_text
     assert "default-groups = [" in pyproject_text
@@ -135,6 +157,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "lint = [" in pyproject_text
     assert "docs = [" in pyproject_text
     assert "mkdocstrings[python]" in pyproject_text
+    assert "source-include = [" in pyproject_text
 
     # Verify markdown-exec fences and mkdocstrings plugin in zensical.toml
     zensical_text = (project_dir / "zensical.toml").read_text()
@@ -202,6 +225,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
 
     ruff_text = (project_dir / "ruff.toml").read_text()
     assert 'ban-relative-imports = "all"' in ruff_text
+    assert "keep-runtime-typing = true" in ruff_text
 
     coverage_text = (project_dir / ".coveragerc").read_text()
     assert "@overload" in coverage_text
@@ -227,6 +251,8 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "uv run poe --help" in agents_text
     assert "Use **Typer** exclusively for any command-line interfaces" in agents_text
     assert "`cli` -> `core` -> external dependencies" in agents_text
+    assert ".temp/" in agents_text
+    assert ".temp/" in (project_dir / ".gitignore").read_text()
     assert (project_dir / "CLAUDE.md").read_text() == agents_text
     if hasattr(Path, "is_symlink") and (project_dir / "CLAUDE.md").is_symlink():
         import os
@@ -313,8 +339,66 @@ def test_no_cli_generation(temp_output_dir: Path) -> None:
     assert "`core` -> external dependencies" in agents_text
 
 
+def test_no_ci_testing(temp_output_dir: Path) -> None:
+    """Test generating a project without CI testing workflows."""
+    project_dir = Path(
+        cookiecutter(
+            str(TEMPLATE_ROOT),
+            no_input=True,
+            output_dir=str(temp_output_dir),
+            extra_context={
+                "project_name": "Publish Only",
+                "include_ci_testing": "no",
+                "include_ci_publishing": "yes",
+            },
+        )
+    )
+
+    assert project_dir.exists()
+    assert (project_dir / ".github" / "workflows" / "publish.yaml").exists()
+    assert (project_dir / ".github" / "workflows" / "docs.yaml").exists()
+    assert not (project_dir / ".github" / "workflows" / "python_tests.yaml").exists()
+    assert not (
+        project_dir / ".github" / "workflows" / "test_redistribute.yaml"
+    ).exists()
+    assert not (
+        project_dir / ".github" / "workflows" / "guard-dependencies.yaml"
+    ).exists()
+    assert (project_dir / ".zizmor.yml").exists()
+    assert "[tasks.zizmor]" in (project_dir / "poe_tasks.toml").read_text()
+    readme_text = (project_dir / "README.md").read_text()
+    assert "[![CI]" not in readme_text
+
+
+def test_no_ci_publishing(temp_output_dir: Path) -> None:
+    """Test generating a project without CI publishing workflows."""
+    project_dir = Path(
+        cookiecutter(
+            str(TEMPLATE_ROOT),
+            no_input=True,
+            output_dir=str(temp_output_dir),
+            extra_context={
+                "project_name": "Tests Only",
+                "include_ci_testing": "yes",
+                "include_ci_publishing": "no",
+            },
+        )
+    )
+
+    assert project_dir.exists()
+    assert (project_dir / ".github" / "workflows" / "python_tests.yaml").exists()
+    assert (project_dir / ".github" / "workflows" / "test_redistribute.yaml").exists()
+    assert (project_dir / ".github" / "workflows" / "guard-dependencies.yaml").exists()
+    assert not (project_dir / ".github" / "workflows" / "publish.yaml").exists()
+    assert not (project_dir / ".github" / "workflows" / "docs.yaml").exists()
+    assert (project_dir / ".zizmor.yml").exists()
+    assert "[tasks.zizmor]" in (project_dir / "poe_tasks.toml").read_text()
+    readme_text = (project_dir / "README.md").read_text()
+    assert "[![CI]" in readme_text
+
+
 def test_no_github_actions(temp_output_dir: Path) -> None:
-    """Test generating a project without GitHub actions."""
+    """Test generating a project without GitHub actions (legacy flag or both disabled)."""
     project_dir = Path(
         cookiecutter(
             str(TEMPLATE_ROOT),
@@ -322,13 +406,19 @@ def test_no_github_actions(temp_output_dir: Path) -> None:
             output_dir=str(temp_output_dir),
             extra_context={
                 "project_name": "Local Only",
-                "include_github_actions": "no",
+                "include_ci_testing": "no",
+                "include_ci_publishing": "no",
             },
         )
     )
 
     assert project_dir.exists()
     assert not (project_dir / ".github").exists()
+    assert not (project_dir / ".zizmor.yml").exists()
+    assert not (project_dir / ".agents" / "skills" / "tool-zizmor").exists()
+    poe_text = (project_dir / "poe_tasks.toml").read_text()
+    assert "[tasks.zizmor]" not in poe_text
+    assert '"zizmor"' not in poe_text
     readme_text = (project_dir / "README.md").read_text()
     assert "[![CI]" not in readme_text
 
@@ -381,7 +471,8 @@ def test_native_booleans_and_dynamic_year(temp_output_dir: Path) -> None:
             extra_context={
                 "project_name": "Modern App",
                 "include_cli": True,
-                "include_github_actions": False,
+                "include_ci_testing": False,
+                "include_ci_publishing": False,
                 "license": "MIT",
             },
         )

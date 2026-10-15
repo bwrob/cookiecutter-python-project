@@ -211,6 +211,7 @@ tempCodeRunnerFile.py
 .complexipy_cache/
 .pyrefly/
 .tach_cache/
+.temp/
 site/
 
 # PyPI configuration file

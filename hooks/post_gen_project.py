@@ -20,6 +20,7 @@ CONFIG_FILES_WITH_HEADERS = [
     ".pre-commit-config.yaml",
     ".prettierrc.yaml",
     ".editorconfig",
+    ".zizmor.yml",
 ]
 
 
@@ -70,7 +71,8 @@ def setup_agent_instructions() -> None:
 
 def main() -> None:
     include_cli = to_bool("{{ cookiecutter.include_cli }}")
-    include_github_actions = to_bool("{{ cookiecutter.include_github_actions }}")
+    include_ci_testing = to_bool("{{ cookiecutter.include_ci_testing }}")
+    include_ci_publishing = to_bool("{{ cookiecutter.include_ci_publishing }}")
     license_type = "{{ cookiecutter.license }}"
     package_name = "{{ cookiecutter.package_name }}"
 
@@ -84,8 +86,19 @@ def main() -> None:
         remove_file("docs", "stylesheets", "termynal.css")
         remove_dir("docs", "stylesheets")
 
-    if not include_github_actions:
+    if not include_ci_testing:
+        remove_file(".github", "workflows", "python_tests.yaml")
+        remove_file(".github", "workflows", "test_redistribute.yaml")
+        remove_file(".github", "workflows", "guard-dependencies.yaml")
+
+    if not include_ci_publishing:
+        remove_file(".github", "workflows", "publish.yaml")
+        remove_file(".github", "workflows", "docs.yaml")
+
+    if not include_ci_testing and not include_ci_publishing:
         remove_dir(".github")
+        remove_file(".zizmor.yml")
+        remove_dir(".agents", "skills", "tool-zizmor")
 
     if license_type.lower() == "none":
         remove_file("LICENSE")

@@ -10,6 +10,7 @@ Before editing code or executing tasks, ensure an isolated, clean working enviro
 1. Check repository status with `git status`. Do not make edits when uncommitted changes exist without explicit user consent.
 2. Confirm remotes and branches before committing or pushing changes. Use git worktrees or dedicated feature branches for non-trivial tasks.
 3. Run all commands inside the hermetic project environment using `uv run <command>`. Never use global or system Python environments directly.
+4. When creating temporary or scratch files, always place them in the `.temp/` directory. Never pollute the workspace root or tracked directories with temporary files.
 
 ## Operational Workflows
 
@@ -17,6 +18,7 @@ Before editing code or executing tasks, ensure an isolated, clean working enviro
   - Sync environment: `uv sync`
   - Add dependency: `uv add <package>` or `uv add --group dev <package>`
   - Run commands in environment: `uv run <command>`
+- **Temporary Files**: When creating temporary files, scratch scripts, or intermediate test outputs, always store them in the `.temp/` directory.
 - **Testing**: Run the automated test suite with pytest:
 
   ```bash

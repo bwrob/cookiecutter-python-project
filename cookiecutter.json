@@ -10,7 +10,8 @@
   "python_version": ["3.13", "3.12", "3.14", "3.15"],
   "license": ["MIT", "Apache-2.0", "BSD-3-Clause", "None"],
   "include_cli": true,
-  "include_github_actions": true,
+  "include_ci_testing": true,
+  "include_ci_publishing": true,
   "__year": "{% now 'utc', '%Y' %}",
   "_new_lines": "\n",
   "_jinja2_env_vars": {
@@ -46,6 +47,7 @@
       "None": "Proprietary / No License (All Rights Reserved)"
     },
     "include_cli": "Scaffold Typer/Rich command-line interface?",
-    "include_github_actions": "Generate GitHub Actions CI/CD workflows?"
+    "include_ci_testing": "Generate GitHub Actions workflows for CI testing and code quality?",
+    "include_ci_publishing": "Generate GitHub Actions workflow for PyPI Trusted Publishing and documentation deployment?"
   }
 }
