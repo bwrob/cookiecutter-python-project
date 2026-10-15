@@ -26,6 +26,7 @@ The **Zenith** project welcomes the responsible use of AI coding assistants (suc
 ## 4. Transparent Disclosure
 
 - **PR Disclosure**: State the AI tools used and the general scope of assistance in the pull request description.
+- **Commit Attribution**: When AI coding assistants contribute directly to code generation or commits, credit them in Git commit messages using standard `Co-authored-by` trailers (e.g. `Co-authored-by: Claude <noreply@anthropic.com>`).
 - **Protecting Newcomer Issues**: Issues labeled `good first issue` are reserved for human contributors learning the codebase.
 
 ## 5. Concise Code & Clean Comments

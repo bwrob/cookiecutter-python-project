@@ -23,6 +23,11 @@
 
 ## AI Assistance Disclosure
 
+> [!IMPORTANT]
+> **Unsupervised agentic contributions are not accepted**. Every contribution must be reviewed,
+> understood, and tested by a human contributor who can substantively explain and defend the changes.
+> See `AI_POLICY.md` for our full policy.
+
 <!-- Select the applicable option and describe any AI tooling used (e.g. Claude Code, Antigravity, Cursor). -->
 
 - [ ] No AI tools were used in preparing this pull request.
@@ -30,4 +35,5 @@
   - Tool(s): `<!-- e.g. Claude Code / Antigravity / Cursor / Copilot -->`
   - Scope: `<!-- e.g. test scaffolding / refactoring / initial draft -->`
   - [ ] I confirm that I have reviewed, edited, and locally verified all changes myself (`uv run poe code-quality`), adhering to `AI_POLICY.md`.
+  - [ ] AI coding assistants are credited in commit messages using `Co-authored-by` trailers (e.g. `Co-authored-by: Claude <noreply@anthropic.com>`).
 

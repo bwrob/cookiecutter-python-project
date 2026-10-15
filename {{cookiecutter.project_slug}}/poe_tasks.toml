@@ -11,6 +11,10 @@
 [executor]
     type = "uv"
 
+[env]
+    PYTHONWARNDEFAULTENCODING = "1"
+    PYTHONUTF8                = "1"
+
     # ------------------------------------------------------------------------------
     # Testing & Code Coverage
     # ------------------------------------------------------------------------------
@@ -38,6 +42,10 @@
         { cmd = "pytest --cov --cov-report=term-missing" },
         { cmd = "uv sync" },
     ]
+
+[tasks.test-dist]
+    cmd  = "python scripts/verify_wheel.py --run-tests"
+    help = "Build wheel package and run pytest suite against installed distribution in an isolated environment."
 
 [tasks.test-sdist]
     help = "Build source distribution, extract it, and run tests from the extracted archive."
@@ -224,7 +232,7 @@
         "test",
         { script = "shutil:rmtree('dist', ignore_errors=1)" },
         { cmd = "uv build" },
-        "verify-wheel",
+        "test-dist",
         { cmd = "uv publish" },
         "publish-docs",
     ]

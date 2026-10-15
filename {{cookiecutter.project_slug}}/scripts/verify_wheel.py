@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Sequence
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -248,6 +249,92 @@ if failed:
         )
 
 
+def run_distribution_tests(
+    python_exe: Path,
+    project_root: Path,
+    temp_dir: Path,
+) -> None:
+    """Run pytest suite against the installed wheel distribution in an isolated environment."""
+    print("🧪 Installing test dependencies into isolated environment...")
+    test_packages = [
+        "hypothesis>=6.125.0",
+        "pytest>=9.0.0",
+        "pytest-cov>=7.0.0",
+        "pytest-randomly>=3.16.0",
+        "pytest-sugar>=1.0.0",
+        "pytest-xdist>=3.8.0",
+        "syrupy>=6.1.0",
+    ]
+    if shutil.which("uv") is not None:
+        subprocess.run(
+            [
+                "uv",
+                "pip",
+                "install",
+                "--python",
+                str(python_exe),
+                "--no-config",
+                *test_packages,
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    else:
+        subprocess.run(
+            [
+                str(python_exe),
+                "-m",
+                "pip",
+                "install",
+                *test_packages,
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+
+    tests_dir = project_root / "tests"
+    if not tests_dir.is_dir():
+        print(f"ℹ️ No tests directory found at {tests_dir}; skipping test execution.")
+        return
+
+    print("🚀 Executing pytest against installed wheel distribution...")
+    env = os.environ.copy()
+    env["PYTHONWARNDEFAULTENCODING"] = "1"
+    pytest_ini = project_root / "pytest.ini"
+    cmd = [
+        str(python_exe),
+        "-m",
+        "pytest",
+    ]
+    if pytest_ini.is_file():
+        cmd.extend(["-c", str(pytest_ini.resolve())])
+    cmd.extend(
+        [
+            "-o",
+            f"testpaths={tests_dir.resolve()}",
+            str(tests_dir.resolve()),
+        ]
+    )
+    result = subprocess.run(
+        cmd,
+        cwd=str(temp_dir),
+        env=env,
+        capture_output=True,
+        text=True,
+    )
+    if result.stdout:
+        print(result.stdout.strip())
+    if result.returncode != 0:
+        if result.stderr:
+            print(result.stderr.strip(), file=sys.stderr)
+        raise RuntimeError(
+            f"Distribution pytest execution failed with exit code {result.returncode}"
+        )
+    print("✅ Distribution test suite passed successfully!")
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Verify clean module imports and entry points in a built wheel.",
@@ -264,6 +351,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         type=Path,
         default=Path("dist"),
         help="Directory to search for wheels (default: dist/)",
+    )
+    parser.add_argument(
+        "--run-tests",
+        action="store_true",
+        help="Run pytest test suite against the installed distribution in the isolated environment",
     )
     parser.add_argument(
         "--no-cleanup",
@@ -292,6 +384,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                 f"✅ Wheel verification successful! All {len(modules)} module(s) and "
                 f"{len(entry_points)} entry point(s) imported cleanly."
             )
+
+            if args.run_tests:
+                project_root = Path(__file__).resolve().parent.parent
+                run_distribution_tests(python_exe, project_root, temp_dir)
+
             return 0
         finally:
             if args.no_cleanup:

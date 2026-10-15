@@ -239,6 +239,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "quality:" in ci_text
     assert "test:" in ci_text
     assert "test-lowest:" in ci_text
+    assert "test-dist:" in ci_text
     assert "poe format-check" in ci_text
     assert "poe typos" in ci_text
     assert "UV_EXCLUDE_NEWER" in ci_text
@@ -589,6 +590,19 @@ def test_verify_wheel_execution(temp_output_dir: Path) -> None:
         f"verify_wheel.py failed:\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
     )
     assert "Wheel verification successful" in result.stdout
+
+    # Execute verify_wheel.py with --run-tests to verify test suite against distribution
+    result_tests = subprocess.run(
+        [sys.executable, str(verify_script), "--run-tests"],
+        cwd=str(project_dir),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result_tests.returncode == 0, (
+        f"verify_wheel.py --run-tests failed:\nSTDOUT:\n{result_tests.stdout}\nSTDERR:\n{result_tests.stderr}"
+    )
+    assert "Distribution test suite passed successfully" in result_tests.stdout
 
 
 def test_lazy_load_behavior(temp_output_dir: Path) -> None:

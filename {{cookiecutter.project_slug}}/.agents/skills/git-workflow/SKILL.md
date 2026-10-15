@@ -58,6 +58,18 @@ Every commit message must follow the Conventional Commits specification:
 3. **Concise Body**: Explain *why* the change was made, not merely *what* code
    lines were modified.
 
+### AI Co-Authorship & Attribution Trailers
+
+When AI coding assistants help generate code or commit diffs, credit them in the commit footer using standard Git `Co-authored-by` trailers:
+
+```git
+feat(auth): add token refresh endpoint
+
+Implement automatic token rotation on expiry with sliding window validation.
+
+Co-authored-by: Claude <noreply@anthropic.com>
+```
+
 ---
 
 ## 3. Pre-Commit Verification Gate
@@ -82,6 +94,11 @@ uv run pre-commit run --all-files
 When opening a pull request, adhere to the project's `PULL_REQUEST_TEMPLATE.md`
 and `AI_POLICY.md`:
 
+> [!IMPORTANT]
+> **Unsupervised agentic contributions are not accepted**. Every contribution must be reviewed,
+> understood, and tested by a human contributor who can substantively explain and defend the changes.
+> See `AI_POLICY.md` for full requirements.
+
 ### Pull Request Structure
 
 1. **Problem & Solution**:
@@ -94,3 +111,4 @@ and `AI_POLICY.md`:
    - Identify AI coding assistants utilized (e.g., Antigravity, Claude Code, Cursor).
    - Summarize the scope of assistance (e.g., initial draft, refactoring, test generation).
    - Confirm human review and full accountability for all submitted changes.
+   - Confirm that AI assistants are credited in commit messages via `Co-authored-by` trailers.

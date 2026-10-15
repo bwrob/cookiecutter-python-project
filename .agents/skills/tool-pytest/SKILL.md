@@ -36,6 +36,7 @@ In Zenith, task aliases are managed via Poe:
 ```bash
 uv run poe test                       # Run tests with coverage and doctests
 uv run poe test-fast                  # Run tests in parallel with xdist
+uv run poe test-dist                  # Run tests against installed wheel distribution
 uv run poe test-snapshot-update       # Update Syrupy snapshots
 uv run poe coverage                   # Generate HTML coverage report
 ```
@@ -182,6 +183,28 @@ exclude_lines =
     if self\.debug:
     raise AssertionError
 ```
+
+### D. Strict Encoding Hygiene (`PYTHONWARNDEFAULTENCODING=1`)
+
+Python 3.10+ introduced `EncodingWarning` (PEP 597) to identify calls to `open()`
+and text streams that omit an explicit encoding argument. In Zenith, all test
+tasks execute with `PYTHONWARNDEFAULTENCODING=1`. Paired with
+`filterwarnings = error` in `pytest.ini`, any missing `encoding="utf-8"` is
+treated as a fatal failure, ensuring cross-platform charset reliability between
+POSIX and Windows environments.
+
+### E. Distribution Artifact Testing (`poe test-dist`)
+
+Running `pytest` directly against `src/` can mask missing files in
+`pyproject.toml` package data, broken `py.typed` markers, or distribution
+compilation errors. `uv run poe test-dist` executes
+`python scripts/verify_wheel.py --run-tests`, which:
+
+1. Builds a standalone `.whl` package via `uv build --wheel`.
+2. Provisions a temporary, isolated virtual environment.
+3. Installs the compiled `.whl` and test dependencies.
+4. Executes the full `pytest` suite against the installed distribution with
+   `src/` omitted from `sys.path`.
 
 ---
 

@@ -24,6 +24,7 @@ The **{{ cookiecutter.project_name }}** project welcomes the responsible use of 
 ## 4. Transparent Disclosure
 
 - **PR Disclosure**: Contributors using AI coding tools must state the tools used (e.g. Claude Code, Antigravity, Cursor) and the general scope of assistance in the pull request description (see `.github/PULL_REQUEST_TEMPLATE.md`).
+- **Commit Attribution**: When AI coding assistants contribute directly to code generation or commits, credit them in Git commit messages using standard `Co-authored-by` trailers (e.g. `Co-authored-by: Claude <noreply@anthropic.com>`).
 - **Protecting Newcomer Issues**: Issues tagged with `good first issue` are reserved for human contributors learning the codebase. Using AI to generate automated solutions for these issues defeats their educational purpose and is discouraged.
 
 ## 5. Concise Code, Clear Comments, No Slop

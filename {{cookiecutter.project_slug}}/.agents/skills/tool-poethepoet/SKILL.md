@@ -196,10 +196,81 @@ sequence = ["_clean-dist"]
 Internal `_` tasks cannot be called directly from the CLI and must be invoked
 via `sequence`, `parallel`, `deps`, or `uses`.
 
-## 4. Best Practices and Rules
+## 4. Environment Variables Management
+
+Poe provides environment variable configuration at both the global project level
+and the task level.
+
+### Global Environment Variables (`env`)
+
+Configure environment variables exposed to all tasks in `pyproject.toml` or
+standalone task files (`poe_tasks.toml`):
+
+```toml
+# In pyproject.toml:
+[tool.poe.env]
+PYTHONUTF8 = "1"
+PYTHONWARNDEFAULTENCODING = "1"
+APP_ENV = "test"
+DATABASE_URL = "postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-secret}@localhost:5432/app"
+
+# In standalone poe_tasks.toml:
+[env]
+PYTHONUTF8 = "1"
+PYTHONWARNDEFAULTENCODING = "1"
+APP_ENV = "test"
+```
+
+- **POSIX Parameter Expansion**: Global variables support parameter expansion
+  (`${VAR}`, `${VAR:-default}`, `${VAR:+alt}`) referencing variables already
+  defined in the host environment or referenced env files.
+- **Default Fallback (`default`)**: Use `{ default = "fallback" }` or
+  `VAR.default = "fallback"` to set a variable only if it is not already
+  defined in the host environment:
+  ```toml
+  [env.PORT]
+  default = "8000"
+  ```
+
+### Global Env Files (`envfile`)
+
+Load external `.env` files for all tasks in the project:
+
+```toml
+# In pyproject.toml:
+[tool.poe]
+envfile = ".env"
+
+# Or a cascade of multiple files loaded in order:
+[tool.poe]
+envfile = [".env", ".env.local"]
+
+# In standalone poe_tasks.toml:
+envfile = [".env", ".env.local"]
+```
+
+### Task-Level Environment Overrides
+
+Individual tasks can extend or override global variables using `env` or
+`envfile`:
+
+```toml
+[tasks.test]
+cmd = "pytest tests/"
+env = { APP_ENV = "ci", PYTEST_TIMEOUT = "30" }
+envfile = ".env.test"
+```
+
+Task-level settings take precedence over global options, providing precise
+control per command.
+
+## 5. Best Practices and Rules
 
 Follow these engineering conventions when editing poe tasks:
 
+- **Use global `env` for project-wide runtime flags**: Set cross-cutting flags
+  (such as `PYTHONUTF8 = "1"` and `PYTHONWARNDEFAULTENCODING = "1"`) under `[env]` (or
+  `[tool.poe.env]`) rather than repeating them across multiple individual tasks.
 - **Declare before you script**: Before writing bash logic in a `shell` task,
   check if a declarative Poe feature expresses it: arg `default`, `choices`,
   `switch`, `sequence`, `${VAR:-default}`, or `deps`.

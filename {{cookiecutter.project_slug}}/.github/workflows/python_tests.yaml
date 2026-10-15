@@ -2,6 +2,8 @@ name: Package Tests
 
 env:
   UV_NO_SYNC: true
+  PYTHONWARNDEFAULTENCODING: "1"
+  PYTHONUTF8: "1"
 
 permissions:
   contents: read
@@ -98,6 +100,18 @@ jobs:
       - name: 🧪 Run pytest suite against lowest dependencies
         run: uv run poe test
 
+  test-dist:
+    name: 📦 Distribution Wheel Verification
+    runs-on: ubuntu-latest
+    steps:
+{% include "ci/_setup_uv.yaml" %}
+
+      - name: 🛠️ Install project dependencies
+        run: uv sync
+
+      - name: 📦 Build and test wheel package
+        run: uv run poe test-dist
+
   check:
     name: 🛠️ All Checks Status
     if: always()
@@ -105,6 +119,7 @@ jobs:
       - quality
       - test
       - test-lowest
+      - test-dist
     runs-on: ubuntu-latest
     steps:
       - name: Decide whether all required jobs succeeded
