@@ -49,20 +49,26 @@ def strip_config_headers() -> None:
                 f.write(new_content)
 
 
+def to_bool(val: object) -> bool:
+    if isinstance(val, bool):
+        return val
+    return str(val).lower() in ("true", "yes", "1", "t", "y", "on")
+
+
 def main() -> None:
-    include_cli = "{{ cookiecutter.include_cli }}"
-    include_github_actions = "{{ cookiecutter.include_github_actions }}"
+    include_cli = to_bool("{{ cookiecutter.include_cli }}")
+    include_github_actions = to_bool("{{ cookiecutter.include_github_actions }}")
     license_type = "{{ cookiecutter.license }}"
     package_name = "{{ cookiecutter.package_name }}"
 
     # Strip template educational header comments from generated project configs
     strip_config_headers()
 
-    if include_cli.lower() != "yes":
+    if not include_cli:
         remove_file("src", package_name, "cli.py")
         remove_file("tests", "test_cli.py")
 
-    if include_github_actions.lower() != "yes":
+    if not include_github_actions:
         remove_dir(".github")
 
     if license_type.lower() == "none":

@@ -40,14 +40,14 @@ Refer to `.agents/skills/python-style-guide/SKILL.md` for complete guidelines.
   hierarchies.
 - **Functional Style**: Write pure, composable, idempotent functions with
   explicit inputs and outputs. Avoid in-place mutation.
-{% if cookiecutter.include_cli == "yes" -%}
+{% if cookiecutter.include_cli in [True, "yes", "true", "True", "1"] %}
 - **Layer Boundaries**: The application follows strict layer boundaries:
   `cli` -> `core` -> external dependencies. The `core` module must never import
   from `cli`.
-{%- else -%}
+{% else %}
 - **Layer Boundaries**: The application follows strict layer boundaries:
   `core` -> external dependencies.
-{%- endif %}
+{% endif %}
 
 ## Testing & Documentation
 

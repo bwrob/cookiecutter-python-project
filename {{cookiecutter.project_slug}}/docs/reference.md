@@ -6,9 +6,9 @@ generated from source code docstrings via **mkdocstrings**.
 ## Core Module
 
 ::: {{ cookiecutter.package_name }}.core
-{%- if cookiecutter.include_cli == "yes" %}
+{% if cookiecutter.include_cli in [True, "yes", "true", "True", "1"] %}
 
 ## CLI Module
 
 ::: {{ cookiecutter.package_name }}.cli
-{%- endif %}
+{% endif %}

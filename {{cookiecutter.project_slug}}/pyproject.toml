@@ -16,23 +16,23 @@
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
-        {%- if cookiecutter.python_version <= "3.12" %}
+        {% if cookiecutter.python_version <= "3.12" %}
         "Programming Language :: Python :: 3.12",
-        {%- endif %}
-        {%- if cookiecutter.python_version <= "3.13" %}
+        {% endif %}
+        {% if cookiecutter.python_version <= "3.13" %}
         "Programming Language :: Python :: 3.13",
-        {%- endif %}
-        {%- if cookiecutter.python_version <= "3.14" %}
+        {% endif %}
+        {% if cookiecutter.python_version <= "3.14" %}
         "Programming Language :: Python :: 3.14",
-        {%- endif %}
+        {% endif %}
         "Programming Language :: Python :: 3.15",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ]
-    {% if cookiecutter.include_cli == "yes" -%}
+    {% if cookiecutter.include_cli in [True, "yes", "true", "True", "1"] %}
     dependencies = [ "rich>=14.0.0", "typer>=0.16.0" ]
-    {%- else -%}
+    {% else %}
     dependencies = [  ]
-    {%- endif %}
+    {% endif %}
     description = "{{ cookiecutter.description }}"
     name = "{{ cookiecutter.project_slug }}"
     readme = "README.md"
@@ -45,10 +45,10 @@
         Issues        = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/issues"
         Repository    = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}.git"
 
-    {% if cookiecutter.include_cli == "yes" -%}
+    {% if cookiecutter.include_cli in [True, "yes", "true", "True", "1"] %}
     [project.scripts]
         {{ cookiecutter.project_slug }} = "{{ cookiecutter.package_name }}.cli:main"
-    {%- endif %}
+    {% endif %}
 
 [build-system]
     build-backend = "uv_build"

@@ -217,7 +217,9 @@ def test_no_cli_generation(temp_output_dir: Path) -> None:
     assert not (project_dir / "tests" / "test_cli.py").exists()
 
     pyproject_text = (project_dir / "pyproject.toml").read_text()
-    assert "dependencies = [  ]" in pyproject_text or "dependencies = []" in pyproject_text
+    assert (
+        "dependencies = [  ]" in pyproject_text or "dependencies = []" in pyproject_text
+    )
     assert "typer" not in pyproject_text
     assert "rich" not in pyproject_text
 
@@ -290,3 +292,49 @@ def test_package_name_keyword_validation(temp_output_dir: Path) -> None:
                 "project_name": "def",
             },
         )
+
+
+def test_native_booleans_and_dynamic_year(temp_output_dir: Path) -> None:
+    """Test native boolean variables and dynamic year injection."""
+    from datetime import UTC, datetime
+
+    current_year = str(datetime.now(UTC).year)
+    project_dir = Path(
+        cookiecutter(
+            str(TEMPLATE_ROOT),
+            no_input=True,
+            output_dir=str(temp_output_dir),
+            extra_context={
+                "project_name": "Modern App",
+                "include_cli": True,
+                "include_github_actions": False,
+                "license": "MIT",
+            },
+        )
+    )
+
+    assert project_dir.exists()
+    assert (project_dir / "src" / "modern_app" / "cli.py").exists()
+    assert not (project_dir / ".github").exists()
+
+    license_text = (project_dir / "LICENSE").read_text()
+    assert f"Copyright (c) {current_year}" in license_text
+
+
+def test_slugify_special_characters(temp_output_dir: Path) -> None:
+    """Test robust slugification of special characters and punctuation in project_name."""
+    project_dir = Path(
+        cookiecutter(
+            str(TEMPLATE_ROOT),
+            no_input=True,
+            output_dir=str(temp_output_dir),
+            extra_context={
+                "project_name": "Zenith's Cool Tool (v2)",
+            },
+        )
+    )
+
+    assert project_dir.exists()
+    assert project_dir.name == "zenith-s-cool-tool-v2"
+    assert (project_dir / "src" / "zenith_s_cool_tool_v2" / "__init__.py").exists()
+    assert (project_dir / "src" / "zenith_s_cool_tool_v2" / "core.py").exists()

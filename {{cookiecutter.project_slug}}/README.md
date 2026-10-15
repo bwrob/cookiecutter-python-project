@@ -4,16 +4,7 @@
   <img src="docs/assets/python-logo.svg" alt="Python Logotype" width="140">
 </p>
 
-{% if cookiecutter.include_github_actions == "yes" -%}
-[![CI](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/actions/workflows/python_tests.yaml/badge.svg)](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/actions/workflows/python_tests.yaml)
-{%- endif %}
-[![Python: {{ cookiecutter.python_version }}+](https://img.shields.io/badge/python-{{ cookiecutter.python_version }}+-blue.svg)](https://www.python.org/downloads/)
-[![Code Style: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![Type Checked: Pyrefly](https://img.shields.io/badge/types-pyrefly-blueviolet.svg)](https://github.com/facebook/pyrefly)
-[![Coverage: pytest-cov](https://img.shields.io/badge/coverage-80%25%2B-brightgreen.svg)](.coveragerc)
-{% if cookiecutter.license != "None" -%}
-[![License: {{ cookiecutter.license }}](https://img.shields.io/badge/license-{{ cookiecutter.license }}-green.svg)](LICENSE)
-{%- endif %}
+{% include "_badges.md" %}
 
 {{ cookiecutter.description }}
 
@@ -31,19 +22,7 @@
 **{{ cookiecutter.project_name }}** is built with a modern, strict Python
 stack designed for reliability, speed, and clean architecture:
 
-- **uv**: Next-generation package manager and PEP 517 build backend.
-- **Ruff**: Comprehensive linting and formatting with preview rules.
-- **Pyrefly**: Meta's high-performance static type checker in strict mode.
-- **complexipy**: Cognitive complexity limits preventing spaghetti logic.
-- **Zensical**: Modern static site documentation with MathJax LaTeX support and
-  markdown-exec.
-- **rumdl**: Rigid markdown formatting and embedded code block linting.
-- **typos**: Blazing-fast Rust spell checker for source code and documentation.
-- **Tach**: Architecture boundary enforcement preventing circular imports.
-- **Hypothesis, Syrupy, & Randomly**: Property-based, snapshot, and randomized
-  test ordering with pytest.
-- **Typst**: Modern markup-based layout engine for documentation logotypes.
-- **Poe the Poet**: Declarative task automation.
+{% include "docs/_tool_stack.md" %}
 
 ## Quick Start
 
@@ -71,8 +50,7 @@ from {{ cookiecutter.package_name }} import get_greeting
 message = get_greeting("World")
 print(message)
 ```
-
-{%- if cookiecutter.include_cli == "yes" %}
+{% if cookiecutter.include_cli in [True, "yes", "true", "True", "1"] %}
 
 ### 3. Command Line Interface
 
@@ -85,7 +63,7 @@ uv run {{ cookiecutter.project_slug }} --help
 # Run greet command
 uv run {{ cookiecutter.project_slug }} greet "Developer"
 ```
-{%- endif %}
+{% endif %}
 
 ## Development Setup
 
@@ -134,7 +112,7 @@ uv run poe docs-serve
 
 Architecture rules are defined and enforced with **Tach**:
 
-{% if cookiecutter.include_cli == "yes" -%}
+{% if cookiecutter.include_cli in [True, "yes", "true", "True", "1"] %}
 ```mermaid
 flowchart TD
     CLI["CLI Layer"]
@@ -142,13 +120,13 @@ flowchart TD
     CLI --> CORE
     CORE --> EXT["External Dependencies"]
 ```
-{%- else -%}
+{% else %}
 ```mermaid
 flowchart TD
     CORE["Core Layer"]
     CORE --> EXT["External Dependencies"]
 ```
-{%- endif %}
+{% endif %}
 
 Run `uv run poe dependencies` to validate that no layer violations or circular
 dependencies occur.
@@ -204,8 +182,8 @@ Inline equations like $E = mc^2$ and $\Omega(n)$ are supported out of the box.
 
 ## License
 
-{% if cookiecutter.license != "None" -%}
+{% if cookiecutter.license != "None" %}
 Distributed under the {{ cookiecutter.license }} License. See [LICENSE](LICENSE) for details.
-{%- else -%}
+{% else %}
 All rights reserved.
-{%- endif %}
+{% endif %}

@@ -99,8 +99,8 @@ uv run poe docs-serve
 | `version` | `0.1.0` | Initial release version |
 | `python_version` | `3.13` | Target Python version (`3.12`, `3.13`, `3.14`, `3.15`) |
 | `license` | `MIT` | Chosen license (`MIT`, `Apache-2.0`, `BSD-3-Clause`, `None`) |
-| `include_cli` | `yes` | Scaffolds Typer CLI with Rich output (`yes`/`no`) |
-| `include_github_actions` | `yes` | Test matrix, Pages deploy, & PyPI publish workflows |
+| `include_cli` | `true` | Scaffolds Typer CLI with Rich output (`true`/`false`) |
+| `include_github_actions` | `true` | Test matrix, Pages deploy, & PyPI publish workflows (`true`/`false`) |
 
 ---
 

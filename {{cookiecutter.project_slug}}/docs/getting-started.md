@@ -24,7 +24,7 @@ from {{ cookiecutter.package_name }} import get_greeting
 message = get_greeting("Developer")
 print(message)
 ```
-{%- if cookiecutter.include_cli == "yes" %}
+{% if cookiecutter.include_cli in [True, "yes", "true", "True", "1"] %}
 
 ## CLI Usage
 
@@ -33,7 +33,7 @@ Run commands directly via `uv`:
 ```bash
 uv run {{ cookiecutter.project_slug }} greet "World"
 ```
-{%- endif %}
+{% endif %}
 
 ## Development Workflow
 

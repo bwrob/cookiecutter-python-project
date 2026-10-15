@@ -17,14 +17,7 @@ jobs:
     name: 🎨 Code Quality & Static Analysis
     runs-on: ubuntu-latest
     steps:
-      - name: 🛠️ Check out repository
-        uses: actions/checkout@v4
-
-      - name: 🛠️ Install uv and setup Python
-        uses: astral-sh/setup-uv@v5
-        with:
-          python-version: "{{ cookiecutter.python_version }}"
-          enable-cache: true
+{% include "ci/_setup_uv.yaml" %}
 
       - name: 🛠️ Install project dependencies
         run: uv sync

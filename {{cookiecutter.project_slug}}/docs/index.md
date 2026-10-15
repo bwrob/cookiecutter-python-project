@@ -17,17 +17,7 @@ flowchart LR
 
 ## Highlights
 
-- **Package Manager**: [uv](https://github.com/astral-sh/uv)
-- **Code Formatting & Linting**: [Ruff](https://github.com/astral-sh/ruff)
-- **Static Typing**: [Pyrefly](https://github.com/facebook/pyrefly)
-- **Complexity Analysis**: [complexipy](https://github.com/rohaquinlop/complexipy)
-- **Markdown Linting**: [rumdl](https://github.com/rvben/rumdl)
-- **Architecture Enforcement**: [Tach](https://github.com/gauge-sh/tach)
-- **Task Runner**: [Poe the Poet](https://github.com/nat-n/poethepoet)
-- **Executable Docs**: [markdown-exec](https://github.com/pawamoy/markdown-exec)
-- **API Documentation**: [mkdocstrings](https://mkdocstrings.github.io/)
-- **Diagrams & Visualizations**: [Mermaid](https://mermaid.js.org/)
-- **Document Typography**: [Typst](https://typst.app/)
+{% include "docs/_tool_stack.md" %}
 
 ## Mathematical Notation
 
