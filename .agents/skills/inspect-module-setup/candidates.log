@@ -1,0 +1,8 @@
+httpx
+structlog
+rich
+litestar
+hypothesis
+griffe
+fastapi
+cibuildwheel

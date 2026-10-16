@@ -224,3 +224,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Agent skills tracked ledgers
+!.agents/skills/inspect-module-setup/*.log

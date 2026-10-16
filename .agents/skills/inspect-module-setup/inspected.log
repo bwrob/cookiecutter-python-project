@@ -1,0 +1,9 @@
+pydantic
+sqlmodel
+pytest
+typer
+adk-python
+marimo
+poethepoet
+polars
+pluggy

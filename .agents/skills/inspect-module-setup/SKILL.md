@@ -4,7 +4,7 @@ description: >
   Python project setups and development skills to extract best practices and
   propose improvements.
 name: inspect-module-setup
-version: 1.2.0
+version: 1.3.0
 ---
 
 # Inspect Module Setup (`inspect-module-setup`)
@@ -17,8 +17,9 @@ Use this skill whenever benchmarking Zenith against best-in-class repositories,
 evaluating modern tooling shifts in the Python ecosystem, analyzing agent skills
 used during development, or preparing actionable improvement proposals.
 
-Audit progress and inspected targets are recorded in `.temp/inspected.log` to
-maintain a persistent ledger across sessions and prevent duplicate analysis.
+Audit progress, candidate queues, and inspected targets are tracked in `.agents/skills/inspect-module-setup/`:
+- **Candidate Queue** (`.agents/skills/inspect-module-setup/candidates.log`): Prioritized queue of validated benchmark modules awaiting audit.
+- **Audit Ledger** (`.agents/skills/inspect-module-setup/inspected.log`): Persistent history of completed repository audits across sessions to prevent duplicate analysis.
 
 ---
 
@@ -165,14 +166,18 @@ instructions, guardrails, and operational tooling:
 
 Follow this procedure when auditing an external repository or local project.
 
-### Step 0: Check Audit History (`.temp/inspected.log`)
+### Step 0: Check Candidate Queue & Audit History
 
-Before inspecting a repository or package, check `.temp/inspected.log` to review
-previously audited targets and avoid redundant work:
+Before inspecting a repository or package:
+1. Review `.agents/skills/inspect-module-setup/candidates.log` to pick an accepted target from the prioritized queue.
+2. Check `.agents/skills/inspect-module-setup/inspected.log` to verify historical audits and prevent duplicate analysis:
 
 ```bash
+# View queued candidates awaiting inspection
+cat .agents/skills/inspect-module-setup/candidates.log 2>/dev/null
+
 # View list of previously inspected modules
-cat .temp/inspected.log 2>/dev/null
+cat .agents/skills/inspect-module-setup/inspected.log 2>/dev/null
 ```
 
 ### Step 1: Shallow Clone or Inspect
@@ -219,14 +224,36 @@ ls -la .github/workflows/
 Identify non-obvious configurations, clever flags, specialized skills, and
 architectural patterns worthy of adoption or adaptation in Zenith.
 
-### Step 4: Record Inspected Module in `.temp/inspected.log`
+### Step 4: Move Module from Candidates to Inspected
 
-Once an audit or benchmark review is concluded, append the module name to
-`.temp/inspected.log` to preserve audit history across sessions:
+Once an audit or benchmark review is concluded, move the module from
+`.agents/skills/inspect-module-setup/candidates.log` to
+`.agents/skills/inspect-module-setup/inspected.log`. This records the
+module in the audit ledger and removes it from the candidate queue.
+
+Execute the transition using either the dedicated helper script or shell commands:
+
+#### Option A: Dedicated Transition Script (Recommended)
 
 ```bash
-mkdir -p .temp
-echo "<module_or_repo>" >> .temp/inspected.log
+uv run python .agents/skills/inspect-module-setup/scripts/transition_module.py <module_name>
+```
+
+#### Option B: Portable Shell Commands
+
+```bash
+MODULE="<module_name>"
+SKILL_DIR=".agents/skills/inspect-module-setup"
+mkdir -p "$SKILL_DIR"
+touch "$SKILL_DIR/inspected.log" "$SKILL_DIR/candidates.log"
+
+# 1. Append to inspected.log if not already recorded
+grep -qxF "$MODULE" "$SKILL_DIR/inspected.log" || echo "$MODULE" >> "$SKILL_DIR/inspected.log"
+
+# 2. Remove from candidates.log
+if [ -f "$SKILL_DIR/candidates.log" ]; then
+  grep -vxF "$MODULE" "$SKILL_DIR/candidates.log" > "$SKILL_DIR/candidates.log.tmp" && mv "$SKILL_DIR/candidates.log.tmp" "$SKILL_DIR/candidates.log"
+fi
 ```
 
 ---
@@ -244,20 +271,14 @@ Use these mature, high-leverage Python repositories as benchmarks:
 | **Structlog** | `hynek/structlog` | Modern packaging by Hynek Schlawack, hatchling, docs |
 | **FastAPI** | `fastapi/fastapi` | Multi-version testing, docs workflow, API design |
 
-### Inspected Modules Tracking
+### Candidate Queue & Inspected Modules Tracking
 
-Audited projects and benchmarked repositories are tracked in `.temp/inspected.log`.
-Completed module inspections include:
+- **Audit History Ledger** (`.agents/skills/inspect-module-setup/inspected.log`): Tracks completed repository audits:
+  - `pydantic`, `sqlmodel`, `pytest`, `typer`, `adk-python`, `marimo`, `poethepoet`, `polars`, `pluggy`
+- **Candidate Queue** (`.agents/skills/inspect-module-setup/candidates.log`): Prioritized queue of validated benchmark candidates awaiting audit:
+  - `httpx`, `structlog`, `rich`, `litestar`, `hypothesis`, `griffe`, `fastapi`, `cibuildwheel`
 
-- `pydantic`
-- `sqlalchemy`
-- `pytest`
-- `typer`
-- `adk-python`
-- `marimo`
-- `poethepoet`
-
-Always check `.temp/inspected.log` before starting an audit to prevent duplicate effort.
+Always check `.agents/skills/inspect-module-setup/candidates.log` for upcoming benchmark targets and verify `.agents/skills/inspect-module-setup/inspected.log` to prevent duplicate effort.
 
 ---
 
