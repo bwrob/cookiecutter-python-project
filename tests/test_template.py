@@ -220,6 +220,12 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "toc.follow" in zensical_text
     assert "signature_crossrefs = true" in zensical_text
     assert 'members_order = "source"' in zensical_text
+    assert "pymdownx.snippets.check_paths = true" in zensical_text
+    assert 'inventories = ["https://docs.python.org/3/objects.inv"]' in zensical_text
+    assert "options.show_symbol_type_heading = true" in zensical_text
+    assert "options.show_symbol_type_toc = true" in zensical_text
+    assert "options.parameter_headings = true" in zensical_text
+    assert "options.docstring_options.ignore_init_summary = true" in zensical_text
     assert "stylesheets/termynal.css" in zensical_text
     assert "javascripts/termynal.js" in zensical_text
 

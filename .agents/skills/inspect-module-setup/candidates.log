@@ -5,7 +5,6 @@ anyio
 temporalio
 cattrs
 dirty-equals
-textual
 instructor
 opentelemetry-python
 deal

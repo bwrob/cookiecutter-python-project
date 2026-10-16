@@ -109,6 +109,7 @@ toggle.name = "Switch to system preference"
 admonition = {}
 pymdownx.arithmatex.generic = true
 pymdownx.highlight.anchor_linenums = true
+pymdownx.snippets.check_paths = true
 pymdownx.superfences.custom_fences = [
     { name = "mermaid", class = "mermaid",
       format = "pymdownx.superfences.fence_code_format" },
@@ -122,10 +123,19 @@ pymdownx.superfences.custom_fences = [
 default_handler = "python"
 
 [project.plugins.mkdocstrings.handlers.python]
+inventories = ["https://docs.python.org/3/objects.inv"]
 paths = ["src"]
+options.docstring_options.ignore_init_summary = true
 options.docstring_style = "numpy"
+options.merge_init_into_class = true
+options.parameter_headings = true
+options.separate_signature = true
 options.show_root_heading = true
+options.show_signature_annotations = true
 options.show_source = true
+options.show_symbol_type_heading = true
+options.show_symbol_type_toc = true
+options.signature_crossrefs = true
 ```
 
 ---
@@ -175,7 +185,10 @@ In any markdown document (e.g. `docs/reference.md`), use the `:::` block:
         - get_greeting
 ```
 
-Zensical automatically reloads docs when source files in `src/` change.
+Zensical automatically reloads docs when source files in `src/` change. With
+`inventories = ["https://docs.python.org/3/objects.inv"]` and
+`signature_crossrefs = true`, standard library types in signatures link
+directly to official Python documentation.
 
 ### C. Using Mermaid Diagrams
 
@@ -198,6 +211,18 @@ To execute code at doc build time and display live terminal output:
 import sys
 
 print(f"Built with Python {sys.version.split()[0]}")
+```
+````
+
+### E. Embedding Tested Code Snippets with `pymdownx.snippets`
+
+Embed external source or test files directly into documentation using `--8<--`
+with `pymdownx.snippets.check_paths = true` (which fails the build if a
+referenced file path does not exist):
+
+````markdown
+```python
+--8<-- "examples/quickstart.py"
 ```
 ````
 
