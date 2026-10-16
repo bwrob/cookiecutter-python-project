@@ -19,6 +19,7 @@ jobs:
   guard-dependencies:
     name: 🛡️ Verify Dependency Modification Author
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       contents: read
       issues: write # Needed to comment on unauthorized dependency pull requests

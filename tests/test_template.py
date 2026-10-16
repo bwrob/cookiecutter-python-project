@@ -135,6 +135,12 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert (project_dir / "scripts" / "verify_wheel.py").exists()
     assert (project_dir / ".github" / "workflows" / "python_tests.yaml").exists()
     assert (project_dir / ".github" / "workflows" / "guard-dependencies.yaml").exists()
+    assert (
+        "timeout-minutes: 5"
+        in (
+            project_dir / ".github" / "workflows" / "guard-dependencies.yaml"
+        ).read_text()
+    )
     assert (project_dir / ".github" / "workflows" / "docs.yaml").exists()
     assert (project_dir / ".github" / "workflows" / "publish.yaml").exists()
     assert (project_dir / ".github" / "workflows" / "test_redistribute.yaml").exists()
@@ -153,10 +159,10 @@ def test_default_generation(temp_output_dir: Path) -> None:
         ).read_text()
     )
     assert (project_dir / ".github" / "dependabot.yml").exists()
-    assert (
-        'package-ecosystem: "uv"'
-        in (project_dir / ".github" / "dependabot.yml").read_text()
-    )
+    dependabot_text = (project_dir / ".github" / "dependabot.yml").read_text()
+    assert 'package-ecosystem: "uv"' in dependabot_text
+    assert '"github_actions"' in dependabot_text
+    assert '"python"' in dependabot_text
     assert (project_dir / ".github" / "PULL_REQUEST_TEMPLATE.md").exists()
     assert (project_dir / ".github" / "ISSUE_TEMPLATE" / "bug_report.yml").exists()
     assert (project_dir / ".github" / "ISSUE_TEMPLATE" / "feature_request.yml").exists()

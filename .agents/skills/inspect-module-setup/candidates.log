@@ -4,5 +4,4 @@ rich
 litestar
 hypothesis
 griffe
-fastapi
 cibuildwheel
