@@ -19,7 +19,7 @@ used during development, or preparing actionable improvement proposals.
 
 Audit progress, candidate queues, and inspected targets are tracked in `.agents/skills/inspect-module-setup/`:
 - **Candidate Queue** (`.agents/skills/inspect-module-setup/candidates.log`): Prioritized queue of validated benchmark modules awaiting audit.
-- **Audit Ledger** (`.agents/skills/inspect-module-setup/inspected.log`): Persistent history of completed repository audits across sessions to prevent duplicate analysis.
+- **Inspected Log** (`.agents/skills/inspect-module-setup/inspected.log`): Persistent history of completed repository audits across sessions to prevent duplicate analysis.
 
 ---
 
@@ -101,18 +101,34 @@ Inspect test framework integration, plugins, and coverage requirements:
 Analyze technical documentation generation and asset pipelines:
 
 - **Static Doc Generator**: Identify the engine (`zensical`, `mkdocs-material`,
-  `sphinx`). Both `zensical` and `mkdocs` (especially `mkdocs-material`) are
-  first-class targets to learn from. Note that `zensical` is compatible with
-  `mkdocstrings` plugins (`mkdocstrings[python]`, Griffe, docstring options,
-  and signature cross-references), allowing patterns from mature `mkdocs.yml`
-  setups to be directly adapted into `zensical.toml`.
+  `sphinx`). Both `zensical` (`zensical.toml`) and `mkdocs` (`mkdocs.yml`,
+  `docs/en/mkdocs.yml`, or multi-file `INHERIT` configs like `mkdocs-common.yml`)
+  are first-class targets to learn from. Because `zensical` is built by the
+  creators of *Material for MkDocs* and *mkdocstrings*, patterns discovered in
+  mature `mkdocs.yml` setups translate directly into `zensical.toml`.
+- **Strict Build Validation**: Check for `[project.validation]` rules in
+  `zensical.toml` (`invalid_links`, `unresolved_references`, etc.) or
+  `strict: true` in `mkdocs.yml`.
 - **API Reference Generator**: Inspect docstring parsing tools (`mkdocstrings`,
-  `griffe`), docstring style (Google, NumPy), and inventory cross-references
-  (`objects.inv`).
-- **Executable Snippets & Doc Validation**: Check for code-block execution
-  tools (`markdown-exec`) or test runner validation (`pytest-examples`).
-- **Vector Assets & Diagrams**: Check for diagram tools (Mermaid, Typst vector
-  layouts for logos and figures).
+  `griffe` static AST analysis, `griffe-typingdoc`, `griffe-inherited-docstrings`),
+  docstring style (`numpy`, `google`, `auto`), signature cross-references
+  (`signature_crossrefs = true`), class inheritance diagrams
+  (`show_inheritance_diagram = true`), symbol backlinks (`backlinks = "tree"`),
+  internal link hover previews (`zensical.extensions.preview`), and external
+  Sphinx inventories (`objects.inv`).
+- **AI / LLM Documentation Indexing**: Check for `llms.txt` / `llms-full.txt`
+  files or automated generation via `mkdocs-llmstxt` (`llmstxt` plugin).
+- **Executable & Tested Snippets**: Check for dynamic code execution
+  (`markdown-exec`), external snippet inclusion (`pymdownx.snippets` with
+  `check_paths = true`), isolated tested example directories (`docs_src/`), and
+  automated doctest verification (`--doctest-modules`, `xdoctest`,
+  `pytest-markdown-docs`).
+- **Versioning & Redirects**: Check for multi-version deployment (`mike`) and
+  URL redirect maps (`mkdocs-redirects` / `[project.plugins.redirects]`).
+- **Vector Assets, Terminal Rendering, & Changelogs**: Check for Mermaid
+  diagrams, Typst vector layouts (`.typ`), terminal session animations
+  (`termynal`, `format_svg`), and fragment-based changelogs (`scriv` in
+  `changelog.d/` or `towncrier` in `newsfragments/`).
 
 ### Pillar 7: CI/CD & Supply Chain Security
 
@@ -169,7 +185,7 @@ Assess benchmark repositories against four objective maturity levels across each
 | **Level 1** | **Legacy / Minimal** | Legacy `setup.py` / unpinned requirements, flat layout, no type checking, no task runner, single-version or missing CI, no agent instructions. |
 | **Level 2** | **Modern Baseline** | PEP 621 `[project]` metadata, basic linting (Flake8/Black/Ruff), standard pytest, basic GitHub Actions CI, basic README docs. |
 | **Level 3** | **Advanced Engineering** | PEP 517 build backend (`hatchling`/`poetry-core`), strict typing (`mypy`/`pyright`), committed lockfiles (`uv.lock`/`poetry.lock`), matrix CI, rich docs (`mkdocs-material`/Sphinx), agent instructions (`AGENTS.md`/`CLAUDE.md`). |
-| **Level 4** | **Zenith Gold Standard** | Native `uv_build` backend, PEP 735 `[dependency-groups]`, hermetic task orchestration (`poethepoet`), cognitive complexity gates (`complexipy`), architectural boundaries (`tach`), PyPI Trusted Publishing (OIDC) + PEP 740 build attestations, vector layout docs (Zensical/Typst), comprehensive agent skills (`.agents/skills/`), and explicit AI governance (`AI_POLICY.md`). |
+| **Level 4** | **Zenith Gold Standard** | Native `uv_build` backend, PEP 735 `[dependency-groups]`, hermetic task orchestration (`poethepoet`), cognitive complexity gates (`complexipy`), architectural boundaries (`tach`), PyPI Trusted Publishing (OIDC) + PEP 740 build attestations, vector/TOML/strict docs (Zensical or advanced MkDocs Material + Typst), comprehensive agent skills (`.agents/skills/`), and explicit AI governance (`AI_POLICY.md`). |
 
 ---
 
@@ -198,22 +214,22 @@ The scanner evaluates all 9 pillars, calculates the maturity score, generates
 the Gap Radar table, and extracts agent skills:
 
 ```bash
-# Audit a local directory or clone a remote GitHub repository (org/repo or URL)
-uv run python .agents/skills/inspect-module-setup/scripts/audit_repo.py <target_path_or_org/repo> [--output <report.md>]
+# Deep audit a local directory or remote GitHub repository (evaluates all 9 pillars & extracts learnings)
+uv run python .agents/skills/inspect-module-setup/scripts/audit_repo.py <target_path_or_org/repo> [--output <report.md>] [--subpath <subdir>] [--refresh]
 
 # Examples:
-# uv run python .agents/skills/inspect-module-setup/scripts/audit_repo.py encode/httpx
-# uv run python .agents/skills/inspect-module-setup/scripts/audit_repo.py .temp/inspect-pluggy
+# uv run python .agents/skills/inspect-module-setup/scripts/audit_repo.py <org>/<repo>
+# uv run python .agents/skills/inspect-module-setup/scripts/audit_repo.py .temp/inspect-<repo>
 ```
 
 ### Step 2: Harvest & Benchmark Agent Skills
 
 Run dedicated skill harvesting to extract, inspect, and benchmark the target's
-AI instructions and skills against Zenith's `.agents/skills/` library:
+AI instructions, Cursor rules (`.mdc`), MCP servers, and skills against Zenith's `.agents/skills/` library:
 
 ```bash
-# Harvest agent skills, instructions, and AI policies
-uv run python .agents/skills/inspect-module-setup/scripts/harvest_skills.py <target_path_or_org/repo>
+# Deep harvest agent skills, instructions, MCP declarations, and AI policies
+uv run python .agents/skills/inspect-module-setup/scripts/harvest_skills.py <target_path_or_org/repo> [--refresh]
 ```
 
 ### Step 3: Deep-Dive Configuration Review
@@ -235,8 +251,8 @@ ls -la AGENTS.md CLAUDE.md AI_POLICY.md .cursorrules .windsurfrules \
   .github/copilot-instructions.md 2>/dev/null
 ls -la .agents/skills/ .agent/skills/ .cursor/rules/ .cursor/skills/ 2>/dev/null
 
-# Documentation configs (Zensical / MkDocs / Sphinx)
-ls -la zensical.toml mkdocs.yml mkdocs.yaml docs/ 2>/dev/null
+# Documentation configs (Zensical / MkDocs / Sphinx / llms.txt)
+ls -la zensical.toml mkdocs*.yml mkdocs*.yaml llms.txt docs/ docs_src/ 2>/dev/null
 
 # Task runner definitions
 ls -la poe_tasks.toml Justfile Makefile noxfile.py tox.ini 2>/dev/null
@@ -245,59 +261,45 @@ ls -la poe_tasks.toml Justfile Makefile noxfile.py tox.ini 2>/dev/null
 ls -la .github/workflows/
 ```
 
-### Step 4: Move Module from Candidates to Inspected
+### Step 4: Transition Modules Between Candidates and Inspected
 
 Once an audit or benchmark review is concluded, move the module from
 `.agents/skills/inspect-module-setup/candidates.log` to
-`.agents/skills/inspect-module-setup/inspected.log`. This records the
-module in the audit ledger and removes it from the candidate queue.
-
-Execute the transition using either the dedicated helper script or shell commands:
-
-#### Option A: Dedicated Transition Script (Recommended)
+`.agents/skills/inspect-module-setup/inspected.log` (or re-queue modules back
+into `candidates.log` when resetting or re-auditing):
 
 ```bash
+# Move a completed module from candidates.log to inspected.log
 uv run python .agents/skills/inspect-module-setup/scripts/transition_module.py <module_name>
+
+# Move a specific module from inspected.log back to candidates.log
+uv run python .agents/skills/inspect-module-setup/scripts/transition_module.py --requeue <module_name>
+
+# Move all modules from inspected.log back to candidates.log
+uv run python .agents/skills/inspect-module-setup/scripts/transition_module.py --requeue-all
 ```
 
-#### Option B: Portable Shell Commands
+### Step 5: Inspect & Prune Clone Cache
+
+Manage local disk consumption of cached benchmark repositories under `.temp/`:
 
 ```bash
-MODULE="<module_name>"
-SKILL_DIR=".agents/skills/inspect-module-setup"
-mkdir -p "$SKILL_DIR"
-touch "$SKILL_DIR/inspected.log" "$SKILL_DIR/candidates.log"
+# Check cache status and sizes across all cached clones
+uv run python .agents/skills/inspect-module-setup/scripts/prune_cache.py --status
 
-# 1. Append to inspected.log if not already recorded
-grep -qxF "$MODULE" "$SKILL_DIR/inspected.log" || echo "$MODULE" >> "$SKILL_DIR/inspected.log"
+# Enforce a maximum cache budget (e.g. 500 MB), pruning oldest clones first
+uv run python .agents/skills/inspect-module-setup/scripts/prune_cache.py --max-size-mb 500
 
-# 2. Remove from candidates.log
-if [ -f "$SKILL_DIR/candidates.log" ]; then
-  grep -vxF "$MODULE" "$SKILL_DIR/candidates.log" > "$SKILL_DIR/candidates.log.tmp" && mv "$SKILL_DIR/candidates.log.tmp" "$SKILL_DIR/candidates.log"
-fi
+# Delete a specific target clone
+uv run python .agents/skills/inspect-module-setup/scripts/prune_cache.py --target inspect-<repo>
 ```
 
 ---
 
-## 3. Golden Reference Projects
+## 3. Candidate Queue & Audit Persistence
 
-Use these mature, high-leverage Python repositories as benchmarks:
-
-| Project | Repository | Key Benchmark Strengths |
-| --- | --- | --- |
-| **uv** | `astral-sh/uv` | Modern packaging, workspace layouts, ultra-fast CI |
-| **Pydantic** | `pydantic/pydantic` | PEP 695 typing, MkDocs/mkdocstrings, test matrix |
-| **HTTPX** | `encode/httpx` | Strict typing, async testing, clean architecture |
-| **Textual / Rich** | `Textualize/rich` | Modern CLI design, snapshot testing, packaging |
-| **Structlog** | `hynek/structlog` | Modern packaging by Hynek Schlawack, hatchling, docs |
-| **FastAPI** | `fastapi/fastapi` | Multi-version testing, docs workflow, API design |
-
-### Candidate Queue & Inspected Modules Tracking
-
-- **Audit History Ledger** (`.agents/skills/inspect-module-setup/inspected.log`): Tracks completed repository audits:
-  - `pydantic`, `sqlmodel`, `pytest`, `typer`, `adk-python`, `marimo`, `poethepoet`, `polars`, `pluggy`
-- **Candidate Queue** (`.agents/skills/inspect-module-setup/candidates.log`): Prioritized queue of validated benchmark candidates awaiting audit:
-  - `httpx`, `structlog`, `rich`, `litestar`, `hypothesis`, `griffe`, `fastapi`, `cibuildwheel`
+- **Audit History Log** (`.agents/skills/inspect-module-setup/inspected.log`): Persistent record of completed repository audits across sessions to prevent duplicate analysis.
+- **Candidate Queue** (`.agents/skills/inspect-module-setup/candidates.log`): Prioritized queue of validated benchmark candidates awaiting audit.
 
 Always check `.agents/skills/inspect-module-setup/candidates.log` for upcoming benchmark targets and verify `.agents/skills/inspect-module-setup/inspected.log` to prevent duplicate effort.
 
