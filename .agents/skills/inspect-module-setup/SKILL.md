@@ -4,7 +4,7 @@ description: >
   Python project setups and development skills to extract best practices and
   propose improvements.
 name: inspect-module-setup
-version: 1.3.0
+version: 1.4.0
 ---
 
 # Inspect Module Setup (`inspect-module-setup`)
@@ -160,6 +160,17 @@ instructions, guardrails, and operational tooling:
   architectural invariants, and anti-patterns into guidelines so both human
   contributors and AI coding assistants generate idiomatic, verified code.
 
+### 9-Pillar Maturity Rubric & Scorecard Standards
+
+Assess benchmark repositories against four objective maturity levels across each pillar (Max Score: 36 points):
+
+| Level | Classification | Definition & Criteria |
+| :---: | :--- | :--- |
+| **Level 1** | **Legacy / Minimal** | Legacy `setup.py` / unpinned requirements, flat layout, no type checking, no task runner, single-version or missing CI, no agent instructions. |
+| **Level 2** | **Modern Baseline** | PEP 621 `[project]` metadata, basic linting (Flake8/Black/Ruff), standard pytest, basic GitHub Actions CI, basic README docs. |
+| **Level 3** | **Advanced Engineering** | PEP 517 build backend (`hatchling`/`poetry-core`), strict typing (`mypy`/`pyright`), committed lockfiles (`uv.lock`/`poetry.lock`), matrix CI, rich docs (`mkdocs-material`/Sphinx), agent instructions (`AGENTS.md`/`CLAUDE.md`). |
+| **Level 4** | **Zenith Gold Standard** | Native `uv_build` backend, PEP 735 `[dependency-groups]`, hermetic task orchestration (`poethepoet`), cognitive complexity gates (`complexipy`), architectural boundaries (`tach`), PyPI Trusted Publishing (OIDC) + PEP 740 build attestations, vector layout docs (Zensical/Typst), comprehensive agent skills (`.agents/skills/`), and explicit AI governance (`AI_POLICY.md`). |
+
 ---
 
 ## 2. Ingestion & Extraction Workflow
@@ -180,21 +191,37 @@ cat .agents/skills/inspect-module-setup/candidates.log 2>/dev/null
 cat .agents/skills/inspect-module-setup/inspected.log 2>/dev/null
 ```
 
-### Step 1: Shallow Clone or Inspect
+### Step 1: Run Automated 9-Pillar Inspection Scanner
 
-Fetch repository files quickly without downloading full git history:
+Execute the automated scanner on a local directory or remote GitHub repository.
+The scanner evaluates all 9 pillars, calculates the maturity score, generates
+the Gap Radar table, and extracts agent skills:
 
 ```bash
-# Shallow clone target repository into temporary scratch directory
-git clone --depth 1 https://github.com/<org>/<repo>.git /tmp/inspect-<repo>
+# Audit a local directory or clone a remote GitHub repository (org/repo or URL)
+uv run python .agents/skills/inspect-module-setup/scripts/audit_repo.py <target_path_or_org/repo> [--output <report.md>]
+
+# Examples:
+# uv run python .agents/skills/inspect-module-setup/scripts/audit_repo.py encode/httpx
+# uv run python .agents/skills/inspect-module-setup/scripts/audit_repo.py .temp/inspect-pluggy
 ```
 
-### Step 2: Audit Configuration Files
+### Step 2: Harvest & Benchmark Agent Skills
 
-Inspect the core setup files in order:
+Run dedicated skill harvesting to extract, inspect, and benchmark the target's
+AI instructions and skills against Zenith's `.agents/skills/` library:
 
 ```bash
-cd /tmp/inspect-<repo>
+# Harvest agent skills, instructions, and AI policies
+uv run python .agents/skills/inspect-module-setup/scripts/harvest_skills.py <target_path_or_org/repo>
+```
+
+### Step 3: Deep-Dive Configuration Review
+
+Inspect discovered nuances, custom flags, specialized skills, or unusual tool configurations:
+
+```bash
+cd .temp/inspect-<repo>
 
 # Packaging, dependencies, and tools
 cat pyproject.toml
@@ -207,7 +234,6 @@ ls -la ruff.toml .ruff.toml pyrefly.toml mypy.ini tach.toml \
 ls -la AGENTS.md CLAUDE.md AI_POLICY.md .cursorrules .windsurfrules \
   .github/copilot-instructions.md 2>/dev/null
 ls -la .agents/skills/ .agent/skills/ .cursor/rules/ .cursor/skills/ 2>/dev/null
-ls -la tools/ scripts/ 2>/dev/null
 
 # Documentation configs (Zensical / MkDocs / Sphinx)
 ls -la zensical.toml mkdocs.yml mkdocs.yaml docs/ 2>/dev/null
@@ -218,11 +244,6 @@ ls -la poe_tasks.toml Justfile Makefile noxfile.py tox.ini 2>/dev/null
 # CI/CD pipelines
 ls -la .github/workflows/
 ```
-
-### Step 3: Extract Notable Patterns
-
-Identify non-obvious configurations, clever flags, specialized skills, and
-architectural patterns worthy of adoption or adaptation in Zenith.
 
 ### Step 4: Move Module from Candidates to Inspected
 
