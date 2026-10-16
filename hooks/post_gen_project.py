@@ -21,6 +21,8 @@ CONFIG_FILES_WITH_HEADERS = [
     ".prettierrc.yaml",
     ".editorconfig",
     ".zizmor.yml",
+    os.path.join(".codex", "config.toml"),
+    ".aider.conf.yml",
 ]
 
 
@@ -58,15 +60,18 @@ def to_bool(val: object) -> bool:
 
 
 def setup_agent_instructions() -> None:
-    """Ensure CLAUDE.md points to AGENTS.md and .gemini/settings.json exists for agent compatibility."""
+    """Ensure agent instruction symlinks and configuration directories exist for all AI tools."""
     agents_path = os.path.join(PROJECT_DIR, "AGENTS.md")
-    claude_path = os.path.join(PROJECT_DIR, "CLAUDE.md")
-    if os.path.isfile(agents_path) and not os.path.lexists(claude_path):
-        try:
-            os.symlink("AGENTS.md", claude_path)
-        except (OSError, NotImplementedError):
-            # Fallback for platforms or environments without symlink privileges
-            shutil.copyfile(agents_path, claude_path)
+
+    # Link standard instruction aliases to AGENTS.md
+    for alias_name in ("CLAUDE.md", ".cursorrules", ".windsurfrules"):
+        alias_path = os.path.join(PROJECT_DIR, alias_name)
+        if os.path.isfile(agents_path) and not os.path.lexists(alias_path):
+            try:
+                os.symlink("AGENTS.md", alias_path)
+            except (OSError, NotImplementedError):
+                # Fallback for platforms or environments without symlink privileges
+                shutil.copyfile(agents_path, alias_path)
 
     gemini_dir = os.path.join(PROJECT_DIR, ".gemini")
     os.makedirs(gemini_dir, exist_ok=True)
@@ -74,6 +79,45 @@ def setup_agent_instructions() -> None:
     if not os.path.isfile(gemini_settings):
         with open(gemini_settings, "w", encoding="utf-8") as f:
             f.write('{\n  "contextFileName": "AGENTS.md"\n}\n')
+
+    claude_dir = os.path.join(PROJECT_DIR, ".claude")
+    os.makedirs(claude_dir, exist_ok=True)
+    claude_settings = os.path.join(claude_dir, "settings.json")
+    if not os.path.isfile(claude_settings):
+        with open(claude_settings, "w", encoding="utf-8") as f:
+            f.write(
+                "{\n"
+                '  "permissions": {\n'
+                '    "allow": [\n'
+                '      "Bash(uv run poe:*)",\n'
+                '      "Bash(uv run pytest:*)",\n'
+                '      "Bash(uv run ruff:*)",\n'
+                '      "Bash(uv run pyrefly:*)",\n'
+                '      "Bash(uv run complexipy:*)",\n'
+                '      "Bash(uv run tach:*)",\n'
+                '      "Bash(uv run rumdl:*)",\n'
+                '      "Bash(uv run typos:*)",\n'
+                '      "Bash(uv run zizmor:*)",\n'
+                '      "Bash(uv run pre-commit:*)"\n'
+                "    ],\n"
+                '    "deny": [\n'
+                '      "Bash(rm -rf /*)",\n'
+                '      "Bash(git push --force:*)"\n'
+                "    ]\n"
+                "  }\n"
+                "}\n"
+            )
+
+    codex_dir = os.path.join(PROJECT_DIR, ".codex")
+    os.makedirs(codex_dir, exist_ok=True)
+    codex_config = os.path.join(codex_dir, "config.toml")
+    if not os.path.isfile(codex_config):
+        with open(codex_config, "w", encoding="utf-8") as f:
+            f.write(
+                'approval_policy                = "on-request"\n'
+                'project_doc_fallback_filenames = [ "AGENTS.md", "CLAUDE.md" ]\n'
+                'sandbox_mode                   = "workspace-write"\n'
+            )
 
 
 def main() -> None:
@@ -99,6 +143,7 @@ def main() -> None:
         remove_file(".github", "workflows", "python_tests.yaml")
         remove_file(".github", "workflows", "test_redistribute.yaml")
         remove_file(".github", "workflows", "guard-dependencies.yaml")
+        remove_file(".github", "codecov.yml")
 
     if not include_ci_publishing:
         remove_file(".github", "workflows", "publish.yaml")

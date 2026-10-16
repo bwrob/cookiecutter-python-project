@@ -1,0 +1,11 @@
+# ==============================================================================
+# OpenAI Codex CLI Configuration (.codex/config.toml)
+#
+# Tool: OpenAI Codex CLI / ChatGPT Coding Agent
+# Purpose: Project-level defaults for sandbox boundaries and document discovery.
+# Why it's in Zenith: Enforces workspace-write sandboxing and auto-discovers AGENTS.md.
+# ==============================================================================
+
+approval_policy = "on-request"
+project_doc_fallback_filenames = ["AGENTS.md", "CLAUDE.md"]
+sandbox_mode = "workspace-write"

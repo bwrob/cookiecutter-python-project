@@ -1,0 +1,16 @@
+# ==============================================================================
+# Aider Configuration (.aider.conf.yml)
+#
+# Tool: Aider (https://aider.chat/)
+# Purpose: AI pair programming terminal tool settings.
+# Why it's in Zenith: Auto-loads AGENTS.md and delegates lint/test to uv commands.
+# ==============================================================================
+
+read:
+  - AGENTS.md
+
+lint-cmd: "uv run ruff check --fix"
+auto-lint: true
+
+test-cmd: "uv run pytest"
+auto-test: false

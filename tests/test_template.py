@@ -57,6 +57,13 @@ def test_default_generation(temp_output_dir: Path) -> None:
         '"contextFileName": "AGENTS.md"'
         in (project_dir / ".gemini" / "settings.json").read_text()
     )
+    assert (project_dir / ".claude" / "settings.json").exists()
+    assert (project_dir / ".codex" / "config.toml").exists()
+    assert (project_dir / ".aider.conf.yml").exists()
+    assert (project_dir / ".cursorrules").exists()
+    assert (project_dir / ".windsurfrules").exists()
+    assert (project_dir / ".github" / "copilot-instructions.md").exists()
+    assert (project_dir / ".github" / "codecov.yml").exists()
     for skill in [
         "code-review",
         "git-workflow",
@@ -318,10 +325,25 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert ".temp/" in agents_text
     assert ".temp/" in (project_dir / ".gitignore").read_text()
     assert (project_dir / "CLAUDE.md").read_text() == agents_text
+    assert (project_dir / ".cursorrules").read_text() == agents_text
+    assert (project_dir / ".windsurfrules").read_text() == agents_text
     if hasattr(Path, "is_symlink") and (project_dir / "CLAUDE.md").is_symlink():
         import os
 
         assert os.readlink(project_dir / "CLAUDE.md") == "AGENTS.md"
+        if (project_dir / ".cursorrules").is_symlink():
+            assert os.readlink(project_dir / ".cursorrules") == "AGENTS.md"
+        if (project_dir / ".windsurfrules").is_symlink():
+            assert os.readlink(project_dir / ".windsurfrules") == "AGENTS.md"
+
+    # Verify AI tool configuration files
+    assert "uv run poe:*" in (project_dir / ".claude" / "settings.json").read_text()
+    assert "workspace-write" in (project_dir / ".codex" / "config.toml").read_text()
+    assert "AGENTS.md" in (project_dir / ".aider.conf.yml").read_text()
+    assert (
+        "AGENTS.md" in (project_dir / ".github" / "copilot-instructions.md").read_text()
+    )
+    assert "comment: off" in (project_dir / ".github" / "codecov.yml").read_text()
 
 
 def test_python_315_generation(temp_output_dir: Path) -> None:
@@ -433,6 +455,7 @@ def test_no_ci_testing(temp_output_dir: Path) -> None:
     assert not (
         project_dir / ".github" / "workflows" / "guard-dependencies.yaml"
     ).exists()
+    assert not (project_dir / ".github" / "codecov.yml").exists()
     assert (project_dir / ".zizmor.yml").exists()
     assert "[tasks.zizmor]" in (project_dir / "poe_tasks.toml").read_text()
     readme_text = (project_dir / "README.md").read_text()
@@ -458,6 +481,7 @@ def test_no_ci_publishing(temp_output_dir: Path) -> None:
     assert (project_dir / ".github" / "workflows" / "python_tests.yaml").exists()
     assert (project_dir / ".github" / "workflows" / "test_redistribute.yaml").exists()
     assert (project_dir / ".github" / "workflows" / "guard-dependencies.yaml").exists()
+    assert (project_dir / ".github" / "codecov.yml").exists()
     assert not (project_dir / ".github" / "workflows" / "publish.yaml").exists()
     assert not (project_dir / ".github" / "workflows" / "docs.yaml").exists()
     assert (project_dir / ".zizmor.yml").exists()

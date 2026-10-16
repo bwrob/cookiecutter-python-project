@@ -4,7 +4,7 @@ description: >
   Python project setups and development skills to extract best practices and
   propose improvements.
 name: inspect-module-setup
-version: 1.1.0
+version: 1.2.0
 ---
 
 # Inspect Module Setup (`inspect-module-setup`)
@@ -16,6 +16,9 @@ agent skills of mature Python projects.
 Use this skill whenever benchmarking Zenith against best-in-class repositories,
 evaluating modern tooling shifts in the Python ecosystem, analyzing agent skills
 used during development, or preparing actionable improvement proposals.
+
+Audit progress and inspected targets are recorded in `.temp/inspected.log` to
+maintain a persistent ledger across sessions and prevent duplicate analysis.
 
 ---
 
@@ -162,6 +165,16 @@ instructions, guardrails, and operational tooling:
 
 Follow this procedure when auditing an external repository or local project.
 
+### Step 0: Check Audit History (`.temp/inspected.log`)
+
+Before inspecting a repository or package, check `.temp/inspected.log` to review
+previously audited targets and avoid redundant work:
+
+```bash
+# View list of previously inspected modules
+cat .temp/inspected.log 2>/dev/null
+```
+
 ### Step 1: Shallow Clone or Inspect
 
 Fetch repository files quickly without downloading full git history:
@@ -206,6 +219,16 @@ ls -la .github/workflows/
 Identify non-obvious configurations, clever flags, specialized skills, and
 architectural patterns worthy of adoption or adaptation in Zenith.
 
+### Step 4: Record Inspected Module in `.temp/inspected.log`
+
+Once an audit or benchmark review is concluded, append the module name to
+`.temp/inspected.log` to preserve audit history across sessions:
+
+```bash
+mkdir -p .temp
+echo "<module_or_repo>" >> .temp/inspected.log
+```
+
 ---
 
 ## 3. Golden Reference Projects
@@ -220,6 +243,21 @@ Use these mature, high-leverage Python repositories as benchmarks:
 | **Textual / Rich** | `Textualize/rich` | Modern CLI design, snapshot testing, packaging |
 | **Structlog** | `hynek/structlog` | Modern packaging by Hynek Schlawack, hatchling, docs |
 | **FastAPI** | `fastapi/fastapi` | Multi-version testing, docs workflow, API design |
+
+### Inspected Modules Tracking
+
+Audited projects and benchmarked repositories are tracked in `.temp/inspected.log`.
+Completed module inspections include:
+
+- `pydantic`
+- `sqlalchemy`
+- `pytest`
+- `typer`
+- `adk-python`
+- `marimo`
+- `poethepoet`
+
+Always check `.temp/inspected.log` before starting an audit to prevent duplicate effort.
 
 ---
 

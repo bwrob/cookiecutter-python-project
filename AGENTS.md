@@ -36,7 +36,13 @@ Before editing code or executing tasks, ensure an isolated, clean working enviro
 
 ## Project Instructions Discovery & Compatibility
 
-- **Dual Discovery & Settings**: A `CLAUDE.md` symlink (`ln -s AGENTS.md CLAUDE.md`) and `.gemini/settings.json` (`contextFileName: "AGENTS.md"`) are maintained in the repository root for seamless compatibility across Claude Code, Antigravity, Gemini CLI, Cursor, Copilot, and other agent systems.
+- **Multi-Agent Discovery & Settings**: Instruction files and configuration profiles are maintained in the repository root for seamless compatibility across modern AI coding tools:
+  - **Claude Code**: `CLAUDE.md` symlink (`ln -s AGENTS.md CLAUDE.md`) and `.claude/settings.json` (pre-authorizing hermetic `uv run poe:*` commands).
+  - **OpenAI Codex CLI**: `.codex/config.toml` (auto-discovering `AGENTS.md` and setting `workspace-write` sandbox).
+  - **Google Gemini CLI & Antigravity**: `.gemini/settings.json` (`contextFileName: "AGENTS.md"`).
+  - **GitHub Copilot**: `.github/copilot-instructions.md` referencing `AGENTS.md`.
+  - **Cursor & Windsurf**: `.cursorrules` and `.windsurfrules` symlinks (`ln -s AGENTS.md .cursorrules`).
+  - **Aider**: `.aider.conf.yml` (auto-loading `AGENTS.md`, wiring `lint-cmd` and `test-cmd` to Poe tasks).
 - **Scope Hierarchy**: When exploring subdirectories, check for nested `AGENTS.md` or `CLAUDE.md` files; localized instructions take precedence within their scope.
 - **Workflow & Tool Guidance**: Consult `.agents/skills/` for lifecycle workflow skills (`project-setup`, `code-review`, `git-workflow`) and tool-specific guidance (`tool-*/SKILL.md`, `python-style-guide`).
 
@@ -44,7 +50,7 @@ Before editing code or executing tasks, ensure an isolated, clean working enviro
 
 - `cookiecutter.json`: Template configuration, prompts (`__prompts__`), and variable definitions.
 - `hooks/`: Lifecycle hooks (`pre_gen_project.py`, `post_gen_project.py`).
-  - `hooks/post_gen_project.py`: Strips educational comments, cleans conditional files (CLI, `.github`, LICENSE), and establishes `CLAUDE.md -> AGENTS.md` symlinks.
+  - `hooks/post_gen_project.py`: Strips educational comments, cleans conditional files (CLI, `.github`, LICENSE), and establishes AI agent compatibility symlinks and settings.
 - `templates/`: Shared template partials (e.g. CI workflow components).
 - `{{cookiecutter.project_slug}}/`: Root directory of the rendered project template.
 - `tests/`: Automated tests validating template rendering, conditional branches, and generated asset structures.

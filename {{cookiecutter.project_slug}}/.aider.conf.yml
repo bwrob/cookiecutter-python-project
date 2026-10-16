@@ -1,0 +1,16 @@
+# ==============================================================================
+# Aider Configuration (.aider.conf.yml)
+#
+# Tool: Aider (https://aider.chat/)
+# Purpose: AI pair programming terminal tool settings.
+# Why it's in Zenith: Auto-loads AGENTS.md and delegates lint/test to poe tasks.
+# ==============================================================================
+
+read:
+  - AGENTS.md
+
+lint-cmd: "uv run poe fix"
+auto-lint: true
+
+test-cmd: "uv run poe test-fast"
+auto-test: false
