@@ -249,6 +249,22 @@ def test_default_generation(temp_output_dir: Path) -> None:
             project_dir / ".github" / "workflows" / "test_redistribute.yaml"
         ).read_text()
     )
+    assert "GITHUB_STEP_SUMMARY" in ci_text
+    assert "uv run poe fix" in ci_text
+    assert "uv run poe test-lowest" in ci_text
+    assert (
+        "GITHUB_STEP_SUMMARY"
+        in (project_dir / ".github" / "workflows" / "docs.yaml").read_text()
+    )
+    assert "exclude-newer" in (project_dir / "pyproject.toml").read_text()
+    assert (
+        "uv run poe test-lowest"
+        in (project_dir / ".agents" / "skills" / "tool-pytest" / "SKILL.md").read_text()
+    )
+    assert (
+        "exclude-newer"
+        in (project_dir / ".agents" / "skills" / "tool-uv" / "SKILL.md").read_text()
+    )
 
     # Verify pre-commit config has typos
     precommit_text = (project_dir / ".pre-commit-config.yaml").read_text()

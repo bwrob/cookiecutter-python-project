@@ -91,6 +91,9 @@
 [tool.uv]
     default-groups = [ "dev", "test", "lint", "docs" ]
     package        = true
+    # Supply-chain protection buffer against zero-day compromised upstream releases.
+    # Uncomment to exclude packages published in the last N days during resolution:
+    # exclude-newer  = "7 days"
 
 [tool.uv.build-backend]
     source-include = [

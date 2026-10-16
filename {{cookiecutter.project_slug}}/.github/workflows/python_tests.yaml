@@ -52,6 +52,17 @@ jobs:
       - name: 🛡️ Run zizmor GitHub Actions security audit
         run: uv run poe zizmor
 
+      - name: 📋 Summarize quality failures
+        if: failure()
+        run: |
+          echo "### ⚠️ Code Quality Check Failed" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "To inspect, format, and fix issues locally, run:" >> "$GITHUB_STEP_SUMMARY"
+          echo '```bash' >> "$GITHUB_STEP_SUMMARY"
+          echo "uv run poe fix          # Auto-format and fix linter/spelling issues" >> "$GITHUB_STEP_SUMMARY"
+          echo "uv run poe code-quality # Run full verification gate locally" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
   test:
     name: 🐍 Python Tests Matrix
     runs-on: {% raw %}${{ matrix.os }}{% endraw %}
@@ -88,6 +99,16 @@ jobs:
       - name: 🧪 Run pytest suite
         run: uv run poe test
 
+      - name: 📋 Summarize test failures
+        if: failure()
+        run: |
+          echo "### ⚠️ Python Tests Failed on {% raw %}${{ matrix.os }}{% endraw %} (Python {% raw %}${{ matrix.python-version }}{% endraw %})" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "To reproduce test failures locally, run:" >> "$GITHUB_STEP_SUMMARY"
+          echo '```bash' >> "$GITHUB_STEP_SUMMARY"
+          echo "uv run poe test" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
   test-lowest:
     name: 🔬 Lowest Direct Dependencies Verification
     runs-on: ubuntu-latest
@@ -100,6 +121,17 @@ jobs:
       - name: 🧪 Run pytest suite against lowest dependencies
         run: uv run poe test
 
+      - name: 📋 Summarize lowest-dependencies test failures
+        if: failure()
+        run: |
+          echo "### ⚠️ Lowest-Dependencies Test Failed" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "One or more declared minimum dependency versions in \`pyproject.toml\` are incompatible." >> "$GITHUB_STEP_SUMMARY"
+          echo "To reproduce and debug locally, run:" >> "$GITHUB_STEP_SUMMARY"
+          echo '```bash' >> "$GITHUB_STEP_SUMMARY"
+          echo "uv run poe test-lowest" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
   test-dist:
     name: 📦 Distribution Wheel Verification
     runs-on: ubuntu-latest
@@ -111,6 +143,16 @@ jobs:
 
       - name: 📦 Build and test wheel package
         run: uv run poe test-dist
+
+      - name: 📋 Summarize distribution package failures
+        if: failure()
+        run: |
+          echo "### ⚠️ Distribution Package Verification Failed" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "To reproduce wheel build and distribution testing locally, run:" >> "$GITHUB_STEP_SUMMARY"
+          echo '```bash' >> "$GITHUB_STEP_SUMMARY"
+          echo "uv run poe test-dist" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
 
   check:
     name: 🛠️ All Checks Status

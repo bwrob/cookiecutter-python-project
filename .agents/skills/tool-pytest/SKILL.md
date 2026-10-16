@@ -36,6 +36,7 @@ In Zenith, task aliases are managed via Poe:
 ```bash
 uv run poe test                       # Run tests with coverage and doctests
 uv run poe test-fast                  # Run tests in parallel with xdist
+uv run poe test-lowest                # Verify test suite against lowest-direct dependency bounds
 uv run poe test-dist                  # Run tests against installed wheel distribution
 uv run poe test-snapshot-update       # Update Syrupy snapshots
 uv run poe coverage                   # Generate HTML coverage report

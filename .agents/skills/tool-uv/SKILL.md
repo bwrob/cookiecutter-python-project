@@ -181,6 +181,34 @@ my-private-package = { index = "internal" }
 - **Scripts & Monorepo roots** (`package = false`): Treats directory solely
   as an environment container without building a root wheel.
 
+### F. Supply Chain Protection with `exclude-newer`
+
+Astral `uv` supports an `exclude-newer` cutoff (via CLI, environment variable,
+or configuration) that limits package resolution to releases published prior
+to a given timestamp or relative age:
+
+1. **In `pyproject.toml`**: Enforce a rolling stabilization window:
+
+   ```toml
+   [tool.uv]
+   exclude-newer = "7 days"
+   ```
+
+2. **In CI Workflows (`UV_EXCLUDE_NEWER`)**: Prevent zero-hour PyPI index
+   propagation lag and guard against newly compromised releases:
+
+   ```bash
+   # Dynamic 1-hour cutoff in CI
+   export UV_EXCLUDE_NEWER=$(python3 -c 'import datetime; print((datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%SZ"))')
+   uv sync --frozen
+   ```
+
+3. **In Ad-hoc CLI Operations**:
+
+   ```bash
+   uv lock --exclude-newer "7 days"
+   ```
+
 ---
 
 ## 4. Best Practices & Common Gotchas

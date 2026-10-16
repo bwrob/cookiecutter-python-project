@@ -33,7 +33,18 @@ jobs:
         run: uv sync --only-group docs
 
       - name: Build documentation with Zensical
+        id: build_docs
         run: uv run zensical build --clean --strict
+
+      - name: 📋 Summarize documentation build failures
+        if: failure() && steps.build_docs.outcome == 'failure'
+        run: |
+          echo "### ⚠️ Documentation Build Failed" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "To reproduce documentation build failures locally, run:" >> "$GITHUB_STEP_SUMMARY"
+          echo '```bash' >> "$GITHUB_STEP_SUMMARY"
+          echo "uv run poe docs-build" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
