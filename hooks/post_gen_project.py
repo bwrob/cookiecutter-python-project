@@ -23,6 +23,7 @@ CONFIG_FILES_WITH_HEADERS = [
     ".zizmor.yml",
     os.path.join(".codex", "config.toml"),
     ".aider.conf.yml",
+    "cosmic-ray.toml",
 ]
 
 
@@ -72,6 +73,22 @@ def setup_agent_instructions() -> None:
             except (OSError, NotImplementedError):
                 # Fallback for platforms or environments without symlink privileges
                 shutil.copyfile(agents_path, alias_path)
+
+    # Establish modern Cursor rules directory
+    cursor_rules_dir = os.path.join(PROJECT_DIR, ".cursor", "rules")
+    os.makedirs(cursor_rules_dir, exist_ok=True)
+    cursor_rule_file = os.path.join(cursor_rules_dir, "zenith.mdc")
+    if not os.path.isfile(cursor_rule_file):
+        with open(cursor_rule_file, "w", encoding="utf-8") as f:
+            f.write(
+                "---\n"
+                "description: Authoritative project conventions, typing standards, and workflows\n"
+                'globs: ["*"]\n'
+                "alwaysApply: true\n"
+                "---\n\n"
+                "# Project Guidelines\n\n"
+                "Consult [AGENTS.md](../../AGENTS.md) for authoritative operational guidelines, architectural conventions, and development workflows.\n"
+            )
 
     gemini_dir = os.path.join(PROJECT_DIR, ".gemini")
     os.makedirs(gemini_dir, exist_ok=True)

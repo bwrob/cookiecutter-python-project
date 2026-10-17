@@ -54,7 +54,7 @@ Choose the appropriate structural tier based on the skill's complexity:
 - **Place in `templates/`**: Store every template in a dedicated file under `templates/`
   (e.g., `templates/changelog.md`, `templates/review_output.md`).
 - **Relative Linking**: Link to the template file from `SKILL.md` using relative Markdown
-  links: `[templates/my_template.md](./templates/my_template.md)`.
+  links: `[templates/SKILL_TEMPLATE.md](./templates/SKILL_TEMPLATE.md)`.
 
 ### Rule 2: Lengthy References & Multi-File Examples in Dedicated Directories
 - **References (`references/`)**: Detailed technical manuals, third-party plugin lists,

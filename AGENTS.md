@@ -67,13 +67,13 @@ Before editing code or executing tasks, ensure an isolated, clean working enviro
     (`contextFileName: "AGENTS.md"`).
   - **GitHub Copilot**: `.github/copilot-instructions.md` referencing `AGENTS.md`.
   - **Cursor & Windsurf**: `.cursorrules` and `.windsurfrules` symlinks
-    (`ln -s AGENTS.md .cursorrules`).
+    (`ln -s AGENTS.md .cursorrules`) and `.cursor/rules/zenith.mdc`.
   - **Aider**: `.aider.conf.yml` (auto-loading `AGENTS.md`, wiring `lint-cmd` and
     `test-cmd` to Poe tasks).
 - **Scope Hierarchy**: When exploring subdirectories, check for nested `AGENTS.md` or
   `CLAUDE.md` files; localized instructions take precedence within their scope.
 - **Workflow & Tool Guidance**: Consult `.agents/skills/` for lifecycle workflow skills
-  (`project-setup`, `code-review`, `git-workflow`, `changelog-writing`, `skill-creator`)
+  (`project-setup`, `code-review`, `git-workflow`, `changelog-writing`, `adr`, `skill-creator`)
   and tool-specific guidance (`tool-*/SKILL.md`, `python-style-guide`).
 
 ## Repository Architecture

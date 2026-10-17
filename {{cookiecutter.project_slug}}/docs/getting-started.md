@@ -101,7 +101,7 @@ uv run poe code-quality
 
 Code snippets can be embedded directly from verified tests or source files using `--8<--`:
 
-```python
+```markdown
 --8<-- "tests/test_core.py:10:14"
 ```
 

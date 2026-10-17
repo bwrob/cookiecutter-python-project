@@ -47,7 +47,7 @@ require_ignore_directive_reasons = "error"
     path       = "{{ cookiecutter.package_name }}.__main__"
 
 [[modules]]
-    depends_on = [ "{{ cookiecutter.package_name }}" ]
+    depends_on = [  ]
     layer      = "cli"
     path       = "{{ cookiecutter.package_name }}.cli"
 {% endif %}

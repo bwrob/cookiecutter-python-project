@@ -62,9 +62,17 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert (project_dir / ".aider.conf.yml").exists()
     assert (project_dir / ".cursorrules").exists()
     assert (project_dir / ".windsurfrules").exists()
+    assert (project_dir / "SECURITY.md").exists()
+    assert (project_dir / "CONTRIBUTING.md").exists()
+    assert (project_dir / "CODE_OF_CONDUCT.md").exists()
+    assert (project_dir / "cosmic-ray.toml").exists()
+    assert (project_dir / ".vscode" / "extensions.json").exists()
+    assert not (project_dir / ".vscode" / "settings.json").exists()
+    assert (project_dir / ".cursor" / "rules" / "zenith.mdc").exists()
     assert (project_dir / ".github" / "copilot-instructions.md").exists()
     assert (project_dir / ".github" / "codecov.yml").exists()
     for skill in [
+        "adr",
         "changelog-writing",
         "code-review",
         "git-workflow",
@@ -104,6 +112,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
         "pytest-sugar.md",
         "pytest-xdist.md",
         "syrupy.md",
+        "mutation_testing.md",
     ]:
         assert (
             project_dir / ".agents" / "skills" / "tool-pytest" / "references" / ref
@@ -151,6 +160,15 @@ def test_default_generation(temp_output_dir: Path) -> None:
         / "templates"
         / "zensical.toml"
     ).exists()
+    assert (
+        project_dir / ".agents" / "skills" / "adr" / "templates" / "adr.md"
+    ).exists()
+    assert (project_dir / "docs" / "adr" / "index.md").exists()
+    assert (project_dir / "docs" / "adr" / "template.md").exists()
+    assert (
+        project_dir / "docs" / "adr" / "0001-record-architecture-decisions.md"
+    ).exists()
+    assert (project_dir / "scripts" / "check_skills.py").exists()
     assert (project_dir / "src" / "demo_app" / "__init__.py").exists()
     assert (project_dir / "src" / "demo_app" / "_lazy.py").exists()
     assert (project_dir / "src" / "demo_app" / "cli.py").exists()
@@ -226,6 +244,11 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "tasks.verify-wheel" in poe_text
     assert "python scripts/verify_wheel.py" in poe_text
     assert "tasks.test-snapshot-update" in poe_text
+    assert "tasks.test-mutation" in poe_text
+    assert "tasks.test-mutation-cosmic" in poe_text
+    assert "tasks.check-skills" in poe_text
+    assert "tasks.repl" in poe_text
+    assert '"check-skills"' in poe_text
     assert "tasks.zizmor" in poe_text
     assert "tasks.audit" in poe_text
     assert "uv audit" in poe_text
@@ -236,12 +259,24 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "tasks.docs-logo" in poe_text
     assert "tasks.clean" in poe_text
     assert "tasks._clean-dist" in poe_text
+    assert "tasks._clean-mutation" in poe_text
+    assert "tasks._clean-cosmic" in poe_text
 
-    # Verify markdown-exec and Python 3.15 in pyproject.toml
+    python_tests_yaml = (
+        project_dir / ".github" / "workflows" / "python_tests.yaml"
+    ).read_text()
+    assert "codecov/codecov-action@v5" in python_tests_yaml
+    assert "griffe check" in python_tests_yaml
+
+    # Verify markdown-exec, mutation group, and Python 3.15 in pyproject.toml
     pyproject_text = (project_dir / "pyproject.toml").read_text()
     assert 'license = "MIT"' in pyproject_text
     assert 'license-files = [ "LICENSE" ]' in pyproject_text
     assert "griffe-warnings-deprecated>=" in pyproject_text
+    assert "mutation" in pyproject_text
+    assert "mutmut>=" in pyproject_text
+    assert "cosmic-ray>=" in pyproject_text
+    assert "[tool.mutmut]" in pyproject_text
     assert "markdown-exec" in pyproject_text
     assert "Programming Language :: Python :: 3.15" in pyproject_text
     assert "Typing :: Typed" in pyproject_text

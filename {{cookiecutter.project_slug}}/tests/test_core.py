@@ -1,7 +1,6 @@
 """Unit tests for core functionality."""
 
-from hypothesis import given
-from hypothesis import strategies as st
+from hypothesis import given, strategies as st
 from syrupy.assertion import SnapshotAssertion
 
 from {{ cookiecutter.package_name }}.core import get_greeting

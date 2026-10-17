@@ -8,11 +8,12 @@
 # Python code blocks with Ruff.
 # ==============================================================================
 
-disable = [ "MD060", "MD063", "MD078", "MD090", "MD093" ]
+disable = [ "MD052", "MD060", "MD063", "MD078", "MD082", "MD090", "MD093" ]
 enable = [ "ALL" ]
 exclude = [
     ".git",
     ".github",
+    ".agents",
     ".venv",
     ".ruff_cache",
     ".rumdl_cache",

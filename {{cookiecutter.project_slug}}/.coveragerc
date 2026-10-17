@@ -10,7 +10,7 @@
 
 [run]
 branch = true
-core = sysmon
+# core = sysmon
 patch =
     subprocess
     _exit

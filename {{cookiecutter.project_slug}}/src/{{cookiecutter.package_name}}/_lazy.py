@@ -9,6 +9,28 @@ if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
 
 
+def _resolve_or_raise(package: str, name: str) -> object:
+    # Protocol probes ask for dunders that a package never resolves lazily,
+    # and a failed import is not cached, so answering them here would repeat
+    # the whole finder walk on every copy, pickle, or introspection call.
+    if name.startswith("__") and name.endswith("__"):
+        msg = f"module {package!r} has no attribute {name!r}"
+        raise AttributeError(msg)
+
+    # Importing a subpackage eagerly used to bind it on its parent, so
+    # ``package.subpackage`` resolved without importing it by name first.
+    # Resolve it on demand to keep that working, which the import system
+    # then caches by binding the submodule on this package.
+    submodule = f"{package}.{name}"
+    try:
+        return importlib.import_module(submodule)
+    except ModuleNotFoundError as error:
+        if error.name != submodule:
+            raise
+        msg = f"module {package!r} has no attribute {name!r}"
+        raise AttributeError(msg) from None
+
+
 def accessors(
     module_globals: dict[str, object],
     members: Mapping[str, str],
@@ -38,25 +60,7 @@ def accessors(
             module_globals[name] = value
             return value
 
-        # Protocol probes ask for dunders that a package never resolves lazily,
-        # and a failed import is not cached, so answering them here would repeat
-        # the whole finder walk on every copy, pickle, or introspection call.
-        if name.startswith("__") and name.endswith("__"):
-            msg = f"module {package!r} has no attribute {name!r}"
-            raise AttributeError(msg)
-
-        # Importing a subpackage eagerly used to bind it on its parent, so
-        # ``package.subpackage`` resolved without importing it by name first.
-        # Resolve it on demand to keep that working, which the import system
-        # then caches by binding the submodule on this package.
-        submodule = f"{package}.{name}"
-        try:
-            return importlib.import_module(submodule)
-        except ModuleNotFoundError as error:
-            if error.name != submodule:
-                raise
-            msg = f"module {package!r} has no attribute {name!r}"
-            raise AttributeError(msg) from None
+        return _resolve_or_raise(package, name)
 
     def module_dir() -> list[str]:
         all_members = module_globals.get("__all__", ())
