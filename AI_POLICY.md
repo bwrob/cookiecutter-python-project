@@ -18,9 +18,8 @@ contributors must adhere to the following principles:
   linting, formatting, and pre-commit checks locally:
 
   ```bash
-  uv run pytest
-  uv run ruff check
-  uv run ruff format --check
+  uv run poe test
+  uv run poe code-quality
   uv run pre-commit run --all-files
   ```
 

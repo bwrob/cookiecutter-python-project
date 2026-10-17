@@ -34,17 +34,14 @@ Before editing code or executing tasks, ensure an isolated, clean working enviro
   - Run commands in environment: `uv run <command>`
 - **Temporary Files**: When creating temporary files, scratch scripts, or intermediate
   test outputs, always store them in the `.temp/` directory.
-- **Testing**: Run the automated test suite with pytest:
-
-  ```bash
-  uv run pytest
-  ```
-
+- **Task Runner**: All development tasks are managed through **Poe the Poet**:
+  - `uv run poe test` (run unit tests)
+  - `uv run poe code-quality` (run lint, format-check, and tests)
+  - `uv run poe fix` (auto-fix linting and formatting)
 - **Verification Gate**: Before proposing or finalizing changes, always verify your
   work:
-  - `uv run pytest`
-  - `uv run ruff check`
-  - `uv run ruff format --check`
+  - `uv run poe test`
+  - `uv run poe code-quality`
   - `uv run pre-commit run --all-files`
   - Always re-read any files modified by formatters or `pre-commit` hooks before making
     subsequent edits.

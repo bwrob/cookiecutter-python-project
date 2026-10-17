@@ -128,7 +128,7 @@ Run tasks via `uv run poe <task>`:
 | `dependency-graph` | `tach show --mermaid -o docs/dependency_graph.mmd` | Generates Mermaid diagram |
 | `fix` | `ruff check --fix && ruff format && rumdl fmt && typos -w` | Auto-fixes lint, format, and spelling issues |
 | `code-quality` | Runs `lint`, `format-check`, `lint-md`, `typos`, `type-check`, `complexity`, `dependencies` | Full quality check sequence |
-| `docs-serve` | `zensical serve --strict` | Starts local documentation server |
+| `docs-serve` | `zensical serve` | Starts local documentation server |
 | `docs-build` | `zensical build --strict --clean` | Builds static site into `site/` |
 | `docs-logo` | `typst compile docs/assets/python-logo.typ docs/assets/python-logo.svg` | Compiles documentation logotype SVG with Typst |
 | `publish-docs` | Deploys docs to GitHub Pages | Deploys docs to `gh-pages` branch |
@@ -138,10 +138,11 @@ Run tasks via `uv run poe <task>`:
 
 ## Testing the Template
 
-Run the automated Cookiecutter test suite:
+Run the automated Cookiecutter test suite with Poe or pytest:
 
 ```bash
-uv run pytest
+uv run poe test
+# or full gate: uv run poe code-quality
 ```
 
 ---
