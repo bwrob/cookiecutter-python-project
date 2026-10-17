@@ -9,8 +9,8 @@ edit_uri = "edit/main/docs/"
 
 # Documentation Navigation Hierarchy
 nav = [
-  { "Get Started" = "index.md" },
-  { "Guide" = "getting-started.md" },
+  { "Overview" = "index.md" },
+  { "Getting Started" = "getting-started.md" },
   { "Reference" = "reference.md" },
 ]
 

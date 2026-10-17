@@ -3,7 +3,7 @@
 This page documents the public API of **{{ cookiecutter.project_name }}**, automatically
 generated from source code docstrings via **mkdocstrings** and **griffe** static AST analysis.
 
-The primary entry point is [`get_greeting`][{{ cookiecutter.package_name }}.core.get_greeting].
+The primary entry point is [`get_greeting`](#core-module).
 Signatures automatically cross-reference parameter types, link to official Python documentation inventories,
 and render collapsible backlink trees indicating which pages reference each symbol.
 
