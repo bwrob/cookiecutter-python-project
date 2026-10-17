@@ -204,64 +204,11 @@ def test_cli_main_invocation(monkeypatch: pytest.MonkeyPatch) -> None:
 
 ## 6. Standard Zenith CLI Implementation Recipe
 
-In Zenith projects with `include_cli=yes`, the standard layout is structured as follows:
+In Zenith projects with `include_cli=yes`, the standard layout is defined in
+[examples/cli_recipe.py](./examples/cli_recipe.py).
 
-```python
-"""Command line interface for package."""
-
-from typing import Annotated
-import typer
-from rich.console import Console
-from package import __version__
-from package.core import core_business_logic
-
-app = typer.Typer(
-    name="my-app",
-    help="High-performance CLI application.",
-    no_args_is_help=True,
-    rich_markup_mode="rich",
-)
-console = Console()
-
-
-def version_callback(value: bool) -> None:
-    if value:
-        console.print(
-            f"[bold cyan]my-app[/bold cyan] version [green]{__version__}[/green]"
-        )
-        raise typer.Exit
-
-
-@app.callback()
-def main_callback(
-    _version: Annotated[
-        bool,
-        typer.Option(
-            "--version",
-            "-v",
-            help="Show version and exit.",
-            callback=version_callback,
-            is_eager=True,
-        ),
-    ] = False,
-) -> None:
-    """Entry point callback for global options."""
-
-
-@app.command()
-def run(
-    target: Annotated[str, typer.Argument(help="Target item to process.")] = "default",
-) -> None:
-    """Execute primary command workflow."""
-    result = core_business_logic(target)
-    console.print(f"[bold green]✨ {result}[/bold green]")
-
-
-def main() -> None:
-    """Execute the CLI application."""
-    app()
-
-
-if __name__ == "__main__":
-    main()
-```
+Key implementation components:
+- Explicit `app = typer.Typer(no_args_is_help=True, rich_markup_mode="rich")`.
+- Eager version flag callback (`version_callback`) raising `typer.Exit`.
+- Subcommands registered via `@app.command()` with PEP 593 `Annotated` parameters.
+- Top-level `main()` entry point callable directly by `__main__.py` and console scripts.

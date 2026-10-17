@@ -140,20 +140,10 @@ uv run pre-commit run --all-files
 
 ## 4. Output Review Template
 
-Format code review feedback using the following structured template:
+Format code review feedback using the standard structure defined in
+[templates/review_output.md](./templates/review_output.md).
 
-```markdown
-### Pre-Flight Code Review Summary
-
-- **Verdict**: [APPROVE / CHANGES REQUESTED]
-- **Verification Gates**:
-  - `poe code-quality`: [PASSED / FAILED]
-  - `poe test`: [PASSED / FAILED]
-  - `poe verify-wheel`: [PASSED / FAILED]
-
-#### Prioritized Findings
-- 🔴 **Critical**: [Bugs, race conditions, security, file:line + failing input]
-- 🟠 **Design & Architecture**: [Layer/API issues, file:line + violated rule]
-- 🟡 **Style & Typing**: [PEP 695, lint, diff comments, with file:line]
-- 🔵 **Tests & Docs**: [Missing tests, hollow checks, or docs, with file:line]
-```
+Always include:
+- Executive verdict (`APPROVE` or `CHANGES REQUESTED`).
+- Verification gate outcomes (`poe code-quality`, `poe test`, `poe verify-wheel`).
+- Prioritized findings with concrete `file:line` locations and failing inputs or violated rules.

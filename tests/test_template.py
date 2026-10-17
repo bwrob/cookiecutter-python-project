@@ -70,6 +70,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
         "git-workflow",
         "project-setup",
         "python-style-guide",
+        "skill-creator",
         "tool-complexipy",
         "tool-poethepoet",
         "tool-pyrefly",
@@ -107,6 +108,49 @@ def test_default_generation(temp_output_dir: Path) -> None:
         assert (
             project_dir / ".agents" / "skills" / "tool-pytest" / "references" / ref
         ).exists()
+    assert (
+        project_dir
+        / ".agents"
+        / "skills"
+        / "changelog-writing"
+        / "templates"
+        / "changelog.md"
+    ).exists()
+    assert (
+        project_dir
+        / ".agents"
+        / "skills"
+        / "code-review"
+        / "templates"
+        / "review_output.md"
+    ).exists()
+    assert (
+        project_dir
+        / ".agents"
+        / "skills"
+        / "skill-creator"
+        / "templates"
+        / "SKILL_TEMPLATE.md"
+    ).exists()
+    assert (
+        project_dir / ".agents" / "skills" / "tool-typer" / "examples" / "cli_recipe.py"
+    ).exists()
+    assert (
+        project_dir
+        / ".agents"
+        / "skills"
+        / "tool-poethepoet"
+        / "references"
+        / "declarative_primitives.md"
+    ).exists()
+    assert (
+        project_dir
+        / ".agents"
+        / "skills"
+        / "tool-zensical"
+        / "templates"
+        / "zensical.toml"
+    ).exists()
     assert (project_dir / "src" / "demo_app" / "__init__.py").exists()
     assert (project_dir / "src" / "demo_app" / "_lazy.py").exists()
     assert (project_dir / "src" / "demo_app" / "cli.py").exists()
