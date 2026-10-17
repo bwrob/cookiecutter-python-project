@@ -265,7 +265,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     python_tests_yaml = (
         project_dir / ".github" / "workflows" / "python_tests.yaml"
     ).read_text()
-    assert "codecov/codecov-action@v5" in python_tests_yaml
+    assert "codecov/codecov-action@v7" in python_tests_yaml
     assert "griffe check" in python_tests_yaml
 
     # Verify markdown-exec, mutation group, and Python 3.15 in pyproject.toml
@@ -404,7 +404,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
         project_dir / ".github" / "workflows" / "publish.yaml"
     ).read_text()
     assert "attestations: write" in publish_yaml_text
-    assert "actions/attest-build-provenance@v2" in publish_yaml_text
+    assert "actions/attest-build-provenance@v4" in publish_yaml_text
     assert "attestations: true" in publish_yaml_text
 
     # Verify python aliases in rumdl.toml

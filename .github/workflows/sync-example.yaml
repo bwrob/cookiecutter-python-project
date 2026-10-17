@@ -35,19 +35,19 @@ jobs:
           SSH_KEY: ${{ secrets.EXAMPLE_REPO_DEPLOY_KEY }}
 
       - name: Checkout Zenith template
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: zenith
 
       - name: Checkout zenith-example showcase
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: bwrob/zenith-example
           path: zenith-example
           ref: ${{ github.event.inputs.target_branch || 'main' }}
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v10.3.0
         with:
           enable-cache: true
           python-version: "3.13"
