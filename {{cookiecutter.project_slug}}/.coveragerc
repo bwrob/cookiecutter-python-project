@@ -12,8 +12,9 @@
 branch = true
 source =
     src/{{ cookiecutter.package_name }}
+    tests
 omit =
-    tests/*
+    */__snapshots__/*
     */site-packages/*
 
 [report]

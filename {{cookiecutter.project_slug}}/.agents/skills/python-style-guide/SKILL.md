@@ -246,3 +246,17 @@ def dispatch(action: Action) -> None:
   - `core` NEVER imports from `cli`.
 - **Zero Circular Imports**: Keep module dependencies as a Directed Acyclic
   Graph (DAG).
+
+---
+
+## 9. Docstrings & Markdown Rendering
+
+- **NumPy-Style Markdown Docstrings**: Format public module, class, and function
+  docstrings using the `numpy` convention (`Parameters`, `Returns`, `Raises`,
+  `Examples`), rendered as Markdown by `mkdocstrings` and Zensical.
+- **Single Backticks for Inline Code**: Because docstrings are parsed as
+  Markdown rather than reStructuredText (RST), always use single backticks for
+  inline code references (`` `value` ``), never RST double backticks
+  (```` ``value`` ````).
+- **Executable Doctests**: Include concise `>>>` doctest examples in pure
+  functions where appropriate (verified automatically by `pytest --doctest-modules`).

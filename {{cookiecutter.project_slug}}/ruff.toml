@@ -28,6 +28,9 @@ line-length = 88
     [lint.flake8-tidy-imports]
         ban-relative-imports = "all"
 
+    [lint.isort]
+        combine-as-imports = true
+
 
     [lint.per-file-ignores]
         "src/*/__init__.py" = [ "non-empty-init-module" ]

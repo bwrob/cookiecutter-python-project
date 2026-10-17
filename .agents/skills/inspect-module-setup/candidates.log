@@ -12,7 +12,6 @@ hypothesis
 cibuildwheel
 griffe
 structlog
-httpx
 rich
 litestar
 pydantic
@@ -20,7 +19,6 @@ sqlmodel
 pytest
 typer
 adk-python
-marimo
 poethepoet
 polars
 pluggy

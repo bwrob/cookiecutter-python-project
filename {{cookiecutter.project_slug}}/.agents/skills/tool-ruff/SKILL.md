@@ -85,6 +85,14 @@ ignore = [
 fixable = ["ALL"]
 unfixable = []
 
+# Enforce absolute package imports across all files
+[lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+# Consolidate aliased imports from the same module
+[lint.isort]
+combine-as-imports = true
+
 # Per-file rule relaxations
 [lint.per-file-ignores]
 "tests/*" = [

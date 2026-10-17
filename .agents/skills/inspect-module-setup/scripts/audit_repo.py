@@ -977,19 +977,39 @@ def audit_pillar_8_governance(root: Path) -> PillarAudit:
     details: list[str] = []
     level = 1
 
-    health_files = {
-        "LICENSE": "Open source license file",
-        "SECURITY.md": "Security disclosure policy (`SECURITY.md`)",
-        "CONTRIBUTING.md": "Contributor guidelines (`CONTRIBUTING.md`)",
-        "CODE_OF_CONDUCT.md": "Community code of conduct",
-    }
+    health_checks: list[tuple[str, tuple[str, ...], str]] = [
+        (
+            "LICENSE",
+            ("LICENSE", "LICENSE.md", "LICENSE.txt", "COPYING"),
+            "Open source license file",
+        ),
+        (
+            "SECURITY.md",
+            ("SECURITY.md", ".github/SECURITY.md"),
+            "Security disclosure policy (`SECURITY.md`)",
+        ),
+        (
+            "CONTRIBUTING.md",
+            ("CONTRIBUTING.md", ".github/CONTRIBUTING.md", "docs/contributing.md"),
+            "Contributor guidelines (`CONTRIBUTING.md`)",
+        ),
+        (
+            "CODE_OF_CONDUCT.md",
+            (
+                "CODE_OF_CONDUCT.md",
+                ".github/CODE_OF_CONDUCT.md",
+                "docs/code_of_conduct.md",
+            ),
+            "Community code of conduct",
+        ),
+    ]
     found_count = 0
-    for filename, desc in health_files.items():
-        if (root / filename).exists() or (root.parent / filename).exists():
+    for canonical, candidates, desc in health_checks:
+        if any((root / c).exists() or (root.parent / c).exists() for c in candidates):
             found_count += 1
             strengths.append(desc)
         else:
-            gaps.append(f"Missing `{filename}`")
+            gaps.append(f"Missing `{canonical}`")
 
     # Secondary health assets
     for opt_file in ("CITATION.cff", "AUTHORS.md", "CHANGELOG.md", "ROADMAP.md"):

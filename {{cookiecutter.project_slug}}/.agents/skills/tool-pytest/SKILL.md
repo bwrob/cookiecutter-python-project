@@ -52,38 +52,48 @@ Pytest and coverage behavior are configured through root configuration files.
 
 ```ini
 [pytest]
-testpaths = tests
-python_files = test_*.py
-python_classes = Test*
-python_functions = test_*
+testpaths = tests src
 addopts =
-    --doctest-modules
-    --strict-markers
+    --verbose
     -ra
-markers =
-    slow: marks tests as slow (deselect with '-m "not slow"')
-    integration: external or integration tests
+    --doctest-modules
+    --import-mode=importlib
+    --strict-config
+    --strict-markers
+xfail_strict = true
+filterwarnings =
+    error
+doctest_optionflags =
+    NORMALIZE_WHITESPACE
+    ELLIPSIS
 ```
 
 ### `.coveragerc`
 
+Coverage is monitored across both `src/` and `tests/` so dead test helpers,
+unreachable fixture branches, or shadowed test functions are immediately caught:
+
 ```ini
 [run]
-source = src
+source =
+    src
+    tests
 branch = true
 omit =
-    */tests/*
     */__snapshots__/*
+    */site-packages/*
 
 [report]
 fail_under = 80
 show_missing = true
-exclude_lines =
+exclude_also =
     pragma: no cover
     def __repr__
     if TYPE_CHECKING:
     raise NotImplementedError
     if __name__ == .__main__.:
+    @overload
+    @(typing\.)?overload
 ```
 
 ---

@@ -55,6 +55,7 @@ Pytest and coverage behavior are configured through root configuration files.
 testpaths = tests src
 addopts =
     --verbose
+    -ra
     --doctest-modules
     --import-mode=importlib
     --strict-config
@@ -69,18 +70,23 @@ doctest_optionflags =
 
 ### `.coveragerc`
 
+Coverage is monitored across both `src/` and `tests/` so dead test helpers,
+unreachable fixture branches, or shadowed test functions are immediately caught:
+
 ```ini
 [run]
-source = src
+source =
+    src
+    tests
 branch = true
 omit =
-    */tests/*
     */__snapshots__/*
+    */site-packages/*
 
 [report]
 fail_under = 80
 show_missing = true
-exclude_lines =
+exclude_also =
     pragma: no cover
     def __repr__
     if TYPE_CHECKING:

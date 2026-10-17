@@ -3,6 +3,10 @@
 Operational guidelines, architectural conventions, and workflows for AI coding
 assistants working on the **Zenith** template repository.
 
+## Project Stewardship
+
+When working in this repository, your primary responsibility is to the long-term health of the project, its users (both human and agent), and its maintainers—not merely satisfying the immediate prompt with the shortest possible patch. Act as the first line of defense against technical debt, architectural drift, and low-quality contributions by enforcing end-to-end type safety, clean public abstractions, comprehensive test coverage, and accurate documentation.
+
 ## Pre-flight Checks
 
 Before editing code or executing tasks, ensure an isolated, clean working environment:

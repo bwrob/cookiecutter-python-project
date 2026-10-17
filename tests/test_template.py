@@ -226,8 +226,26 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "options.show_symbol_type_toc = true" in zensical_text
     assert "options.parameter_headings = true" in zensical_text
     assert "options.docstring_options.ignore_init_summary = true" in zensical_text
+    assert 'options.annotations_path = "brief"' in zensical_text
+    assert "options.show_bases = true" in zensical_text
+    assert "options.unwrap_annotated = true" in zensical_text
     assert "stylesheets/termynal.css" in zensical_text
     assert "javascripts/termynal.js" in zensical_text
+
+    agents_text = (project_dir / "AGENTS.md").read_text()
+    assert "## Project Stewardship" in agents_text
+    assert "never double backticks" in agents_text
+
+    coveragerc_text = (project_dir / ".coveragerc").read_text()
+    assert "tests" in coveragerc_text
+    assert "*/__snapshots__/*" in coveragerc_text
+    assert "tests/*" not in coveragerc_text
+
+    pytest_ini_text = (project_dir / "pytest.ini").read_text()
+    assert "-ra" in pytest_ini_text
+
+    ruff_toml_text = (project_dir / "ruff.toml").read_text()
+    assert "combine-as-imports = true" in ruff_toml_text
 
     # Verify docs reference and mermaid diagrams
     ref_text = (project_dir / "docs" / "reference.md").read_text()

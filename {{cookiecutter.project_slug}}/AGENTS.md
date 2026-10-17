@@ -3,6 +3,10 @@
 Operational guidelines, architectural conventions, and workflows for AI coding
 assistants working in **{{ cookiecutter.project_name }}**.
 
+## Project Stewardship
+
+When working in this repository, your primary responsibility is to the long-term health of the project, its users (both human and agent), and its maintainers—not merely satisfying the immediate prompt with the shortest possible patch. Act as the first line of defense against technical debt, architectural drift, and low-quality contributions by enforcing end-to-end type safety, clean public abstractions, comprehensive test coverage, and accurate documentation.
+
 ## Pre-flight Checks
 
 Before editing code or running tasks, ensure a clean, isolated environment:
@@ -86,8 +90,10 @@ Refer to `.agents/skills/python-style-guide/SKILL.md` for complete guidelines.
   warning gates (`filterwarnings = error`), import isolation (`--import-mode=importlib`),
   and strict marker validation (`--strict-markers`).
 - **Documentation**: Site is built with Zensical. API references are generated
-  automatically from docstrings with `mkdocstrings`. Build-time link and reference
-  validation is strictly enforced via `[project.validation]`.
+  automatically from docstrings with `mkdocstrings`. Docstrings are rendered as
+  Markdown, not reStructuredText: use single backticks for inline code
+  (`` `value` ``), never double backticks (```` ``value`` ````). Build-time link
+  and reference validation is strictly enforced via `[project.validation]`.
 - **Diagrams**: Use Mermaid code blocks (```mermaid) for architecture and sequence
   diagrams.
 
