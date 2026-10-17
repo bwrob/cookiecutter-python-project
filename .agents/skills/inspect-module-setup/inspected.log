@@ -36,3 +36,13 @@ mkdocstrings
 mkdocstrings-python
 markdown-exec
 copier-uv
+tach
+import-linter
+complexipy
+pyrefly
+basedpyright
+stamina
+attrs
+trio
+syrupy
+polyfactory

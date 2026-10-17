@@ -7,6 +7,15 @@
 # in code, docstrings, markdown, and configs before they reach production.
 # ==============================================================================
 
+[default]
+extend-ignore-re = [
+    "(?Rm)^.*(#|//)\\s*(spellchecker:disable-line|codespell:ignore)\\s*$",
+]
+
+[default.extend-words]
+CPY  = "CPY"
+Ines = "Ines"
+
 [files]
 extend-exclude = [
     "*.ambr",
@@ -17,6 +26,3 @@ extend-exclude = [
     "site",
 ]
 
-[default.extend-words]
-CPY  = "CPY"
-Ines = "Ines"

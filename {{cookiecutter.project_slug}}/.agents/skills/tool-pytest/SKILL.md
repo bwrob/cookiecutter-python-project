@@ -53,8 +53,10 @@ Pytest and coverage behavior are configured through root configuration files.
 ```ini
 [pytest]
 addopts =
-    --verbose -ra --doctest-modules
+    --verbose -ra -p no:legacypath --doctest-modules
     --import-mode=importlib --strict-config --strict-markers --snapshot-warn-unused
+# Uncomment when using pytest-asyncio (0.24+) to configure default fixture loop scope:
+# asyncio_default_fixture_loop_scope = function
 collect_imported_tests = false
 console_output_style   = classic
 log_format             = %(asctime)s [%(levelname)8s] %(name)s: %(message)s
@@ -74,9 +76,12 @@ doctest_optionflags    =
 ```
 
 > [!TIP]
-> Setting `log_level = DEBUG` without `log_cli = true` captures `DEBUG` logs in
-> memory and prints them **only when a test fails**, keeping passing test runs
-> quiet and preserving LLM context window budgets.
+> Setting `-p no:legacypath` banishes pytest's legacy `py.path.local` plugin, enforcing
+> standard `pathlib.Path` across test fixtures (`tmp_path`). Setting `log_level = DEBUG`
+> without `log_cli = true` captures `DEBUG` logs in memory and prints them **only when a test fails**,
+> keeping passing test runs quiet and preserving LLM context window budgets.
+> When using `pytest-asyncio` 0.24+, set `asyncio_default_fixture_loop_scope = function` to
+> silence event loop scoping warnings.
 
 ### `.coveragerc`
 

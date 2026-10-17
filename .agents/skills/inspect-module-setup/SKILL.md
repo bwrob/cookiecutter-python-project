@@ -354,11 +354,15 @@ parallel subagents in chunks of 2–3 repositories per subagent):
    - Agent skills & governance (`AGENTS.md`, `CLAUDE.md`, `AI_POLICY.md`,
      `.agents/skills/`, `.claude/skills/`, `.cursor/rules/`).
 
-3. **Append Deep-Dive Findings & Proposals**:
+3. **Append Deep-Dive Findings & Concrete Proposals**:
    Append a structured **`## 4. Deep-Dive Findings & Proposals for Zenith`** section to
-   `.temp/batch-inspection/<NN>-<slug>.md` documenting exact file paths, configuration
-   snippets, and actionable takeaways (or explicitly noting if no novel patterns exceed
-   Zenith's baseline).
+   `.temp/batch-inspection/<NN>-<slug>.md`. **Never stop at vague or high-level observations.**
+   For every discovery, compare the finding directly against `{{cookiecutter.project_slug}}`
+   and formulate a concrete, well-explained proposal containing:
+   - **Exact Target File**: Target path in `{{cookiecutter.project_slug}}/` (e.g. `{{cookiecutter.project_slug}}/pyproject.toml`, `{{cookiecutter.project_slug}}/tach.toml`, `{{cookiecutter.project_slug}}/pytest.ini`, `{{cookiecutter.project_slug}}/ruff.toml`, etc.) and corresponding root assets.
+   - **Concrete Code Diff / Drop-in Replacement**: Exact code snippets or before/after diffs ready for immediate execution.
+   - **Well-Explained Architectural Rationale**: Detailed explanation of the mechanism, what edge cases, runtime crashes, or developer friction it prevents, and why Zenith benefits.
+   - **Verification Plan**: Exact commands (`uv run pytest`, `uv run ruff check`) to validate the update.
 
 4. **Transition & Cache Hygiene**: Once `.temp/batch-inspection/<NN>-<slug>.md` is
    complete, transition the module from `candidates.log` to `inspected.log` and prune
@@ -389,8 +393,15 @@ After all $N$ individual reports (`01-<slug>.md` through `<NN>-<slug>.md`) are w
        (`AGENTS.md`, `AI_POLICY.md`), & Inspector Script Improvements
    - **Explicit Rejections / Anti-Bloat Filter**: Patterns observed in the cohort that
      Zenith intentionally rejects (and why).
-3. Present the synthesized proposals to the user and await confirmation before modifying
-   the template.
+3. **Always Present Concrete, Well-Explained Proposals with Diff Blocks**:
+   When presenting the synthesized findings to the user, never provide mere bullet-point
+   summaries. For each proposed change, provide:
+   - The comparison between `{{cookiecutter.project_slug}}` and the benchmark cohort.
+   - The exact target file path in `{{cookiecutter.project_slug}}/`.
+   - The drop-in code snippet or configuration diff.
+   - A thorough, well-explained justification covering architectural invariants, runtime
+     safety, and developer experience.
+   - A verification plan.
 
 ---
 
@@ -408,30 +419,43 @@ duplicate effort.
 
 ---
 
-## 5. Single-Repository Proposal Template
+## 5. Concrete Proposal Standard
 
-When proposing template improvements from a single-repository audit (or formatting each
-proposal inside `00-SYNTHESIS.md`), structure the output as follows:
+Every improvement proposal generated from this skill (whether from a single-repository
+audit or a batch cohort synthesis) **MUST** follow this comprehensive, diff-ready format:
 
 ```markdown
 # Improvement Proposal: [Area / Feature / Skill] (Learned from [Project Name(s)])
 
-## 1. Executive Summary
-Brief summary of the discovered pattern, skill, or workflow and why Zenith benefits from it.
+## 1. Executive Summary & Architectural Rationale
+Detailed explanation of the discovered pattern, skill, or configuration mechanism:
+- **Problem Solved**: What edge case, runtime failure, type-checker crash, or developer friction this addresses.
+- **Why It Matters**: Concrete rationale for why best-in-class projects adopt it and why Zenith benefits.
 
 ## 2. Benchmark Source & Context
-- Target Project(s): `[org/repo]`
-- Discovered Pattern: `[e.g., Trusted Publishing OIDC / PEP 735 groups / AI Policy / Custom Agent Skill]`
+- **Target Project(s)**: `[org/repo]` (with specific file paths and line numbers)
+- **Discovered Pattern**: `[e.g., Trusted Publishing OIDC / PEP 735 groups / AI Policy / Custom Agent Skill]`
 
-## 3. Gap Analysis (Target vs. Zenith)
-| Capability | Target Repo Pattern | Zenith Current State | Advantage |
+## 3. Gap Analysis (Target vs. `{{cookiecutter.project_slug}}`)
+| Capability | Target Repo Pattern | `{{cookiecutter.project_slug}}` State | Advantage |
 | --- | --- | --- | --- |
 
-## 4. Proposed Changes
-- Exact configuration diffs, new template files, or new agent skills (`.agents/skills/tool-*`).
-- Updates to `cookiecutter.json`, hooks, `AGENTS.md`, or `{{cookiecutter.project_slug}}`.
+## 4. Concrete Code Diffs & Drop-in Replacements
+Exact configuration diffs and drop-in code blocks targeting specific files in `{{cookiecutter.project_slug}}/` or root assets:
+
+```toml
+# File: {{cookiecutter.project_slug}}/[config_file]
+<<<<
+[existing_content]
+====
+[proposed_replacement_content]
+>>>>
+```
 
 ## 5. Verification Plan
-- Unit tests (`uv run pytest`).
+Exact verification steps and shell commands:
+- Unit & template tests (`uv run pytest`).
+- Static analysis & formatting verification (`uv run ruff check && uv run ruff format --check`).
+- Pre-commit verification (`uv run pre-commit run --all-files`).
 - End-to-end template generation & smoke tests (`uv run poe code-quality`).
 ```

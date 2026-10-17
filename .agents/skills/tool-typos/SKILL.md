@@ -40,6 +40,12 @@ uv run poe typos-fix                   # Runs typos -w (auto-fix)
 `typos` is configured via **`typos.toml`** at the project root:
 
 ```toml
+[default]
+# Regex patterns for line-level inline comment suppression
+extend-ignore-re = [
+    "(?Rm)^.*(#|//)\\s*(spellchecker:disable-line|codespell:ignore)\\s*$",
+]
+
 [files]
 # Exclude binary artifacts, generated vectors, and build directories
 extend-exclude = [
@@ -107,6 +113,14 @@ cls = "cls"
 [type.md.extend-words]
 # Suppress only in Markdown files
 subcommand = "subcommand"
+```
+
+### D. Inline Comment Suppressions
+
+To suppress a false positive on a single line without polluting project-wide dictionaries:
+
+```python
+API_ENDPT = "/api/v1/custom"  # spellchecker:disable-line
 ```
 
 ---

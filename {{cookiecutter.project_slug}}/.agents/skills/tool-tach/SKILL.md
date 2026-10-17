@@ -40,9 +40,14 @@ Tach is configured via **`tach.toml`** at the project root:
 # Source roots for Python import resolution
 source_roots = ["src"]
 
-# Forbid circular dependencies across modules
+# Boundary enforcement rules & ignore governance
+exact = true
 forbid_circular_dependencies = true
 ignore_type_checking_imports = true
+
+[rules]
+unused_ignore_directives = "error"
+require_ignore_directive_reasons = "error"
 
 # Layer hierarchy (ordered from top to bottom)
 # Higher layers can import from lower layers; lower cannot import upward.
@@ -155,17 +160,20 @@ This generates `docs/dependency_graph.mmd`, which can be embedded in docs.
 
 ### F. Suppressing False Positives or Temporary Migration Exceptions
 
-When transitioning legacy code or handling dynamic runtime imports:
+When transitioning legacy code or handling dynamic runtime imports, always provide
+an explicit architectural reason (enforced by `require_ignore_directive_reasons = "error"`):
 
 ```python
-# tach-ignore
+# tach-ignore(legacy-bridge): dynamic runtime import during migration
 from my_app.cli import format_output
 ```
 
-Or ignore a specific module path:
+Or ignore a specific module path with reason:
 
 ```python
-from my_app.cli import format_output  # tach-ignore(my_app.cli)
+from my_app.cli import (
+    format_output,
+)  # tach-ignore[my_app.cli](circular-hook): deferred CLI hook
 ```
 
 ---

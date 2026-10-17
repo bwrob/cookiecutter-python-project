@@ -35,6 +35,13 @@ maintainer time, all contributors must adhere to the following principles:
 - **Targeted Contributions**: Pull requests created with AI assistance should address
   existing, accepted issues or open discussions. Drive-by PRs addressing non-issues may
   be closed without review.
+- **Contribute at Human Speed, Not AI Speed**: AI tools make it trivial to generate
+  large volumes of code and prose quickly, but open source review bandwidth moves at
+  human speed. Do not post rapid-fire pull requests, mass-claim open issues, or flood
+  issue trackers with automated solutions.
+- **Do Not Communicate via LLM-Generated Text**: Do not rely on AI assistants to speak
+  for you in issues, pull request discussions, or reviews. Maintainers expect direct,
+  thoughtful communication written by the contributor, not raw LLM summaries.
 
 ## 4. Transparent Disclosure
 

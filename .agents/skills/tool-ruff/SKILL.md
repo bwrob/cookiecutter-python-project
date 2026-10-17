@@ -89,9 +89,23 @@ unfixable = []
 [lint.flake8-tidy-imports]
 ban-relative-imports = "all"
 
+# Preserve runtime typing for dataclasses, attrs, and pydantic models
+[lint.flake8-type-checking]
+exempt-modules = ["typing", "typing_extensions"]
+runtime-evaluated-base-classes = ["pydantic.BaseModel"]
+runtime-evaluated-decorators = [
+    "attrs.define",
+    "attrs.frozen",
+    "attrs.mutable",
+    "dataclasses.dataclass",
+    "pydantic.dataclasses.dataclass",
+    "pydantic.validate_call",
+]
+
 # Consolidate aliased imports from the same module
 [lint.isort]
 combine-as-imports = true
+
 
 # Per-file rule relaxations
 [lint.per-file-ignores]
