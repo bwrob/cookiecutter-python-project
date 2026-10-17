@@ -18,6 +18,7 @@ from harvest_skills import (
     ensure_target_dir,
     format_harvest_markdown,
     harvest_repo,
+    resolve_repo_root,
 )
 
 
@@ -177,7 +178,7 @@ def audit_pillar_1_packaging(root: Path, pyproject: dict[str, object]) -> Pillar
         has_pytyped = any(
             p.name == "py.typed"
             for p in root.rglob("py.typed")
-            if not any(part in IGNORE_DIRS for part in p.parts)
+            if not any(part in IGNORE_DIRS for part in p.relative_to(root).parts)
         )
     except OSError:
         pass
@@ -480,7 +481,11 @@ def audit_pillar_4_task_runner(root: Path, pyproject: dict[str, object]) -> Pill
             details.append(
                 f"Poe tasks defined: {', '.join(f'`{t}`' for t in task_list[:8])}"
             )
-    elif (root / "Justfile").exists() or (root / "justfile").exists():
+    elif (
+        (root / "Justfile").exists()
+        or (root / "justfile").exists()
+        or (root / ".justfile").exists()
+    ):
         level = 3
         strengths.append("Justfile task orchestrator")
     elif (root / "Makefile").exists() or (root / "makefile").exists():
@@ -618,9 +623,10 @@ def audit_pillar_6_docs(root: Path) -> PillarAudit:
     gaps: list[str] = []
     details: list[str] = []
     level = 1
+    repo_root = resolve_repo_root(root)
 
     # 1. Zensical Documentation Engine
-    zensical_candidates = [root / "zensical.toml", root.parent / "zensical.toml"]
+    zensical_candidates = [root / "zensical.toml", repo_root / "zensical.toml"]
     zensical_file = next((f for f in zensical_candidates if f.is_file()), None)
 
     if zensical_file:
@@ -701,8 +707,8 @@ def audit_pillar_6_docs(root: Path) -> PillarAudit:
         root / "docs" / "mkdocs.yaml",
         root / "docs" / "en" / "mkdocs.yml",
         root / "docs" / "en" / "mkdocs.yaml",
-        root.parent / "mkdocs.yml",
-        root.parent / "mkdocs.yaml",
+        repo_root / "mkdocs.yml",
+        repo_root / "mkdocs.yaml",
     ]:
         if cand.is_file() and cand not in mkdocs_files:
             mkdocs_files.append(cand)
@@ -876,9 +882,10 @@ def audit_pillar_7_cicd(root: Path) -> PillarAudit:
     strengths: list[str] = []
     gaps: list[str] = []
     details: list[str] = []
+    repo_root = resolve_repo_root(root)
     workflows_dir = root / ".github" / "workflows"
-    if not workflows_dir.is_dir() and (root.parent / ".github" / "workflows").is_dir():
-        workflows_dir = root.parent / ".github" / "workflows"
+    if not workflows_dir.is_dir() and (repo_root / ".github" / "workflows").is_dir():
+        workflows_dir = repo_root / ".github" / "workflows"
     level = 1
 
     if not workflows_dir.is_dir():
@@ -976,6 +983,7 @@ def audit_pillar_8_governance(root: Path) -> PillarAudit:
     gaps: list[str] = []
     details: list[str] = []
     level = 1
+    repo_root = resolve_repo_root(root)
 
     health_checks: list[tuple[str, tuple[str, ...], str]] = [
         (
@@ -1005,7 +1013,7 @@ def audit_pillar_8_governance(root: Path) -> PillarAudit:
     ]
     found_count = 0
     for canonical, candidates, desc in health_checks:
-        if any((root / c).exists() or (root.parent / c).exists() for c in candidates):
+        if any((root / c).exists() or (repo_root / c).exists() for c in candidates):
             found_count += 1
             strengths.append(desc)
         else:
@@ -1013,11 +1021,11 @@ def audit_pillar_8_governance(root: Path) -> PillarAudit:
 
     # Secondary health assets
     for opt_file in ("CITATION.cff", "AUTHORS.md", "CHANGELOG.md", "ROADMAP.md"):
-        if (root / opt_file).exists() or (root.parent / opt_file).exists():
+        if (root / opt_file).exists() or (repo_root / opt_file).exists():
             details.append(f"Repository metadata file present: `{opt_file}`")
 
     github_dir = (
-        root / ".github" if (root / ".github").is_dir() else root.parent / ".github"
+        root / ".github" if (root / ".github").is_dir() else repo_root / ".github"
     )
     if (github_dir / "PULL_REQUEST_TEMPLATE.md").exists() or (
         github_dir / "pull_request_template.md"

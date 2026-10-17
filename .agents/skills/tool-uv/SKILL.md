@@ -47,12 +47,13 @@ uv run -p 3.13 <command>     # Run with a specific Python version
 uvx <tool>                   # Run isolated tool without adding to project
 ```
 
-### Lockfile & Build Commands
+### Lockfile, Security Audit, & Build Commands
 
 ```bash
 uv lock                              # Update uv.lock without installing
 uv lock --upgrade                    # Upgrade all packages to latest
 uv lock --upgrade-package <pkg>      # Upgrade a single package
+uv audit                             # Scan uv.lock against security advisories
 uv build                             # Build source distribution and wheel
 uv publish                           # Publish distributions to PyPI
 ```
@@ -68,6 +69,8 @@ uv publish                           # Publish distributions to PyPI
 name = "my-project"
 version = "0.1.0"
 requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = [
     "typer>=0.15.0",
 ]
@@ -80,6 +83,7 @@ dev = [
     { include-group = "docs" },
 ]
 test = [
+    "poethepoet>=0.42.0",
     "pytest>=9.0.0",
     "hypothesis>=6.125.0",
 ]
@@ -148,16 +152,20 @@ When raising or lowering the supported Python target:
    uv sync
    ```
 
-### C. Pinning or Constraining an Indirect Dependency
+### C. Pinning or Constraining an Indirect or Build Dependency
 
-If a transitive dependency has a broken release, add an override or
-constraint in `pyproject.toml`:
+If a transitive dependency or PEP 517 build backend has a broken release, add
+an override or build constraint in `pyproject.toml`:
 
 ```toml
 [tool.uv]
 override-dependencies = [
     "problematic-pkg==1.2.3",
 ]
+build-constraint-dependencies = [
+    "setuptools>=75.0.0",
+]
+required-version = ">=0.7.0"
 ```
 
 ### D. Configuring Private or Alternative Package Indexes
@@ -168,7 +176,7 @@ To pull proprietary packages or PyPI mirrors:
 [[tool.uv.index]]
 name = "internal"
 url = "https://pypi.company.internal/simple"
-default = false
+explicit = true
 
 [tool.uv.sources]
 my-private-package = { index = "internal" }
@@ -181,26 +189,29 @@ my-private-package = { index = "internal" }
 - **Scripts & Monorepo roots** (`package = false`): Treats directory solely
   as an environment container without building a root wheel.
 
-### F. Supply Chain Protection with `exclude-newer`
+### F. Supply Chain Protection with `exclude-newer` & `exclude-newer-package`
 
 Astral `uv` supports an `exclude-newer` cutoff (via CLI, environment variable,
 or configuration) that limits package resolution to releases published prior
-to a given timestamp or relative age:
+to a given timestamp or relative age, while allowing per-package exemptions via
+`exclude-newer-package`:
 
-1. **In `pyproject.toml`**: Enforce a rolling stabilization window:
+1. **In `pyproject.toml`**: Enforce a rolling stabilization window with
+   targeted exemptions for trusted internal packages:
 
    ```toml
    [tool.uv]
    exclude-newer = "7 days"
+   exclude-newer-package = { "my-internal-sdk" = false }
    ```
 
-2. **In CI Workflows (`UV_EXCLUDE_NEWER`)**: Prevent zero-hour PyPI index
-   propagation lag and guard against newly compromised releases:
+2. **In CI Workflows (`UV_EXCLUDE_NEWER`)**: Prevent zero-hour PyPI index propagation
+   lag and guard against newly compromised releases:
 
    ```bash
    # Dynamic 1-hour cutoff in CI
-   export UV_EXCLUDE_NEWER=$(python3 -c 'import datetime; print((datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%SZ"))')
-   uv sync --frozen
+   export UV_EXCLUDE_NEWER="1 hour ago"
+   uv sync --only-group test
    ```
 
 3. **In Ad-hoc CLI Operations**:
@@ -219,7 +230,10 @@ Keep these rules in mind when working with `uv`:
   `pyproject.toml` and run `uv lock` or `uv add`.
 - **Never invoke `pip` inside `uv` projects**: Running `pip install`
   bypasses `uv.lock` and creates un-reproducible environments.
-- **Use `--frozen` in CI**: CI pipelines should run `uv sync --frozen` so
-  any uncommitted lockfile changes fail early.
+- **Scope CI installs with `--only-group`**: In cross-platform CI test
+  matrices, run `uv sync --only-group test` so test runners do not waste time
+  downloading documentation (`zensical`, `typst`) or linter binaries.
+- **Audit dependencies regularly**: Run `uv run poe audit` (`uv audit`) to
+  verify `uv.lock` against published security advisories.
 - **Group inclusions**: Use `{ include-group = "..." }` in composite groups
   like `dev` to keep logical tool sets modular and decoupled.

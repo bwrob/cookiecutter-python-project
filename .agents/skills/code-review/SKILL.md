@@ -17,7 +17,24 @@ to merging.
 
 ---
 
-## 1. The 6-Point Review Matrix
+## 1. Read-Only & Grounded Review Contract
+
+1. **Strict Read-Only Contract**: When asked to review a working tree or pull request
+   diff, **report findings and stop**. Never edit any file during a review turn, and do
+   not mix unrequested fixes with review output. Apply fixes only after the user
+   explicitly asks you to fix specific items.
+2. **Ground Every Finding**:
+   Before reporting a finding, resolve symbols through base classes and protocols.
+   - For a **correctness finding**, name the concrete input or state that triggers the
+     failure.
+   - For an **architectural, typing, or style finding**, quote the exact rule or
+     convention it violates.
+   - If a finding cannot be grounded in a failing input or an explicit rule, it is a
+     guess—leave it out.
+
+---
+
+## 2. The 6-Point Review Matrix
 
 Review candidate changes systematically across the following six dimensions:
 
@@ -25,19 +42,21 @@ Review candidate changes systematically across the following six dimensions:
 
 - [ ] **Human Understanding**: Does the change reflect clear intent and complete
   comprehension rather than unvetted model generation?
-- [ ] **Concise Implementation**: Is the code free of AI slop, redundant docstrings,
-  excessive conversational comments, or narrative change logs?
+- [ ] **No Diff-Narrative Comments**: Are all comments relevant to the *current*
+  state of the code? Remove any AI-generated comments that narrate what changed
+  relative to the previous version or describe what the agent did or did not do.
 - [ ] **Disclosure Ready**: Are the scope of AI assistance and tools used clearly
   identified for inclusion in the pull request description?
 
-### 2. Architectural Boundaries & Layering (`tach.toml`)
+### 2. Architectural Boundaries & Public API Stability (`tach.toml` & `griffe`)
 
 - [ ] **Layer Hierarchy**: Does code respect the unidirectional dependency graph:
   `cli` ➔ `core` ➔ external dependencies?
 - [ ] **No Inversion**: Does `core` remain strictly isolated from `cli` and user
   interface logic?
-- [ ] **Encapsulation**: Are internal implementation details encapsulated into
-  private modules or functions with appropriate visibility?
+- [ ] **Public API Compatibility**: Does the change pass `uv run poe check-api`
+  (`griffe check`) without introducing unannounced breaking changes to public
+  signatures?
 
 ### 3. Type Precision & Python 3.12+ Standards (`python-style-guide`)
 
@@ -47,8 +66,8 @@ Review candidate changes systematically across the following six dimensions:
   `collections.abc` (`Sequence`, `Mapping`, `Iterable`), never from `typing`?
 - [ ] **Immutable Data Models**: Are data entities modeled as frozen, slotted
   dataclasses (`@dataclass(frozen=True, slots=True)`)?
-- [ ] **Pyrefly Strict**: Does static type checking pass without suppressions or
-  unjustified `type: ignore` comments?
+- [ ] **Pyrefly Strict**: Does static type checking pass without bare suppressions
+  (only rule-scoped `# pyrefly: ignore[code]` when unavoidable)?
 
 ### 4. Cognitive Complexity (`complexipy.toml`)
 
@@ -57,12 +76,13 @@ Review candidate changes systematically across the following six dimensions:
 - [ ] **Composability**: Are complex conditional branches, nested loops, or deep
   matching clauses decomposed into small, pure helper functions?
 
-### 5. Testing & Quality Assurance (`pytest.ini`)
+### 5. Testing & Quality Assurance (`pytest.ini` & `tool-pytest`)
 
-- [ ] **Behavioral Coverage**: Are new features and bug fixes accompanied by
-  automated pytest test cases?
-- [ ] **Snapshot Stability**: Are syrupy snapshot files updated cleanly if outputs
-  intentionally changed?
+- [ ] **One Test File Per Unit**: Are new tests placed in the canonical
+  `tests/test_<module>.py` file rather than a change-named grab-bag file?
+- [ ] **Hollow-Proof & Transformation Assertions**: Do assertions verify
+  computed/transformed outputs rather than echoing input arguments, and do bug
+  fixes include provenance docstrings (`Bug / Root cause / Fix`)?
 - [ ] **Coverage Threshold**: Does test coverage satisfy project thresholds (80%+
   branch coverage)?
 
@@ -75,27 +95,31 @@ Review candidate changes systematically across the following six dimensions:
 
 ---
 
-## 2. Review Execution Workflow
+## 3. Review Execution Workflow
 
 When conducting a pre-flight review, run the automated verification suite:
 
 ```bash
-# 1. Run all static quality gates (linting, types, complexity, architecture)
+# 1. Inspect working tree status and diff
+git status
+git diff
+
+# 2. Run all static quality gates (linting, types, complexity, architecture)
 uv run poe code-quality
 
-# 2. Run automated test suite with coverage
+# 3. Run automated test suite with coverage
 uv run poe test
 
-# 3. Verify wheel packaging in isolated virtual environment
+# 4. Verify wheel packaging in isolated virtual environment
 uv run poe verify-wheel
 
-# 4. Verify all git pre-commit hooks pass
+# 5. Verify all git pre-commit hooks pass
 uv run pre-commit run --all-files
 ```
 
 ---
 
-## 3. Output Review Template
+## 4. Output Review Template
 
 Format code review feedback using the following structured template:
 
@@ -108,11 +132,9 @@ Format code review feedback using the following structured template:
   - `poe test`: [PASSED / FAILED]
   - `poe verify-wheel`: [PASSED / FAILED]
 
-#### Key Findings & Observations
-- **Architecture & Boundaries**: [Observations or ✓ Clean]
-- **Typing & Style (PEP 695)**: [Observations or ✓ Clean]
-- **Test Coverage**: [Observations or ✓ Clean]
-
-#### Required Action Items
-1. [Action item with file and line reference]
+#### Prioritized Findings
+- 🔴 **Critical**: [Bugs, race conditions, security, file:line + failing input]
+- 🟠 **Design & Architecture**: [Layer/API issues, file:line + violated rule]
+- 🟡 **Style & Typing**: [PEP 695, lint, diff comments, with file:line]
+- 🔵 **Tests & Docs**: [Missing tests, hollow checks, or docs, with file:line]
 ```

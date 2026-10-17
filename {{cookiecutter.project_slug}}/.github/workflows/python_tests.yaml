@@ -94,15 +94,18 @@ jobs:
         run: echo "UV_EXCLUDE_NEWER=$(python3 -c 'import datetime; print((datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%SZ"))')" >> "$GITHUB_ENV"
 
       - name: 🛠️ Install project dependencies
-        run: uv sync
+        run: uv sync --only-group test
 
       - name: 🧪 Run pytest suite
         run: uv run poe test
 
       - name: 📋 Summarize test failures
         if: failure()
+        env:
+          MATRIX_OS: {% raw %}${{ matrix.os }}{% endraw %}
+          MATRIX_PYTHON: {% raw %}${{ matrix.python-version }}{% endraw %}
         run: |
-          echo "### ⚠️ Python Tests Failed on {% raw %}${{ matrix.os }}{% endraw %} (Python {% raw %}${{ matrix.python-version }}{% endraw %})" >> "$GITHUB_STEP_SUMMARY"
+          echo "### ⚠️ Python Tests Failed on ${MATRIX_OS} (Python ${MATRIX_PYTHON})" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "To reproduce test failures locally, run:" >> "$GITHUB_STEP_SUMMARY"
           echo '```bash' >> "$GITHUB_STEP_SUMMARY"
@@ -116,7 +119,7 @@ jobs:
 {% include "ci/_setup_uv.yaml" %}
 
       - name: 🛠️ Install lowest-direct project dependencies
-        run: uv sync --resolution lowest-direct
+        run: uv sync --only-group test --resolution lowest-direct
 
       - name: 🧪 Run pytest suite against lowest dependencies
         run: uv run poe test

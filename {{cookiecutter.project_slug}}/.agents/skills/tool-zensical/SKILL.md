@@ -110,6 +110,7 @@ admonition = {}
 pymdownx.arithmatex.generic = true
 pymdownx.highlight.anchor_linenums = true
 pymdownx.snippets.check_paths = true
+pymdownx.snippets.dedent_subsections = true
 pymdownx.superfences.custom_fences = [
     { name = "mermaid", class = "mermaid",
       format = "pymdownx.superfences.fence_code_format" },
@@ -117,6 +118,7 @@ pymdownx.superfences.custom_fences = [
       validator = "markdown_exec.validator",
       format = "markdown_exec.formatter" },
 ]
+zensical.extensions.preview = {}
 
 # mkdocstrings Plugin
 [project.plugins.mkdocstrings]
@@ -126,18 +128,23 @@ default_handler = "python"
 inventories = ["https://docs.python.org/3/objects.inv"]
 paths = ["src"]
 options.annotations_path = "brief"
+options.backlinks = "tree"
 options.docstring_options.ignore_init_summary = true
 options.docstring_style = "numpy"
+options.extensions = ["griffe_warnings_deprecated"]
+options.members_order = "source"
 options.merge_init_into_class = true
 options.parameter_headings = true
 options.separate_signature = true
 options.show_bases = true
+options.show_inheritance_diagram = true
 options.show_root_heading = true
 options.show_signature_annotations = true
 options.show_source = true
 options.show_symbol_type_heading = true
 options.show_symbol_type_toc = true
 options.signature_crossrefs = true
+options.summary = true
 options.unwrap_annotated = true
 ```
 
@@ -174,7 +181,7 @@ these patterns.
    ]
    ```
 
-### B. Auto-Documenting Python Code with `mkdocstrings`
+### B. Auto-Documenting Python Code with `mkdocstrings` & `griffe`
 
 In any markdown document (e.g. `docs/reference.md`), use the `:::` block:
 
@@ -188,12 +195,35 @@ In any markdown document (e.g. `docs/reference.md`), use the `:::` block:
         - get_greeting
 ```
 
-Zensical automatically reloads docs when source files in `src/` change. With
-`inventories = ["https://docs.python.org/3/objects.inv"]` and
-`signature_crossrefs = true`, standard library types in signatures link
-directly to official Python documentation.
+Zensical automatically reloads docs when source files in `src/` change:
 
-### C. Using Mermaid Diagrams
+- **Cross-References & Backlink Trees**: With
+  `inventories = ["https://docs.python.org/3/objects.inv"]`,
+  `signature_crossrefs = true`, and `options.backlinks = "tree"`, type
+  annotations link directly to upstream docs and each symbol renders a
+  collapsible tree of pages that reference it.
+- **Auto Summary Tables & Class Diagrams**: `options.summary = true` generates
+  module/class summary tables automatically, and
+  `options.show_inheritance_diagram = true` renders inline SVG class hierarchy
+  diagrams.
+- **PEP 702 Deprecation Badges**: `options.extensions = ["griffe_warnings_deprecated"]`
+  inspects `@warnings.deprecated("...")` decorators via AST and renders
+  structured deprecation admonitions automatically.
+- **Floating Link Previews**: `zensical.extensions.preview = {}` enables
+  instant floating preview cards when hovering internal documentation links.
+
+### C. Detecting Breaking Public API Changes (`griffe check`)
+
+Because `griffe` is installed alongside `mkdocstrings[python]`, use it to
+statically compare the current AST against the latest git tag and detect
+breaking public API changes (removed/renamed parameters, narrowed types,
+changed defaults) before releasing:
+
+```bash
+uv run poe check-api   # Runs: griffe check <package_name> --search src
+```
+
+### D. Using Mermaid Diagrams
 
 Mermaid is built into Zensical natively. Write standard markdown fences:
 
@@ -205,7 +235,7 @@ flowchart LR
 ```
 ````
 
-### D. Dynamic Code Execution with `markdown-exec`
+### E. Dynamic Code Execution with `markdown-exec`
 
 To execute code at doc build time and display live terminal output:
 
@@ -217,11 +247,12 @@ print(f"Built with Python {sys.version.split()[0]}")
 ```
 ````
 
-### E. Embedding Tested Code Snippets with `pymdownx.snippets`
+### F. Embedding Tested Code Snippets with `pymdownx.snippets`
 
 Embed external source or test files directly into documentation using `--8<--`
-with `pymdownx.snippets.check_paths = true` (which fails the build if a
-referenced file path does not exist):
+with `pymdownx.snippets.check_paths = true` and
+`pymdownx.snippets.dedent_subsections = true` (which fails the build if a
+referenced file path does not exist and dedents indented blocks):
 
 ````markdown
 ```python
@@ -238,5 +269,8 @@ Keep these principles in mind when maintaining documentation:
 - **Always build with `--strict`**: Running `uv run poe docs-build`
   validates all internal links, anchors, and docstring references. Never
   deploy a build with broken links.
+- **Keep `docs/llms.txt` synchronized**: When adding new pages to `nav` in
+  `zensical.toml`, update `docs/llms.txt` so AI coding agents consuming the
+  documentation index see all canonical guides and API references.
 - **Image Paths**: Keep asset images in `docs/assets/` and reference them
   using relative paths (`assets/my-image.png`).

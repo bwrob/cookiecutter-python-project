@@ -24,8 +24,8 @@
     help = "Run tests with coverage measurement (pytest + pytest-cov)."
 
 [tasks.test-fast]
-    cmd  = "pytest -n auto --cov --cov-report=term-missing --cov-report=xml"
-    help = "Run tests in parallel across CPU cores with pytest-xdist."
+    cmd  = "pytest -n auto --dist=worksteal --max-worker-restart=0 --cov --cov-report=term-missing --cov-report=xml"
+    help = "Run tests in parallel across CPU cores with pytest-xdist work-stealing."
 
 [tasks.test-snapshot-update]
     cmd  = "pytest --snapshot-update"
@@ -113,6 +113,14 @@
     cmd  = "zizmor --config .zizmor.yml --pedantic --min-severity informational .github/workflows"
     help = "Audit GitHub Actions workflows for security vulnerabilities with zizmor."
 {% endif %}
+
+[tasks.audit]
+    cmd  = "uv audit"
+    help = "Audit locked dependencies in uv.lock against security advisories."
+
+[tasks.check-api]
+    cmd  = "griffe check {{ cookiecutter.package_name }} --search src"
+    help = "Detect breaking public API changes against the previous git tag with Griffe."
 
 [tasks.fix]
     default_item_type = "cmd"

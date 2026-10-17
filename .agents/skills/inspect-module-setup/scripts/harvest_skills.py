@@ -181,7 +181,7 @@ def scan_agent_instructions(root: Path) -> tuple[list[str], list[tuple[str, str]
     # Deep recursive search for nested instructions (e.g. tests/AGENTS.md or packages/*/CLAUDE.md)
     try:
         for p in root.rglob("*"):
-            if any(part in IGNORE_DIRS for part in p.parts):
+            if any(part in IGNORE_DIRS for part in p.relative_to(root).parts):
                 continue
             if p.name in ("AGENTS.md", "CLAUDE.md", ".cursorrules", ".windsurfrules"):
                 rel = str(p.relative_to(root))
@@ -271,7 +271,7 @@ def scan_agent_skills(
     # 2. Deep recursive search for any SKILL.md anywhere in the repository
     try:
         for skill_file in root.rglob("SKILL.md"):
-            if any(part in IGNORE_DIRS for part in skill_file.parts):
+            if any(part in IGNORE_DIRS for part in skill_file.relative_to(root).parts):
                 continue
             skill_dir = skill_file.parent
             rel_loc = str(skill_dir.relative_to(root))
@@ -361,6 +361,20 @@ def extract_agent_directives(root: Path, instructions: list[str]) -> list[str]:
     return directives[:10]  # Cap at top 10 most relevant directives
 
 
+def resolve_repo_root(target_path: Path) -> Path:
+    """Return the monorepo parent if target_path is a subdirectory inside a cloned repo, else target_path."""
+    if (target_path / ".git").exists():
+        return target_path
+    parent = target_path.parent
+    if (
+        parent.exists()
+        and parent.name != ".temp"
+        and ((parent / ".git").exists() or parent.name.startswith("inspect-"))
+    ):
+        return parent
+    return target_path
+
+
 def harvest_repo(target_path: Path) -> HarvestResult:
     """Run full, exhaustive agent skill harvest on a target directory."""
     known_zenith_skills = resolve_zenith_skills()
@@ -368,22 +382,32 @@ def harvest_repo(target_path: Path) -> HarvestResult:
     novel_skills, shared_skills = scan_agent_skills(target_path, known_zenith_skills)
     mcp_servers = scan_mcp_servers(target_path)
 
-    # Fallback to parent repository root for monorepos
-    parent = target_path.parent
-    if not instructions and parent.exists():
-        p_inst, p_sym = scan_agent_instructions(parent)
+    # Fallback to parent repository root only for monorepo subdirectories
+    repo_root = resolve_repo_root(target_path)
+    if not instructions and repo_root != target_path:
+        p_inst, p_sym = scan_agent_instructions(repo_root)
         instructions.extend(p_inst)
         symlinks.extend(p_sym)
 
+    search_roots = (
+        (target_path, target_path / ".github", repo_root, repo_root / ".github")
+        if repo_root != target_path
+        else (target_path, target_path / ".github")
+    )
     ai_policy_present = any(
         (p / name).exists()
-        for p in (target_path, target_path / ".github", parent, parent / ".github")
+        for p in search_roots
         for name in ("AI_POLICY.md", "ai_policy.md")
     )
 
     # Check for AI checklists in PR templates
     ai_pr_checklist = False
-    for p in (target_path / ".github", parent / ".github"):
+    github_dirs = (
+        (target_path / ".github", repo_root / ".github")
+        if repo_root != target_path
+        else (target_path / ".github",)
+    )
+    for p in github_dirs:
         for name in ("PULL_REQUEST_TEMPLATE.md", "pull_request_template.md"):
             tmpl = p / name
             if tmpl.exists():
@@ -507,7 +531,20 @@ def ensure_target_dir(target_arg: str, refresh: bool = False) -> Path:
         return dest
 
     dest.parent.mkdir(parents=True, exist_ok=True)
-    cmd = ["git", "clone", "--depth", "1", url, str(dest)]
+    cmd = [
+        "git",
+        "-c",
+        "filter.lfs.smudge=",
+        "-c",
+        "filter.lfs.process=",
+        "-c",
+        "filter.lfs.required=false",
+        "clone",
+        "--depth",
+        "1",
+        url,
+        str(dest),
+    ]
     print(f"Cloning {url} into {dest}...", file=sys.stderr)
     subprocess.run(cmd, check=True)
     return dest

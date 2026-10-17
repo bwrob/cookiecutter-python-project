@@ -10,6 +10,10 @@
 
 [run]
 branch = true
+core = sysmon
+patch =
+    subprocess
+    _exit
 source =
     src/{{ cookiecutter.package_name }}
     tests
@@ -27,6 +31,7 @@ exclude_also =
     if self\.debug:
     raise AssertionError
     raise NotImplementedError
+    return NotImplemented\b
     if 0:
     if __name__ == .__main__.:
     if TYPE_CHECKING:
@@ -34,6 +39,8 @@ exclude_also =
     @(abc\.)?abstractmethod
     @overload
     @(typing\.)?overload
+    (typing\.)?assert_never
+    \.\.\.
 
 [html]
 directory = htmlcov

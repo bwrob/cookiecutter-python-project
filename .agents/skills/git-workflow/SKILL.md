@@ -33,7 +33,7 @@ Maintain clean, dedicated feature branches for non-trivial tasks:
 
 Every commit message must follow the Conventional Commits specification:
 
-```
+```text
 <type>(<scope>): <short imperative summary>
 
 [optional body explaining problem and solution rationale]
@@ -55,12 +55,21 @@ Every commit message must follow the Conventional Commits specification:
 1. **Imperative Mood**: Use imperative present tense in the subject ("add feature",
    not "added feature" or "adds feature").
 2. **Lowercase Subject**: Start summary with a lowercase letter and no trailing period.
-3. **Concise Body**: Explain *why* the change was made, not merely *what* code
-   lines were modified.
+3. **Say Why, Not Which Lines Moved**: A reviewer reading only the subject line should
+   understand the motivation for the change, not merely the mechanical edit:
+
+   | Write (Why the change exists) | Not (Which lines moved) |
+   | :--- | :--- |
+   | `fix(sessions): prevent duplicate events on resume` | `fix(sessions): check interrupt_id before appending` |
+   | `feat(cli): support JSON output for machine parsing` | `feat(cli): add --json flag to main` |
+
+   *Self-check*: Read the subject back and ask whether it explains *why* someone made
+   the change. If it only names the edited symbol, rewrite it.
 
 ### AI Co-Authorship & Attribution Trailers
 
-When AI coding assistants help generate code or commit diffs, credit them in the commit footer using standard Git `Co-authored-by` trailers:
+When AI coding assistants help generate code or commit diffs, credit them in the commit
+footer using standard Git `Co-authored-by` trailers:
 
 ```git
 feat(auth): add token refresh endpoint
@@ -87,6 +96,12 @@ uv run poe test
 uv run pre-commit run --all-files
 ```
 
+> [!IMPORTANT]
+> **Always Re-Read Files Modified by Hooks**: If `uv run poe fix` or
+> `uv run pre-commit run --all-files` reformats or modifies any files on disk,
+> always re-read those files before making further edits so shifted line numbers
+> do not cause stale-file edit collisions.
+
 ---
 
 ## 4. Pull Request Preparation & AI Disclosure
@@ -95,9 +110,9 @@ When opening a pull request, adhere to the project's `PULL_REQUEST_TEMPLATE.md`
 and `AI_POLICY.md`:
 
 > [!IMPORTANT]
-> **Unsupervised agentic contributions are not accepted**. Every contribution must be reviewed,
-> understood, and tested by a human contributor who can substantively explain and defend the changes.
-> See `AI_POLICY.md` for full requirements.
+> **Unsupervised agentic contributions are not accepted**. Every contribution must be
+> reviewed, understood, and tested by a human contributor who can substantively explain
+> and defend the changes. See `AI_POLICY.md` for full requirements.
 
 ### Pull Request Structure
 
@@ -109,6 +124,8 @@ and `AI_POLICY.md`:
    - Document any manual testing performed.
 3. **AI Assistance Disclosure (Mandatory)**:
    - Identify AI coding assistants utilized (e.g., Antigravity, Claude Code, Cursor).
-   - Summarize the scope of assistance (e.g., initial draft, refactoring, test generation).
+   - Summarize the scope of assistance (e.g., initial draft, refactoring, test
+     generation).
    - Confirm human review and full accountability for all submitted changes.
-   - Confirm that AI assistants are credited in commit messages via `Co-authored-by` trailers.
+   - Confirm that AI assistants are credited in commit messages via `Co-authored-by`
+     trailers.

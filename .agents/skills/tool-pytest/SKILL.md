@@ -34,12 +34,12 @@ uv run pytest --cov --cov-report=html # Generate HTML coverage in htmlcov/
 In Zenith, task aliases are managed via Poe:
 
 ```bash
-uv run poe test                       # Run tests with coverage and doctests
-uv run poe test-fast                  # Run tests in parallel with xdist
-uv run poe test-lowest                # Verify test suite against lowest-direct dependency bounds
-uv run poe test-dist                  # Run tests against installed wheel distribution
-uv run poe test-snapshot-update       # Update Syrupy snapshots
-uv run poe coverage                   # Generate HTML coverage report
+uv run poe test                 # Run tests with coverage and doctests
+uv run poe test-fast            # Run tests in parallel with xdist
+uv run poe test-lowest          # Verify against lowest-direct bounds
+uv run poe test-dist            # Run tests against wheel distribution
+uv run poe test-snapshot-update # Update Syrupy snapshots
+uv run poe coverage             # Generate HTML coverage report
 ```
 
 ---
@@ -52,33 +52,47 @@ Pytest and coverage behavior are configured through root configuration files.
 
 ```ini
 [pytest]
-testpaths = tests src
 addopts =
-    --verbose
-    -ra
-    --doctest-modules
-    --import-mode=importlib
-    --strict-config
-    --strict-markers
-xfail_strict = true
-filterwarnings =
+    --verbose -ra --doctest-modules
+    --import-mode=importlib --strict-config --strict-markers
+collect_imported_tests = false
+console_output_style   = classic
+log_format             = %(asctime)s [%(levelname)8s] %(name)s: %(message)s
+log_level              = DEBUG
+minversion             = 9.0
+strict                 = true
+testpaths              = tests src
+xfail_strict           = true
+filterwarnings         =
     error
-doctest_optionflags =
+doctest_optionflags    =
+    DONT_ACCEPT_TRUE_FOR_1
     NORMALIZE_WHITESPACE
     ELLIPSIS
 ```
 
+> [!TIP]
+> Setting `log_level = DEBUG` without `log_cli = true` captures `DEBUG` logs in
+> memory and prints them **only when a test fails**, keeping passing test runs
+> quiet and preserving LLM context window budgets.
+
 ### `.coveragerc`
 
-Coverage is monitored across both `src/` and `tests/` so dead test helpers,
-unreachable fixture branches, or shadowed test functions are immediately caught:
+Coverage uses Python 3.12+'s low-overhead PEP 669 `sys.monitoring` engine
+(`core = sysmon`), tracks subprocesses and `os._exit()` calls automatically
+(`patch = subprocess, _exit`), and monitors both `src/` and `tests/` so dead
+test helpers or unreachable fixture branches are immediately caught:
 
 ```ini
 [run]
+branch = true
+core = sysmon
+patch =
+    subprocess
+    _exit
 source =
     src
     tests
-branch = true
 omit =
     */__snapshots__/*
     */site-packages/*
@@ -91,9 +105,12 @@ exclude_also =
     def __repr__
     if TYPE_CHECKING:
     raise NotImplementedError
+    return NotImplemented\b
     if __name__ == .__main__.:
     @overload
     @(typing\.)?overload
+    (typing\.)?assert_never
+    \.\.\.
 ```
 
 ---
@@ -102,10 +119,10 @@ exclude_also =
 
 Zenith integrates snapshot, property-based, and randomized testing patterns.
 
-### A. Snapshot Testing with `syrupy`
+### A. Snapshot Testing with `syrupy` (or `inline-snapshot` + `dirty-equals`)
 
-Use snapshot assertions for complex data structures, rendered strings, or
-payloads:
+Use `syrupy` snapshot assertions for complex data structures, rendered strings,
+or payloads:
 
 ```python
 def test_greeting_snapshot(snapshot):
@@ -119,6 +136,10 @@ To update snapshots after intentional code changes:
 ```bash
 uv run poe test-snapshot-update
 ```
+
+For inline Python AST snapshots paired with declarative dynamic matchers
+(`IsUUID`, `IsNow`, `IsPartialDict`), you can also combine `inline-snapshot`
+and `dirty-equals`.
 
 ### B. Property-Based Testing with `hypothesis`
 
@@ -140,7 +161,7 @@ def test_greeting_always_contains_name(name: str):
         assert result == "Hello, World!"
 ```
 
-### C. Randomized Execution (`pytest-randomly`)
+### C. Randomized & Work-Stealing Execution (`pytest-randomly` & `pytest-xdist`)
 
 `pytest-randomly` runs tests in a different order on every invocation. If a test
 fails only when run after another test, they share state (e.g. global variables,
@@ -152,6 +173,11 @@ To reproduce a specific randomized run:
 uv run pytest --randomly-seed=12345
 ```
 
+When running in parallel (`uv run poe test-fast`), Zenith uses
+`--dist=worksteal --max-worker-restart=0` so slow property-based tests do not
+bottleneck a single worker and native worker crashes fail immediately instead of
+hanging.
+
 ---
 
 ## 4. Most Common Configuration Changes During Development
@@ -162,7 +188,7 @@ settings.
 ### A. Registering Custom Test Markers
 
 When adding markers (e.g. `@pytest.mark.integration`), register them in
-`pytest.ini` to avoid warnings under `--strict-markers`:
+`pytest.ini` to avoid errors under `strict = true`:
 
 ```ini
 [pytest]
@@ -182,10 +208,10 @@ fail_under = 85
 
 ### C. Ignoring Untestable Lines from Coverage
 
-Add exclusion regex patterns under `exclude_lines` in `.coveragerc`:
+Add exclusion regex patterns under `exclude_also` in `.coveragerc`:
 
 ```ini
-exclude_lines =
+exclude_also =
     pragma: no cover
     if self\.debug:
     raise AssertionError
@@ -215,7 +241,58 @@ compilation errors. `uv run poe test-dist` executes
 
 ---
 
-## 5. Plugin Reference Guides
+## 5. Agent Test Engineering & Anti-Slop Standards
+
+Follow these strict engineering rules when authoring or refactoring tests:
+
+1. **One Test File Per Unit Under Test, Not Per Change/PR**:
+   Always place new tests in the canonical `tests/test_<module>.py` file for the
+   unit under test. Never create grab-bag test files named after a bug ticket,
+   PR, or refactor (e.g. `test_issue_123.py` or `test_new_validation.py`), which
+   fragment module coverage. Keep single-use helper classes/functions inline
+   inside the test function; extract to module level only when shared by 3+
+   tests.
+2. **Behavior-Sentence Naming & Single Behavior Per Test**:
+   Test names must state the observable behavior (`test_<action>_when_<condition>`
+   or `test_<subject>_<expected_outcome>`). Each test should verify one behavior
+   following clear Arrange / Act / Assert separation.
+3. **The Hollow-Proof Check & Transformation vs. Pass-Through Rule**:
+   Before finalizing a test, ask: *"What production bug could pass this test?"*
+   - If a hardcoded return value would pass, tighten the assertion.
+   - Assert **transformed/computed outputs**, not echoed pass-through inputs
+     (e.g. asserting `result.name == "foo"` when `name="foo"` was passed in only
+     tests assignment, not business logic).
+   - Never weaken or delete an existing assertion just to make a failing test
+     pass.
+4. **Provenance Docstrings on Regression Tests**:
+   Every test added for a bug fix must include a concise provenance docstring so
+   future contributors or agents do not delete or weaken it during refactoring:
+
+   ```python
+   def test_empty_identifier_raises_value_error() -> None:
+       """Bug: whitespace-only identifiers bypassed length validation.
+       Root cause: len() was checked before strip().
+       Fix: normalize identifier via strip() prior to validation.
+       """
+   ```
+
+5. **Zero-`sleep()` Concurrency Synchronization Policy**:
+   Never use `time.sleep()`, `asyncio.sleep()`, or `anyio.sleep()` as a
+   synchronization primitive in concurrent or async tests. Always coordinate
+   producer/consumer or background task readiness with explicit primitives
+   (`threading.Event`, `asyncio.Event`, `anyio.Event`). For async codebases,
+   consider `blockbuster` to detect accidental blocking I/O calls inside the
+   event loop, and `pytest-run-parallel` for PEP 703 free-threading stress
+   testing.
+6. **Fresh-Process Import-Graph Budget Testing**:
+   To verify PEP 562 lazy imports (`_lazy.py`) or ensure top-level entry points
+   do not eagerly import heavy optional dependencies (such as CLI frameworks),
+   spawn a clean `subprocess.run([sys.executable, "-c", ...])` and assert that
+   deferred modules are absent from `sys.modules`.
+
+---
+
+## 6. Plugin Reference Guides
 
 For in-depth guides, options, and advanced configurations for each plugin:
 

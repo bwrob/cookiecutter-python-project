@@ -119,6 +119,7 @@
         pymdownx.mark = {}
         pymdownx.smartsymbols = {}
         pymdownx.snippets.check_paths = true
+        pymdownx.snippets.dedent_subsections = true
         pymdownx.superfences.custom_fences = [
             { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
             { name = "python", class = "python", validator = "markdown_exec.validator", format = "markdown_exec.formatter" },
@@ -130,6 +131,7 @@
         pymdownx.tasklist.custom_checkbox = true
         pymdownx.tilde = {}
         toc.permalink = true
+        zensical.extensions.preview = {}
 
     [project.plugins.mkdocstrings]
         default_handler = "python"
@@ -138,17 +140,21 @@
         inventories = ["https://docs.python.org/3/objects.inv"]
         paths = ["src"]
         options.annotations_path = "brief"
+        options.backlinks = "tree"
         options.docstring_options.ignore_init_summary = true
         options.docstring_style = "numpy"
+        options.extensions = ["griffe_warnings_deprecated"]
         options.members_order = "source"
         options.merge_init_into_class = true
         options.parameter_headings = true
         options.separate_signature = true
         options.show_bases = true
+        options.show_inheritance_diagram = true
         options.show_root_heading = true
         options.show_signature_annotations = true
         options.show_source = true
         options.show_symbol_type_heading = true
         options.show_symbol_type_toc = true
         options.signature_crossrefs = true
+        options.summary = true
         options.unwrap_annotated = true

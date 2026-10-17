@@ -18,4 +18,5 @@ extend-exclude = [
 ]
 
 [default.extend-words]
-CPY = "CPY"
+CPY  = "CPY"
+Ines = "Ines"

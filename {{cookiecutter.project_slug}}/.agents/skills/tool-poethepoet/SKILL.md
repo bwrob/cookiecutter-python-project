@@ -99,22 +99,17 @@ help = "Run independent checks concurrently"
 parallel = ["lint", "type-check"]
 ```
 
-### Expression Tasks (`expr`)
+### Expression Tasks (`expr`) & Switch Tasks (`switch`)
 
-Evaluates a Python expression directly and prints the result:
+`expr` evaluates a Python expression directly and prints the result, while
+`switch` conditionally executes steps based on an argument, environment
+variable, or platform:
 
 ```toml
 [tasks.platform]
 expr = "sys.platform"
 help = "Print current operating system platform"
-```
 
-### Switch Tasks (`switch`)
-
-Conditionally executes different steps based on an argument, environment
-variable, or platform:
-
-```toml
 [tasks.install-deps]
 help = "Install platform-specific dependencies"
 switch = [
@@ -122,6 +117,22 @@ switch = [
   { if = "sys.platform == 'linux'", cmd = "apt-get install -y libmagic1" },
 ]
 ```
+
+> [!CAUTION]
+> **Two Silent-Failure Rules for `expr`, `switch.control.expr`, and parens-form
+> `script = "mod:fn(arg)"`**:
+>
+> 1. **Declared args ➔ use bare name, never `${name}`**:
+>    Write `expr = "AWS_REGION"` ✅. Writing `expr = "${AWS_REGION}"` ❌ routes
+>    through the OS environment and evaluates to **silently empty** for private
+>    `_`-prefixed args. (Note: no-parens `script = "mod:fn"` automatically
+>    passes declared args as kwargs—never name them in the call.)
+> 2. **Environment variables ➔ use unquoted `${VAR}`**:
+>    In Python expressions, `${VAR}` compiles to the attribute access
+>    `__env.VAR` (not textual string interpolation). Therefore
+>    `expr = "${STAGE}"` ✅ yields the variable's value, whereas
+>    `expr = "'${STAGE}'"` ❌ yields the literal string `"__env.STAGE"`. Call
+>    string methods directly: `expr = "${STAGE}.upper()"`.
 
 ## 3. Advanced Task Composition and DAG Dependencies
 
@@ -196,6 +207,36 @@ sequence = ["_clean-dist"]
 Internal `_` tasks cannot be called directly from the CLI and must be invoked
 via `sequence`, `parallel`, `deps`, or `uses`.
 
+### Organizing Large Task Sets with `groups`
+
+Categorize related tasks under labeled headings in `uv run poe` output using
+`[groups.<name>]` (or `[tool.poe.groups.<name>]` in `pyproject.toml`):
+
+```toml
+[groups.qa]
+heading = "Quality Assurance"
+
+[groups.qa.tasks.lint]
+cmd = "ruff check ."
+help = "Lint codebase"
+```
+
+### Side-Channel Drift Verification Without Dirtying the Working Tree
+
+When verifying that a generated artifact (such as a JSON Schema or OpenAPI spec)
+is up to date, generate it to a gitignored comparison path and diff with
+`git diff --no-index` so running the check never mutates tracked files:
+
+```toml
+[tasks.schema-check-drift]
+env = { _tmp = ".temp/schema-check.json", GIT_PAGER = "cat" }
+help = "Verify committed schema matches generator output"
+sequence = [
+  "schema-build ${_tmp}",
+  { cmd = "git diff --no-index docs/schema.json ${_tmp}" },
+]
+```
+
 ## 4. Environment Variables Management
 
 Poe provides environment variable configuration at both the global project level
@@ -227,6 +268,7 @@ APP_ENV = "test"
 - **Default Fallback (`default`)**: Use `{ default = "fallback" }` or
   `VAR.default = "fallback"` to set a variable only if it is not already
   defined in the host environment:
+
   ```toml
   [env.PORT]
   default = "8000"
@@ -264,16 +306,32 @@ envfile = ".env.test"
 Task-level settings take precedence over global options, providing precise
 control per command.
 
-## 5. Best Practices and Rules
+## 5. Declarative Primitives Over Bash Scripting
+
+Before writing a `shell` task, check if a declarative Poe feature expresses the
+intent portably:
+
+| Bash Idiom | Declarative Poe Equivalent |
+| :--- | :--- |
+| `REGION="${REGION:-eu-west-1}"` | arg `default = "${REGION:-eu-west-1}"` |
+| `if [ -z "$X" ]; then exit 1; fi` | arg `required = true` |
+| `case "$X" in a\|b) ;; *) exit 1 ;; esac` | arg `choices = ["a", "b"]` |
+| `case "$TARGET" in ...` | `switch` with `control.expr = "TARGET"` |
+| `[ -n "$TAG" ] && ARGS="--tag $TAG"` | `${TAG:+--tag ${TAG}}` in `cmd` |
+| `NAME="$(some-command)"` | `uses = { _name = "_some-task" }` |
+| `source .env` / `eval "$(creds)"` | `envfile = ".env"` / `uses_env = "_creds"` |
+| `step-one && step-two` | `sequence = ["step-one", "step-two"]` |
+| `a & b & wait` | `parallel = ["a", "b"]` |
+| `cd subdir && ...` | `cwd = "subdir"` |
+| `... \|\| true` | `ignore_fail = true` |
+
+## 6. Best Practices and Rules
 
 Follow these engineering conventions when editing poe tasks:
 
 - **Use global `env` for project-wide runtime flags**: Set cross-cutting flags
   (such as `PYTHONUTF8 = "1"` and `PYTHONWARNDEFAULTENCODING = "1"`) under `[env]` (or
   `[tool.poe.env]`) rather than repeating them across multiple individual tasks.
-- **Declare before you script**: Before writing bash logic in a `shell` task,
-  check if a declarative Poe feature expresses it: arg `default`, `choices`,
-  `switch`, `sequence`, `${VAR:-default}`, or `deps`.
 - **Compose, don't recurse**: Use `sequence`, `parallel`, or `deps` to chain
   tasks. Never shell out using `cmd = "poe other-task"`.
 - **Always provide `help`**: Every public task must include a concise `help`

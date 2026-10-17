@@ -32,20 +32,26 @@ uv run pyrefly init                       # Generate pyrefly.toml config
 
 ## 2. Configuration & Where It Lives
 
-Pyrefly is configured through **`pyrefly.toml`** at the project root:
+Pyrefly is configured through **`pyrefly.toml`** at the project root using
+`kebab-case` keys:
 
 ```toml
+# Only respect explicit # pyrefly: ignore[...] comments (bans bare # type: ignore)
+enabled-ignores      = ["pyrefly"]
+infer-with-first-use = false
+
 # Preset modes: "strict", "recommended", or "lenient"
 preset = "strict"
 
-# Root paths for project source code
-project_roots = ["src", "tests"]
+# Root paths and exclusions for project source code
+project-excludes = ["**/.*", "**/site", "**/dist", "**/build", "**/.venv"]
+project-includes = ["src", "tests"]
 
-# Extra module search paths (e.g. stubs)
-search_path = ["stubs"]
+# Target Python version
+python-version = "3.13.0"
 
-# Untyped library behavior
-untyped_def_behavior = "error"
+# Extra module search paths (e.g. src, stubs)
+search-path = ["src"]
 ```
 
 ---
@@ -57,8 +63,8 @@ patterns.
 
 ### A. Suppressing Type Errors on a Specific Line
 
-When interfacing with untyped C-extensions or external APIs where type
-inference cannot be satisfied:
+Because `enabled-ignores = ["pyrefly"]` is active, generic `# type: ignore`
+comments are ignored. Always use `# pyrefly: ignore[error-code]`:
 
 ```python
 # Suppress a specific error code
@@ -70,29 +76,59 @@ data = legacy_payload.parse()  # pyrefly: ignore[bad-arg, missing-attribute]
 
 > [!NOTE]
 > Always specify the exact error code inside brackets. Never use bare
-> ignores.
+> ignores. To automatically strip stale ignore comments across the codebase,
+> run `uv run pyrefly check --remove-unused-ignores`.
 
-### B. Configuring Custom Type Stubs
+### B. Handling Untyped or Heavy Third-Party Imports
 
-When a third-party dependency does not ship with inline type annotations:
+When a third-party dependency lacks type stubs (`py.typed`) or has broken/slow
+internal annotations:
 
-1. Create a `stubs/` directory at the project root.
-2. Create the stub file (e.g., `stubs/untyped_pkg/__init__.pyi`).
-3. Add `stubs` to `search_path` in `pyrefly.toml`:
+1. **Ignore missing imports** (`ignore-missing-imports`):
 
    ```toml
-   search_path = ["src", "stubs"]
+   ignore-missing-imports = [
+       "untyped_pkg.*",
+   ]
    ```
 
-### C. Adding a New Directory to Type Checking
+2. **Skip following imports into heavy packages** (`replace-imports-with-any`,
+   Pyrefly's equivalent of Mypy's `follow_imports = "skip"`):
+
+   ```toml
+   replace-imports-with-any = [
+       "heavy_legacy_sdk.*",
+   ]
+   ```
+
+3. **Provide custom `.pyi` stubs** in `stubs/` and add to `search-path`:
+
+   ```toml
+   search-path = ["src", "stubs"]
+   ```
+
+### C. Per-Directory Rule Overrides (`[[sub-config]]`)
+
+To relax specific error codes in a subdirectory (such as `tests/**` or thin C
+extension wrappers) while keeping `src/**` at full strictness:
+
+```toml
+[[sub-config]]
+matches = "tests/**"
+
+[sub-config.errors]
+bad-return = false
+```
+
+### D. Adding a New Directory to Type Checking
 
 When adding a new directory such as `scripts/` or `benchmarks/`:
 
 ```toml
-project_roots = ["src", "tests", "scripts"]
+project-includes = ["src", "tests", "scripts"]
 ```
 
-### D. Toggling Presets
+### E. Toggling Presets
 
 While Zenith defaults to `strict`, projects during active prototyping can
 adjust the preset level:

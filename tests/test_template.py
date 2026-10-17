@@ -174,12 +174,17 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert '"precommit"' not in poe_text
     assert "tasks.format-check" in poe_text
     assert "tasks.test-fast" in poe_text
+    assert "--dist=worksteal --max-worker-restart=0" in poe_text
     assert "tasks.test-lowest" in poe_text
     assert "tasks.test-sdist" in poe_text
     assert "tasks.verify-wheel" in poe_text
     assert "python scripts/verify_wheel.py" in poe_text
     assert "tasks.test-snapshot-update" in poe_text
     assert "tasks.zizmor" in poe_text
+    assert "tasks.audit" in poe_text
+    assert "uv audit" in poe_text
+    assert "tasks.check-api" in poe_text
+    assert "griffe check demo_app --search src" in poe_text
     assert "tasks.sync-skills" in poe_text
     assert "tasks.docs-logo" in poe_text
     assert "tasks.clean" in poe_text
@@ -187,6 +192,9 @@ def test_default_generation(temp_output_dir: Path) -> None:
 
     # Verify markdown-exec and Python 3.15 in pyproject.toml
     pyproject_text = (project_dir / "pyproject.toml").read_text()
+    assert 'license = "MIT"' in pyproject_text
+    assert 'license-files = [ "LICENSE" ]' in pyproject_text
+    assert "griffe-warnings-deprecated>=" in pyproject_text
     assert "markdown-exec" in pyproject_text
     assert "Programming Language :: Python :: 3.15" in pyproject_text
     assert "Typing :: Typed" in pyproject_text
@@ -221,7 +229,13 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "signature_crossrefs = true" in zensical_text
     assert 'members_order = "source"' in zensical_text
     assert "pymdownx.snippets.check_paths = true" in zensical_text
+    assert "pymdownx.snippets.dedent_subsections = true" in zensical_text
+    assert "zensical.extensions.preview = {}" in zensical_text
     assert 'inventories = ["https://docs.python.org/3/objects.inv"]' in zensical_text
+    assert 'options.backlinks = "tree"' in zensical_text
+    assert 'options.extensions = ["griffe_warnings_deprecated"]' in zensical_text
+    assert "options.show_inheritance_diagram = true" in zensical_text
+    assert "options.summary = true" in zensical_text
     assert "options.show_symbol_type_heading = true" in zensical_text
     assert "options.show_symbol_type_toc = true" in zensical_text
     assert "options.parameter_headings = true" in zensical_text
@@ -240,9 +254,20 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "tests" in coveragerc_text
     assert "*/__snapshots__/*" in coveragerc_text
     assert "tests/*" not in coveragerc_text
+    assert "core = sysmon" in coveragerc_text
+    assert "patch =\n    subprocess\n    _exit" in coveragerc_text
+    assert r"return NotImplemented\b" in coveragerc_text
+    assert r"(typing\.)?assert_never" in coveragerc_text
 
     pytest_ini_text = (project_dir / "pytest.ini").read_text()
     assert "-ra" in pytest_ini_text
+    assert "minversion             = 9.0" in pytest_ini_text
+    assert "strict                 = true" in pytest_ini_text
+    assert "log_level              = DEBUG" in pytest_ini_text
+    assert "DONT_ACCEPT_TRUE_FOR_1" in pytest_ini_text
+
+    pyrefly_text = (project_dir / "pyrefly.toml").read_text()
+    assert 'enabled-ignores      = [ "pyrefly" ]' in pyrefly_text
 
     ruff_toml_text = (project_dir / "ruff.toml").read_text()
     assert "combine-as-imports = true" in ruff_toml_text
@@ -264,6 +289,13 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "zensical build --clean --strict" in docs_yaml_text
     assert "uv sync --only-group docs" in docs_yaml_text
 
+    publish_yaml_text = (
+        project_dir / ".github" / "workflows" / "publish.yaml"
+    ).read_text()
+    assert "attestations: write" in publish_yaml_text
+    assert "actions/attest-build-provenance@v2" in publish_yaml_text
+    assert "attestations: true" in publish_yaml_text
+
     # Verify python aliases in rumdl.toml
     rumdl_text = (project_dir / "rumdl.toml").read_text()
     assert '"py"' in rumdl_text
@@ -277,6 +309,8 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "test:" in ci_text
     assert "test-lowest:" in ci_text
     assert "test-dist:" in ci_text
+    assert "uv sync --only-group test" in ci_text
+    assert "uv sync --only-group test --resolution lowest-direct" in ci_text
     assert "poe format-check" in ci_text
     assert "poe typos" in ci_text
     assert "UV_EXCLUDE_NEWER" in ci_text
@@ -562,6 +596,9 @@ def test_no_license(temp_output_dir: Path) -> None:
 
     assert project_dir.exists()
     assert not (project_dir / "LICENSE").exists()
+    pyproject_text = (project_dir / "pyproject.toml").read_text()
+    assert "license =" not in pyproject_text
+    assert "license-files" not in pyproject_text
     readme_text = (project_dir / "README.md").read_text()
     assert "badge/license" not in readme_text
     assert "All rights reserved." in readme_text
