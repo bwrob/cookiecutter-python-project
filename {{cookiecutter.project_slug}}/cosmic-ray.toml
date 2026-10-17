@@ -1,0 +1,17 @@
+# ==============================================================================
+# Cosmic Ray Configuration (cosmic-ray.toml)
+#
+# Tool: Cosmic Ray (https://github.com/sixty-north/cosmic-ray)
+# Purpose: Distributed mutation testing for Python test suites.
+# Why it's in Zenith: Provides deep mutation testing with SQLite session tracking
+# and multi-worker execution to ensure that test assertions catch real bugs.
+# ==============================================================================
+
+[cosmic-ray]
+module-path = "src/{{ cookiecutter.package_name }}"
+timeout = 15.0
+excluded-modules = []
+test-command = "pytest"
+
+[cosmic-ray.distributor]
+name = "local"

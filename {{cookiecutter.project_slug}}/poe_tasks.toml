@@ -67,6 +67,19 @@
     cmd  = "python scripts/verify_wheel.py"
     help = "Build wheel and verify clean imports in an isolated virtual environment."
 
+[tasks.test-mutation]
+    cmd  = "mutmut run"
+    help = "Run fast mutation testing across package source with mutmut."
+
+[tasks.test-mutation-cosmic]
+    help = "Run distributed mutation testing with cosmic-ray."
+    sequence = [
+        { script = "shutil:rmtree('session.sqlite', ignore_errors=1)" },
+        { cmd = "cosmic-ray init cosmic-ray.toml session.sqlite" },
+        { cmd = "cosmic-ray exec session.sqlite" },
+        { cmd = "cr-report session.sqlite" },
+    ]
+
 
     # ------------------------------------------------------------------------------
     # Quality: Formatting, Linting, & Static Typing
@@ -128,6 +141,10 @@
     ignore_fail       = "return_non_zero"
     sequence          = [ "ruff check --fix", "ruff format", "rumdl fmt", "typos -w" ]
 
+[tasks.check-skills]
+    cmd  = "python scripts/check_skills.py .agents/skills"
+    help = "Validate structural invariants and frontmatter of agent skills in .agents/skills/."
+
 [tasks.code-quality]
     help = "Execute the full code quality verification pipeline."
     ignore_fail = "return_non_zero"
@@ -142,6 +159,7 @@
         "zizmor",
 {% endif %}
         "dependencies",
+        "check-skills",
     ]
 
     # ------------------------------------------------------------------------------
@@ -183,6 +201,12 @@
 [tasks._clean-temp]
     script = "shutil:rmtree('.temp', ignore_errors=1)"
 
+[tasks._clean-mutation]
+    script = "shutil:rmtree('.mutmut-cache', ignore_errors=1)"
+
+[tasks._clean-cosmic]
+    script = "shutil:rmtree('session.sqlite', ignore_errors=1)"
+
 [tasks.clean]
     help = "Remove build artifacts, cache directories, and test coverage outputs."
     sequence = [
@@ -193,7 +217,17 @@
         "_clean-pytest",
         "_clean-ruff",
         "_clean-temp",
+        "_clean-mutation",
+        "_clean-cosmic",
     ]
+
+    # ------------------------------------------------------------------------------
+    # Interactive Development & Ergonomics
+    # ------------------------------------------------------------------------------
+
+[tasks.repl]
+    cmd  = 'python -i -c "import {{ cookiecutter.package_name }} as pkg; print(f\"✨ {{ cookiecutter.project_name }} {pkg.__version__} loaded as `pkg`\")"'
+    help = "Launch interactive Python REPL with package pre-loaded."
 
     # ------------------------------------------------------------------------------
     # Documentation & Publishing

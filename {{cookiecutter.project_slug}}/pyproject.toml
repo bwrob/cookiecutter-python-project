@@ -65,6 +65,7 @@
         { include-group = "test" },
         { include-group = "lint" },
         { include-group = "docs" },
+        { include-group = "mutation" },
     ]
     docs = [
         "griffe-warnings-deprecated>=1.1.0",
@@ -83,6 +84,10 @@
         "typos>=1.30.0",
         "zizmor>=1.23.0",
     ]
+    mutation = [
+        "cosmic-ray>=8.7.0",
+        "mutmut>=3.8.0",
+    ]
     test = [
         "hypothesis>=6.125.0",
         "poethepoet>=0.42.0",
@@ -95,7 +100,7 @@
     ]
 
 [tool.uv]
-    default-groups = [ "dev", "test", "lint", "docs" ]
+    default-groups = [ "dev", "test", "lint", "docs", "mutation" ]
     package        = true
     # Supply-chain protection buffer against zero-day compromised upstream releases.
     # Uncomment to exclude packages published in the last N days during resolution
@@ -115,7 +120,13 @@
         ".coveragerc",
         "tach.toml",
         ".zizmor.yml",
+        "cosmic-ray.toml",
     ]
+
+[tool.mutmut]
+    paths_to_mutate = "src/"
+    runner          = "pytest"
+    tests_dir       = "tests/"
 
 [tool.poe]
     include = "poe_tasks.toml"

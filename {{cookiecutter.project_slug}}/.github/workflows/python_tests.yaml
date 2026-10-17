@@ -52,6 +52,14 @@ jobs:
       - name: 🛡️ Run zizmor GitHub Actions security audit
         run: uv run poe zizmor
 
+      - name: 🔍 Check public API breaking changes against target
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: {% raw %}${{ github.base_ref }}{% endraw %}
+        run: |
+          git fetch origin "$BASE_REF" --depth=1 || true
+          uv run griffe check {{ cookiecutter.package_name }} --search src --against "origin/$BASE_REF" -f github || true
+
       - name: 📋 Summarize quality failures
         if: failure()
         run: |
@@ -98,6 +106,14 @@ jobs:
 
       - name: 🧪 Run pytest suite
         run: uv run poe test
+
+      - name: 📊 Upload coverage report to Codecov
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '{{ cookiecutter.python_version }}'
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage.xml
+          fail_ci_if_error: false
+          token: {% raw %}${{ secrets.CODECOV_TOKEN }}{% endraw %}
 
       - name: 🧹 Verify clean working tree after tests
         shell: bash

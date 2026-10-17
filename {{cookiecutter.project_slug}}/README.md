@@ -159,6 +159,10 @@ Inline equations like $E = mc^2$ and $\Omega(n)$ are supported out of the box.
 | **Types** | `uv run poe type-check` | Performs strict type analysis with Pyrefly |
 | **Complexity** | `uv run poe complexity` | Evaluates cognitive complexity with complexipy |
 | **Boundaries** | `uv run poe dependencies` | Validates modular boundaries with Tach |
+| **Skills Check** | `uv run poe check-skills` | Validates structural invariants and frontmatter of agent skills |
+| **Mutation** | `uv run poe test-mutation` | Runs fast mutation testing across package source with mutmut |
+| **Mutation Distributed** | `uv run poe test-mutation-cosmic` | Runs distributed mutation testing with cosmic-ray |
+| **Interactive REPL** | `uv run poe repl` | Launches interactive Python REPL with package pre-loaded |
 | **Docs** | `uv run poe docs-serve` | Starts local Zensical documentation server |
 | **Build Docs** | `uv run poe docs-build` | Compiles documentation into `site/` |
 | **Logotype** | `uv run poe docs-logo` | Compiles documentation logotype SVG with Typst |
@@ -177,7 +181,12 @@ Inline equations like $E = mc^2$ and $\Omega(n)$ are supported out of the box.
 | `rumdl.toml` | Rigid markdown rules and embedded code block checkers |
 | `typos.toml` | Typos spell check exclusions and dictionary rules |
 | `tach.toml` | Modular architecture layer hierarchy |
+| `cosmic-ray.toml` | Distributed mutation testing configuration |
 | `AGENTS.md` / `CLAUDE.md` | Operational instructions and guardrails for AI coding assistants |
+| `SECURITY.md` | Coordinated vulnerability disclosure and security policy |
+| `CONTRIBUTING.md` | Contribution guidelines, AI policy, and workflow instructions |
+| `CODE_OF_CONDUCT.md` | Contributor Covenant v2.1 standards |
+| `docs/adr/` | Architecture Decision Records (ADRs) |
 | `.coveragerc` | Coverage thresholds (80%+ target) and exclusions |
 | `pytest.ini` | Test paths and verbose output options |
 
