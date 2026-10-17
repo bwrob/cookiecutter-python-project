@@ -231,12 +231,21 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert 'members_order = "source"' in zensical_text
     assert "pymdownx.snippets.check_paths = true" in zensical_text
     assert "pymdownx.snippets.dedent_subsections = true" in zensical_text
-    assert "zensical.extensions.preview = {}" in zensical_text
+    assert 'zensical.extensions.preview.targets.include = ["*"]' in zensical_text
+    assert "[project.plugins.gh-admonitions]" in zensical_text
+    assert "[project.plugins.markdown-exec]" in zensical_text
+    assert "[project.plugins.llmstxt]" in zensical_text
+    assert 'full_output = "llms-full.txt"' in zensical_text
     assert 'inventories = ["https://docs.python.org/3/objects.inv"]' in zensical_text
     assert 'options.backlinks = "tree"' in zensical_text
     assert 'options.extensions = ["griffe_warnings_deprecated"]' in zensical_text
+    assert "options.line_length = 88" in zensical_text
+    assert "options.relative_crossrefs = true" in zensical_text
+    assert "options.scoped_crossrefs = true" in zensical_text
     assert "options.show_inheritance_diagram = true" in zensical_text
+    assert "options.show_signature_type_parameters = true" in zensical_text
     assert "options.summary = true" in zensical_text
+    assert "options.type_parameter_headings = true" in zensical_text
     assert "options.show_symbol_type_heading = true" in zensical_text
     assert "options.show_symbol_type_toc = true" in zensical_text
     assert "options.parameter_headings = true" in zensical_text
@@ -250,6 +259,8 @@ def test_default_generation(temp_output_dir: Path) -> None:
     agents_text = (project_dir / "AGENTS.md").read_text()
     assert "## Project Stewardship" in agents_text
     assert "never double backticks" in agents_text
+    assert "Reproduce-First Bug Scoping" in agents_text
+    assert "Complexity Reset Rule" in agents_text
 
     coveragerc_text = (project_dir / ".coveragerc").read_text()
     assert "tests" in coveragerc_text
@@ -262,6 +273,9 @@ def test_default_generation(temp_output_dir: Path) -> None:
 
     pytest_ini_text = (project_dir / "pytest.ini").read_text()
     assert "-ra" in pytest_ini_text
+    assert "--snapshot-warn-unused" in pytest_ini_text
+    assert "default::EncodingWarning" in pytest_ini_text
+    assert "error::EncodingWarning:demo_app.*" in pytest_ini_text
     assert "minversion             = 9.0" in pytest_ini_text
     assert "strict                 = true" in pytest_ini_text
     assert "log_level              = DEBUG" in pytest_ini_text
@@ -283,8 +297,8 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "sequenceDiagram" in getting_started_text
     assert "stateDiagram-v2" in getting_started_text
 
-    # Verify --strict in zensical commands
-    assert "zensical serve --strict" in poe_text
+    # Verify zensical commands
+    assert 'cmd  = "zensical serve"' in poe_text
     assert "zensical build --strict" in poe_text
     docs_yaml_text = (project_dir / ".github" / "workflows" / "docs.yaml").read_text()
     assert "zensical build --clean --strict" in docs_yaml_text

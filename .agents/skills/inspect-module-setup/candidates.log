@@ -1,13 +1,3 @@
-pydantic-ai
-fastmcp
-openai-agents-python
-anthropic-sdk-python
-langgraph
-zensical
-mkdocstrings
-mkdocstrings-python
-markdown-exec
-copier-uv
 tach
 import-linter
 complexipy

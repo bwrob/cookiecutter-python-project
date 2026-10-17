@@ -154,11 +154,19 @@ When raising or lowering the supported Python target:
 
 ### C. Pinning or Constraining an Indirect or Build Dependency
 
-If a transitive dependency or PEP 517 build backend has a broken release, add
-an override or build constraint in `pyproject.toml`:
+Use `constraint-dependencies` as a transitive CVE floor ledger (when `uv audit`
+reports a vulnerability in an indirect dependency) so `project.dependencies`
+remains clean of transitive packages, or use `override-dependencies` /
+`build-constraint-dependencies` when an upstream release or PEP 517 build
+backend is broken:
 
 ```toml
 [tool.uv]
+# Transitive security floor ledger (keeps [project.dependencies] clean)
+constraint-dependencies = [
+    "urllib3>=2.6.3",      # CVE-2026-XXXXX remediation floor
+    "cryptography>=46.0.5",
+]
 override-dependencies = [
     "problematic-pkg==1.2.3",
 ]
@@ -193,16 +201,20 @@ my-private-package = { index = "internal" }
 
 Astral `uv` supports an `exclude-newer` cutoff (via CLI, environment variable,
 or configuration) that limits package resolution to releases published prior
-to a given timestamp or relative age, while allowing per-package exemptions via
-`exclude-newer-package`:
+to a given timestamp or relative age, while allowing per-package exemptions or
+exact RFC 3339 audit-point timestamps via `exclude-newer-package`:
 
 1. **In `pyproject.toml`**: Enforce a rolling stabilization window with
-   targeted exemptions for trusted internal packages:
+   targeted exemptions (`false`) for internal packages or audited RFC 3339
+   timestamps when cherry-picking a newly released upstream hotfix:
 
    ```toml
    [tool.uv]
    exclude-newer = "7 days"
-   exclude-newer-package = { "my-internal-sdk" = false }
+   exclude-newer-package = {
+       "my-internal-sdk" = false,
+       "fast-moving-dep" = "2026-10-08T00:00:00Z",
+   }
    ```
 
 2. **In CI Workflows (`UV_EXCLUDE_NEWER`)**: Prevent zero-hour PyPI index propagation

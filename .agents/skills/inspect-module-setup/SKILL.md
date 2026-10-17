@@ -4,7 +4,7 @@ description: >
   Python project setups and development skills to extract best practices and
   propose improvements.
 name: inspect-module-setup
-version: 1.4.0
+version: 1.5.0
 ---
 
 # Inspect Module Setup (`inspect-module-setup`)
@@ -17,9 +17,13 @@ Use this skill whenever benchmarking Zenith against best-in-class repositories,
 evaluating modern tooling shifts in the Python ecosystem, analyzing agent skills
 used during development, or preparing actionable improvement proposals.
 
-Audit progress, candidate queues, and inspected targets are tracked in `.agents/skills/inspect-module-setup/`:
-- **Candidate Queue** (`.agents/skills/inspect-module-setup/candidates.log`): Prioritized queue of validated benchmark modules awaiting audit.
-- **Inspected Log** (`.agents/skills/inspect-module-setup/inspected.log`): Persistent history of completed repository audits across sessions to prevent duplicate analysis.
+Audit progress, candidate queues, and inspected targets are tracked in
+`.agents/skills/inspect-module-setup/`:
+
+- **Candidate Queue** (`.agents/skills/inspect-module-setup/candidates.log`):
+  Prioritized queue of validated benchmark modules awaiting audit.
+- **Inspected Log** (`.agents/skills/inspect-module-setup/inspected.log`): Persistent
+  history of completed repository audits across sessions to prevent duplicate analysis.
 
 ---
 
@@ -178,7 +182,8 @@ instructions, guardrails, and operational tooling:
 
 ### 9-Pillar Maturity Rubric & Scorecard Standards
 
-Assess benchmark repositories against four objective maturity levels across each pillar (Max Score: 36 points):
+Assess benchmark repositories against four objective maturity levels across each pillar
+(Max Score: 36 points):
 
 | Level | Classification | Definition & Criteria |
 | :---: | :--- | :--- |
@@ -196,8 +201,11 @@ Follow this procedure when auditing an external repository or local project.
 ### Step 0: Check Candidate Queue & Audit History
 
 Before inspecting a repository or package:
-1. Review `.agents/skills/inspect-module-setup/candidates.log` to pick an accepted target from the prioritized queue.
-2. Check `.agents/skills/inspect-module-setup/inspected.log` to verify historical audits and prevent duplicate analysis:
+
+1. Review `.agents/skills/inspect-module-setup/candidates.log` to pick an accepted
+   target from the prioritized queue.
+2. Check `.agents/skills/inspect-module-setup/inspected.log` to verify historical audits
+   and prevent duplicate analysis:
 
 ```bash
 # View queued candidates awaiting inspection
@@ -224,8 +232,9 @@ uv run python .agents/skills/inspect-module-setup/scripts/audit_repo.py <target_
 
 ### Step 2: Harvest & Benchmark Agent Skills
 
-Run dedicated skill harvesting to extract, inspect, and benchmark the target's
-AI instructions, Cursor rules (`.mdc`), MCP servers, and skills against Zenith's `.agents/skills/` library:
+Run dedicated skill harvesting to extract, inspect, and benchmark the target's AI
+instructions, Cursor rules (`.mdc`), MCP servers, and skills against Zenith's
+`.agents/skills/` library:
 
 ```bash
 # Deep harvest agent skills, instructions, MCP declarations, and AI policies
@@ -234,7 +243,8 @@ uv run python .agents/skills/inspect-module-setup/scripts/harvest_skills.py <tar
 
 ### Step 3: Deep-Dive Configuration Review
 
-Inspect discovered nuances, custom flags, specialized skills, or unusual tool configurations:
+Inspect discovered nuances, custom flags, specialized skills, or unusual tool
+configurations:
 
 ```bash
 cd .temp/inspect-<repo>
@@ -296,28 +306,121 @@ uv run python .agents/skills/inspect-module-setup/scripts/prune_cache.py --targe
 
 ---
 
-## 3. Candidate Queue & Audit Persistence
+## 3. Batch Inspection & Cross-Repository Synthesis Mode
 
-- **Audit History Log** (`.agents/skills/inspect-module-setup/inspected.log`): Persistent record of completed repository audits across sessions to prevent duplicate analysis.
-- **Candidate Queue** (`.agents/skills/inspect-module-setup/candidates.log`): Prioritized queue of validated benchmark candidates awaiting audit.
+When Zenith's setup is already mature and single-repository audits hit diminishing
+returns, run **Batch Inspection Mode** across a cohort of $N$ candidates (typically
+10–25 repositories). Auditing a cohort and synthesizing at the end separates
+**convergent ecosystem standards** (patterns independently adopted across multiple
+flagship projects) from noisy one-off repo quirks, while still capturing singular
+high-leverage breakthroughs.
 
-Always check `.agents/skills/inspect-module-setup/candidates.log` for upcoming benchmark targets and verify `.agents/skills/inspect-module-setup/inspected.log` to prevent duplicate effort.
+### Phase 1: Cohort Selection & Workspace Preparation
+
+1. Read the top $N$ candidates from `.agents/skills/inspect-module-setup/candidates.log`
+   and verify none appear in `inspected.log`.
+2. Ensure `.temp/batch-inspection/` exists (archive or clear prior batch reports if
+   starting a new batch):
+
+   ```bash
+   mkdir -p .temp/batch-inspection
+   ```
+
+### Phase 2: Sequential or Subagent-Parallel Deep Audits (`.temp/batch-inspection/<NN>-<slug>.md`)
+
+For each candidate $i \in \{1 \dots N\}$ (either sequentially or partitioned across
+parallel subagents in chunks of 2–3 repositories per subagent):
+
+1. **Automated Baseline Scan**: Run `audit_repo.py` and write the initial report to
+   `.temp/batch-inspection/<NN>-<slug>.md`:
+
+   ```bash
+   uv run python .agents/skills/inspect-module-setup/scripts/audit_repo.py <org>/<repo> \
+     --output .temp/batch-inspection/<NN>-<slug>.md
+   ```
+
+2. **Mandatory Deep-Dive Manual Inspection**:
+   Never rely solely on the automated scorecard. Manually inspect the cloned repository
+   in `.temp/inspect-<repo>/`:
+   - `pyproject.toml`, `uv.lock`, and build backend configuration.
+   - Static analysis & task configs (`ruff.toml`, `pyrefly.toml`, `mypy.ini`,
+     `tach.toml`, `.importlinter`, `poe_tasks.toml`, `Justfile`,
+     `.pre-commit-config.yaml`).
+   - Testing architecture (`pytest.ini`, `tests/conftest.py`, `.coveragerc`, custom
+     pytest hooks, property/snapshot/concurrency test idioms).
+   - Documentation pipeline (`zensical.toml`, `mkdocs.yml`, `llms.txt`, doc validation
+     scripts).
+   - CI/CD workflows (`.github/workflows/*.yml`, OIDC/provenance, matrix splits).
+   - Agent skills & governance (`AGENTS.md`, `CLAUDE.md`, `AI_POLICY.md`,
+     `.agents/skills/`, `.claude/skills/`, `.cursor/rules/`).
+
+3. **Append Deep-Dive Findings & Proposals**:
+   Append a structured **`## 4. Deep-Dive Findings & Proposals for Zenith`** section to
+   `.temp/batch-inspection/<NN>-<slug>.md` documenting exact file paths, configuration
+   snippets, and actionable takeaways (or explicitly noting if no novel patterns exceed
+   Zenith's baseline).
+
+4. **Transition & Cache Hygiene**: Once `.temp/batch-inspection/<NN>-<slug>.md` is
+   complete, transition the module from `candidates.log` to `inspected.log` and prune
+   cached clones to bound disk usage:
+
+   ```bash
+   uv run python .agents/skills/inspect-module-setup/scripts/transition_module.py <slug>
+   uv run python .agents/skills/inspect-module-setup/scripts/prune_cache.py --max-size-mb 500
+   ```
+
+### Phase 3: Cross-Cohort Synthesis (`.temp/batch-inspection/00-SYNTHESIS.md`)
+
+After all $N$ individual reports (`01-<slug>.md` through `<NN>-<slug>.md`) are written:
+
+1. Read and cross-reference all `<NN>-<slug>.md` reports in `.temp/batch-inspection/`.
+2. Deduplicate overlapping findings, filter out low-signal or domain-specific noise, and
+   organize the highest-leverage proposals into
+   `.temp/batch-inspection/00-SYNTHESIS.md`:
+   - **Scorecard Summary Table**: All $N$ repositories with their 9-Pillar score and
+     headline discovery.
+   - **Prioritized Unified Proposals**:
+     - **Tier 1 (P0)**: Packaging (`pyproject.toml`), CI/CD (`.github/workflows/`), &
+       Supply-Chain Security
+     - **Tier 2 (P1)**: Testing (`pytest.ini`, `.coveragerc`), Static Analysis
+       (`ruff.toml`, `pyrefly.toml`, `tach.toml`), & Task Runner (`poe_tasks.toml`)
+     - **Tier 3 (P2)**: Documentation (`zensical.toml`) & LLM Context (`llms.txt`)
+     - **Tier 4 (P3)**: Agent Skills (`.agents/skills/*/SKILL.md`), Governance
+       (`AGENTS.md`, `AI_POLICY.md`), & Inspector Script Improvements
+   - **Explicit Rejections / Anti-Bloat Filter**: Patterns observed in the cohort that
+     Zenith intentionally rejects (and why).
+3. Present the synthesized proposals to the user and await confirmation before modifying
+   the template.
 
 ---
 
-## 4. Proposal Synthesis Template
+## 4. Candidate Queue & Audit Persistence
 
-When proposing template improvements based on an audit, structure the output as
-follows:
+- **Audit History Log** (`.agents/skills/inspect-module-setup/inspected.log`):
+  Persistent record of completed repository audits across sessions to prevent duplicate
+  analysis.
+- **Candidate Queue** (`.agents/skills/inspect-module-setup/candidates.log`):
+  Prioritized queue of validated benchmark candidates awaiting audit.
+
+Always check `.agents/skills/inspect-module-setup/candidates.log` for upcoming benchmark
+targets and verify `.agents/skills/inspect-module-setup/inspected.log` to prevent
+duplicate effort.
+
+---
+
+## 5. Single-Repository Proposal Template
+
+When proposing template improvements from a single-repository audit (or formatting each
+proposal inside `00-SYNTHESIS.md`), structure the output as follows:
 
 ```markdown
-# Improvement Proposal: [Area / Feature / Skill] (Learned from [Project Name])
+# Improvement Proposal: [Area / Feature / Skill] (Learned from [Project Name(s)])
 
 ## 1. Executive Summary
 Brief summary of the discovered pattern, skill, or workflow and why Zenith benefits from it.
 
 ## 2. Benchmark Source & Context
-- Target Project: `[org/repo]`
+- Target Project(s): `[org/repo]`
 - Discovered Pattern: `[e.g., Trusted Publishing OIDC / PEP 735 groups / AI Policy / Custom Agent Skill]`
 
 ## 3. Gap Analysis (Target vs. Zenith)

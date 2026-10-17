@@ -23,14 +23,33 @@ to merging.
    diff, **report findings and stop**. Never edit any file during a review turn, and do
    not mix unrequested fixes with review output. Apply fixes only after the user
    explicitly asks you to fix specific items.
-2. **Ground Every Finding**:
+2. **Bias Ordering (Diff Before Context)**:
+   Inspect `git status` and `git diff` **before** reading surrounding files or PR
+   descriptions so your review stays anchored to the actual code change rather than the
+   author's stated intent.
+3. **Risk-Tiered Review Depth**:
+   Allocate review scrutiny proportionally to the risk surface of the diff:
+   - **Low risk** (docs, comments, isolated test additions): Quick pass for accuracy and
+     hollow assertions.
+   - **Medium risk** (standard module logic, internal refactors): Full 6-Point Matrix
+     verification.
+   - **High risk** (public API signatures, concurrency/async state, serialization,
+     security/subprocess boundaries, dependency changes): Deep adversarial trace of failure
+     modes, edge-case inputs, and backward compatibility.
+4. **Ground Every Finding & Suppress False Positives**:
    Before reporting a finding, resolve symbols through base classes and protocols.
    - For a **correctness finding**, name the concrete input or state that triggers the
      failure.
    - For an **architectural, typing, or style finding**, quote the exact rule or
      convention it violates.
-   - If a finding cannot be grounded in a failing input or an explicit rule, it is a
-     guess—leave it out.
+   - **Causal Root-Cause Attribution**: Never dismiss a failing test or lint gate as
+     "unrelated to this change" without proving it fails identically on the base commit
+     and identifying the actual cause.
+   - **False-Positive Suppression Filter**: Omit speculative nitpicks, hypothetical race
+     conditions without a concrete trigger path, issues already enforced by automated CI
+     gates (unless currently failing), and stylistic preferences not codified in
+     `python-style-guide`. If a finding cannot be grounded in a failing input or an
+     explicit rule, leave it out.
 
 ---
 

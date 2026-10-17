@@ -48,6 +48,12 @@ Before editing code or executing tasks, ensure an isolated, clean working enviro
   - `uv run pre-commit run --all-files`
   - Always re-read any files modified by formatters or `pre-commit` hooks before making
     subsequent edits.
+- **Reproduce-First Bug Scoping**: When fixing a bug, first reproduce the failure with a
+  minimal test, trace the root cause, and search the codebase for sibling occurrences of
+  the same pattern before editing production code.
+- **Complexity Reset Rule**: If a fix or implementation starts requiring layered hacks,
+  defensive workarounds, or fighting the type checker, stop and re-evaluate the design
+  from first principles rather than piling on patches.
 - **AI Contribution Policy**: Consult and adhere to `AI_POLICY.md` for human review,
   local verification, and tool disclosure guidelines.
 

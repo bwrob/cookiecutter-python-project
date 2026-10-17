@@ -23,7 +23,6 @@ Serve documentation locally or compile production static sites.
 
 ```bash
 uv run zensical serve                  # Start live-reloading dev server
-uv run zensical serve --strict         # Fail immediately on broken links
 uv run zensical build                  # Build static site into site/
 uv run zensical build --strict --clean # Production build with strict checks
 ```
@@ -31,7 +30,7 @@ uv run zensical build --strict --clean # Production build with strict checks
 In Zenith, canonical tasks are wired into Poe:
 
 ```bash
-uv run poe docs-serve                  # Runs zensical serve --strict
+uv run poe docs-serve                  # Runs zensical serve
 uv run poe docs-build                  # Runs zensical build --strict --clean
 ```
 
@@ -118,7 +117,22 @@ pymdownx.superfences.custom_fences = [
       validator = "markdown_exec.validator",
       format = "markdown_exec.formatter" },
 ]
-zensical.extensions.preview = {}
+zensical.extensions.preview.targets.include = ["*"]
+
+# Built-in Zensical Plugins
+[project.plugins.gh-admonitions]
+
+[project.plugins.markdown-exec]
+
+[project.plugins.llmstxt]
+full_output = "llms-full.txt"
+
+[project.plugins.llmstxt.sections]
+"Documentation" = [
+    "index.md: Overview and quickstart",
+    "getting-started.md: Installation and development setup",
+    "reference.md: Public API reference",
+]
 
 # mkdocstrings Plugin
 [project.plugins.mkdocstrings]
@@ -132,19 +146,24 @@ options.backlinks = "tree"
 options.docstring_options.ignore_init_summary = true
 options.docstring_style = "numpy"
 options.extensions = ["griffe_warnings_deprecated"]
+options.line_length = 88
 options.members_order = "source"
 options.merge_init_into_class = true
 options.parameter_headings = true
+options.relative_crossrefs = true
+options.scoped_crossrefs = true
 options.separate_signature = true
 options.show_bases = true
 options.show_inheritance_diagram = true
 options.show_root_heading = true
 options.show_signature_annotations = true
+options.show_signature_type_parameters = true
 options.show_source = true
 options.show_symbol_type_heading = true
 options.show_symbol_type_toc = true
 options.signature_crossrefs = true
 options.summary = true
+options.type_parameter_headings = true
 options.unwrap_annotated = true
 ```
 
@@ -199,9 +218,16 @@ Zensical automatically reloads docs when source files in `src/` change:
 
 - **Cross-References & Backlink Trees**: With
   `inventories = ["https://docs.python.org/3/objects.inv"]`,
-  `signature_crossrefs = true`, and `options.backlinks = "tree"`, type
-  annotations link directly to upstream docs and each symbol renders a
+  `signature_crossrefs = true`, `relative_crossrefs = true`,
+  `scoped_crossrefs = true`, and `options.backlinks = "tree"`, type
+  annotations and shorthand `[Class][.Class]` / `[method][.method]` links
+  resolve directly to upstream or local docs, and each symbol renders a
   collapsible tree of pages that reference it.
+- **PEP 695 Type Parameters**: `options.show_signature_type_parameters = true`
+  and `options.type_parameter_headings = true` render Python 3.12+ generic
+  syntax (`def func[T](x: T) -> T`, `class Box[T]`, `type Alias[T] = ...`) directly in
+  signatures and table-of-contents headings, formatted with Ruff at
+  `options.line_length = 88`.
 - **Auto Summary Tables & Class Diagrams**: `options.summary = true` generates
   module/class summary tables automatically, and
   `options.show_inheritance_diagram = true` renders inline SVG class hierarchy
@@ -209,8 +235,14 @@ Zensical automatically reloads docs when source files in `src/` change:
 - **PEP 702 Deprecation Badges**: `options.extensions = ["griffe_warnings_deprecated"]`
   inspects `@warnings.deprecated("...")` decorators via AST and renders
   structured deprecation admonitions automatically.
-- **Floating Link Previews**: `zensical.extensions.preview = {}` enables
-  instant floating preview cards when hovering internal documentation links.
+- **Floating Link Previews**:
+  `zensical.extensions.preview.targets.include = ["*"]` enables instant
+  floating preview cards when hovering internal documentation links (note: an
+  empty `preview = {}` table is a no-op because `targets.include` defaults to
+  `[]`).
+- **GitHub-Style Alerts (`gh-admonitions`)**: `[project.plugins.gh-admonitions]`
+  natively converts `> [!NOTE]`, `> [!TIP]`, `> [!IMPORTANT]`, `> [!WARNING]`,
+  and `> [!CAUTION]` blockquotes into styled Zensical admonitions.
 
 ### C. Detecting Breaking Public API Changes (`griffe check`)
 
@@ -235,17 +267,38 @@ flowchart LR
 ```
 ````
 
-### E. Dynamic Code Execution with `markdown-exec`
+### E. Dynamic Code Execution & Directory Trees with `markdown-exec`
 
-To execute code at doc build time and display live terminal output:
+With `[project.plugins.markdown-exec]` enabled, Zensical registers custom
+fences for `python`, `py`, `pycon`, `console`, `sh`, `bash`, and `tree`
+automatically:
 
 ````markdown
-```python exec="on"
+```python exec="on" session="quickstart" source="material-block" result="ansi"
 import sys
 
 print(f"Built with Python {sys.version.split()[0]}")
 ```
 ````
+
+- **Session Persistence**: Blocks sharing `session="name"` reuse variables and
+  imports across a page.
+- **Doctest (`pycon`) & Shell (`console`) Execution**: Execute interactive
+  REPL transcripts (` ```pycon exec="1" `) or shell commands (` ```console `)
+  automatically without writing `exec="on"` when using `pycon`.
+- **Rich Directory Trees (` ```tree `)**: Render styled filesystem trees with
+  Material SVG folder/file icons from plain indented text:
+
+  ````markdown
+  ```tree
+  ./
+      pyproject.toml
+      zensical.toml
+      src/
+          my_package/
+              __init__.py
+  ```
+  ````
 
 ### F. Embedding Tested Code Snippets with `pymdownx.snippets`
 
@@ -268,9 +321,12 @@ Keep these principles in mind when maintaining documentation:
 
 - **Always build with `--strict`**: Running `uv run poe docs-build`
   validates all internal links, anchors, and docstring references. Never
-  deploy a build with broken links.
-- **Keep `docs/llms.txt` synchronized**: When adding new pages to `nav` in
-  `zensical.toml`, update `docs/llms.txt` so AI coding agents consuming the
-  documentation index see all canonical guides and API references.
+  deploy a build with broken links. (Note: `zensical serve` does not currently
+  support `--strict`; run `zensical build --strict` to verify before committing.)
+- **Automated `llms.txt` & `llms-full.txt` Generation**: Zensical's built-in
+  Rust `[project.plugins.llmstxt]` plugin automatically compiles `site/llms.txt`
+  and `site/llms-full.txt` (including rendered `mkdocstrings` API signatures)
+  during `zensical build`. When adding new pages to `nav` in `zensical.toml`,
+  also add them under `[project.plugins.llmstxt.sections]` and `docs/llms.txt`.
 - **Image Paths**: Keep asset images in `docs/assets/` and reference them
   using relative paths (`assets/my-image.png`).

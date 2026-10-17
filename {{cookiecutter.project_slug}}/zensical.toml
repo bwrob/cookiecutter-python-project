@@ -131,7 +131,21 @@
         pymdownx.tasklist.custom_checkbox = true
         pymdownx.tilde = {}
         toc.permalink = true
-        zensical.extensions.preview = {}
+        zensical.extensions.preview.targets.include = ["*"]
+
+    [project.plugins.gh-admonitions]
+
+    [project.plugins.llmstxt]
+        full_output = "llms-full.txt"
+
+        [project.plugins.llmstxt.sections]
+            "Documentation" = [
+                "index.md",
+                "getting-started.md",
+                "reference.md",
+            ]
+
+    [project.plugins.markdown-exec]
 
     [project.plugins.mkdocstrings]
         default_handler = "python"
@@ -144,17 +158,22 @@
         options.docstring_options.ignore_init_summary = true
         options.docstring_style = "numpy"
         options.extensions = ["griffe_warnings_deprecated"]
+        options.line_length = 88
         options.members_order = "source"
         options.merge_init_into_class = true
         options.parameter_headings = true
+        options.relative_crossrefs = true
+        options.scoped_crossrefs = true
         options.separate_signature = true
         options.show_bases = true
         options.show_inheritance_diagram = true
         options.show_root_heading = true
         options.show_signature_annotations = true
+        options.show_signature_type_parameters = true
         options.show_source = true
         options.show_symbol_type_heading = true
         options.show_symbol_type_toc = true
         options.signature_crossrefs = true
         options.summary = true
+        options.type_parameter_headings = true
         options.unwrap_annotated = true

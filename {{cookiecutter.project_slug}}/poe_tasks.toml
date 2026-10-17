@@ -200,7 +200,7 @@
     # ------------------------------------------------------------------------------
 
 [tasks.docs-serve]
-    cmd  = "zensical serve --strict"
+    cmd  = "zensical serve"
     help = "Live-preview documentation with Zensical and MathJax."
 
 [tasks.docs-build]

@@ -54,7 +54,7 @@ Pytest and coverage behavior are configured through root configuration files.
 [pytest]
 addopts =
     --verbose -ra --doctest-modules
-    --import-mode=importlib --strict-config --strict-markers
+    --import-mode=importlib --strict-config --strict-markers --snapshot-warn-unused
 collect_imported_tests = false
 console_output_style   = classic
 log_format             = %(asctime)s [%(levelname)8s] %(name)s: %(message)s
@@ -65,6 +65,8 @@ testpaths              = tests src
 xfail_strict           = true
 filterwarnings         =
     error
+    default::EncodingWarning
+    error::EncodingWarning:my_package.*
 doctest_optionflags    =
     DONT_ACCEPT_TRUE_FOR_1
     NORMALIZE_WHITESPACE
@@ -222,9 +224,10 @@ exclude_also =
 Python 3.10+ introduced `EncodingWarning` (PEP 597) to identify calls to `open()`
 and text streams that omit an explicit encoding argument. In Zenith, all test
 tasks execute with `PYTHONWARNDEFAULTENCODING=1`. Paired with
-`filterwarnings = error` in `pytest.ini`, any missing `encoding="utf-8"` is
-treated as a fatal failure, ensuring cross-platform charset reliability between
-POSIX and Windows environments.
+`default::EncodingWarning` and `error::EncodingWarning:<package_name>.*` under
+`filterwarnings` in `pytest.ini`, any missing `encoding="utf-8"` in first-party
+code is treated as a fatal failure while preventing unpinned third-party plugin
+warnings from breaking CI.
 
 ### E. Distribution Artifact Testing (`poe test-dist`)
 
@@ -237,7 +240,7 @@ compilation errors. `uv run poe test-dist` executes
 2. Provisions a temporary, isolated virtual environment.
 3. Installs the compiled `.whl` and test dependencies.
 4. Executes the full `pytest` suite against the installed distribution with
-   `src/` omitted from `sys.path`.
+   `python -I -m pytest` (`src/` omitted from `sys.path`).
 
 ---
 
@@ -289,6 +292,12 @@ Follow these strict engineering rules when authoring or refactoring tests:
    do not eagerly import heavy optional dependencies (such as CLI frameworks),
    spawn a clean `subprocess.run([sys.executable, "-c", ...])` and assert that
    deferred modules are absent from `sys.modules`.
+7. **Union & Registry Sync Tripwire Tests**:
+   Whenever runtime registries, dispatch tables, or CLI option lists mirror a
+   static `Literal` or `Union` type alias, add a reflection tripwire test using
+   `typing.get_args()` (e.g. `assert set(REGISTRY) == set(get_args(ActionType))`)
+   so adding a variant to the type without registering its runtime handler fails
+   immediately in `pytest`.
 
 ---
 

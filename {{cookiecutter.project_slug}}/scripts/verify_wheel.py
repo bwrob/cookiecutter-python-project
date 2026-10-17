@@ -305,6 +305,7 @@ def run_distribution_tests(
     pytest_ini = project_root / "pytest.ini"
     cmd = [
         str(python_exe),
+        "-I",
         "-m",
         "pytest",
     ]

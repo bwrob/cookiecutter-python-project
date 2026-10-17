@@ -165,10 +165,15 @@ def audit_pillar_1_packaging(root: Path, pyproject: dict[str, object]) -> Pillar
     else:
         gaps.append("Missing PEP 621 `[project]` table")
 
-    # Layout: src/ vs flat
+    # Layout: src/ vs python/ (Maturin) vs flat
     has_src = (root / "src").is_dir()
+    has_python_dir = (root / "python").is_dir()
     if has_src:
         strengths.append("Strict `src/` layout prevents accidental import collisions")
+    elif has_python_dir:
+        strengths.append(
+            "Dedicated `python/` source layout (Maturin / mixed Rust-Python project)"
+        )
     else:
         gaps.append("Flat package layout instead of recommended `src/` layout")
 
@@ -292,17 +297,17 @@ def audit_pillar_2_dependencies(
         upper_count = sum(1 for d in runtime_deps if "<" in str(d))
         total = len(runtime_deps)
 
-        if gte_count == total:
-            details.append(
-                f"Dependency Pinning: Pure open lower bounds (`>=`) across all {total} dependencies"
-            )
-        elif upper_count > 0:
+        if upper_count > 0:
             details.append(
                 f"Dependency Pinning: Restrictive upper bounds (`<`) present in {upper_count}/{total} dependencies"
             )
         elif strict_count > 0:
             details.append(
                 f"Dependency Pinning: Exact pins (`==`) present in {strict_count}/{total} dependencies"
+            )
+        elif gte_count == total:
+            details.append(
+                f"Dependency Pinning: Pure open lower bounds (`>=`) across all {total} dependencies"
             )
 
     # Automated Dependency Updates
@@ -340,12 +345,15 @@ def audit_pillar_3_static_analysis(
     tool = pyproject.get("tool", {}) if isinstance(pyproject.get("tool"), dict) else {}
 
     # Ruff Configuration & Rule Inspection
-    has_ruff = (root / "ruff.toml").exists() or (root / ".ruff.toml").exists()
+    ruff_candidates = (
+        root / "ruff.toml",
+        root / ".ruff.toml",
+        root / "config" / "ruff.toml",
+    )
+    ruff_file = next((p for p in ruff_candidates if p.exists()), None)
+    has_ruff = ruff_file is not None
     ruff_cfg: dict[str, object] = {}
-    if has_ruff:
-        ruff_file = (
-            root / "ruff.toml" if (root / "ruff.toml").exists() else root / ".ruff.toml"
-        )
+    if ruff_file is not None:
         ruff_cfg = load_toml(ruff_file)
     elif "ruff" in tool and isinstance(tool["ruff"], dict):
         has_ruff = True
@@ -374,6 +382,14 @@ def audit_pillar_3_static_analysis(
         type_checkers.append("pyrefly")
         score += 2
         strengths.append("Pyrefly next-gen strict static type checker")
+    if (
+        (root / "ty.toml").exists()
+        or (root / "config" / "ty.toml").exists()
+        or "ty" in tool
+    ):
+        type_checkers.append("ty")
+        score += 2
+        strengths.append("Astral `ty` Rust-based static type checker")
     if (root / "pyrightconfig.json").exists() or "pyright" in tool:
         type_checkers.append("pyright")
         score += 1
@@ -385,6 +401,7 @@ def audit_pillar_3_static_analysis(
             )
     if (
         (root / "mypy.ini").exists()
+        or (root / "config" / "mypy.ini").exists()
         or ".mypy.ini" in [p.name for p in root.iterdir()]
         or "mypy" in tool
     ):
@@ -422,11 +439,16 @@ def audit_pillar_3_static_analysis(
     if (
         (root / ".typos.toml").exists()
         or (root / "_typos.toml").exists()
+        or (root / "typos.toml").exists()
         or "typos" in tool
     ):
         strengths.append("Typos Rust-based source code spell checker")
 
-    if (root / ".rumdl.toml").exists() or "rumdl" in tool:
+    if (
+        (root / ".rumdl.toml").exists()
+        or (root / "rumdl.toml").exists()
+        or "rumdl" in tool
+    ):
         strengths.append("Rumdl Markdown linter and formatter")
 
     if (root / ".zizmor.yml").exists() or "zizmor" in tool:
@@ -481,6 +503,9 @@ def audit_pillar_4_task_runner(root: Path, pyproject: dict[str, object]) -> Pill
             details.append(
                 f"Poe tasks defined: {', '.join(f'`{t}`' for t in task_list[:8])}"
             )
+    elif (root / "duties.py").exists():
+        level = 3
+        strengths.append("Duty (`duties.py`) Python task runner")
     elif (
         (root / "Justfile").exists()
         or (root / "justfile").exists()
@@ -520,7 +545,9 @@ def audit_pillar_5_testing(root: Path, pyproject: dict[str, object]) -> PillarAu
     level = 1
 
     # Test directories
-    test_dirs = [d for d in ("tests", "test", "testing") if (root / d).is_dir()]
+    test_dirs = [
+        d for d in ("tests", "test", "testing", "python/tests") if (root / d).is_dir()
+    ]
     if test_dirs:
         level = 2
         strengths.append(
@@ -530,7 +557,11 @@ def audit_pillar_5_testing(root: Path, pyproject: dict[str, object]) -> PillarAu
         gaps.append("No test directory found")
 
     tool = pyproject.get("tool", {}) if isinstance(pyproject.get("tool"), dict) else {}
-    has_pytest = (root / "pytest.ini").exists() or "pytest" in tool
+    has_pytest = (
+        (root / "pytest.ini").exists()
+        or (root / "config" / "pytest.ini").exists()
+        or "pytest" in tool
+    )
     if has_pytest:
         level = max(level, 3)
         strengths.append("Pytest test framework configuration")
@@ -582,7 +613,12 @@ def audit_pillar_5_testing(root: Path, pyproject: dict[str, object]) -> PillarAu
     fail_under = report_cfg.get("fail_under") if isinstance(report_cfg, dict) else None
     branch = run_cfg.get("branch") if isinstance(run_cfg, dict) else None
 
-    if "pytest-cov" in dep_str or (root / ".coveragerc").exists() or cov_cfg:
+    if (
+        "pytest-cov" in dep_str
+        or (root / ".coveragerc").exists()
+        or (root / "config" / "coverage.ini").exists()
+        or cov_cfg
+    ):
         cov_info = "Coverage tracking configured"
         if fail_under:
             cov_info += f" (`fail_under = {fail_under}%`)"

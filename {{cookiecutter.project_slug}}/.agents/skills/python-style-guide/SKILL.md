@@ -224,7 +224,19 @@ def dispatch(action: Action) -> None:
             update_item(item_id, payload)
         case ("delete", item_id):
             delete_item(item_id)
+        case _ as unreachable:
+            if TYPE_CHECKING:
+                assert_never(unreachable)
+            logger.warning("Ignoring unknown action: %r", unreachable)
 ```
+
+> [!TIP]
+> **Forward-Compatible Exhaustiveness (`if TYPE_CHECKING: assert_never(...)`)**:
+> For internal closed unions, call `typing.assert_never(x)` directly in the default
+> branch so both static type checkers and runtime raise on unhandled variants. When
+> matching external API payloads or wire schemas that may add new enum values in the
+> future without breaking existing clients, guard `assert_never(x)` behind
+> `if TYPE_CHECKING:` and log or gracefully fallback at runtime.
 
 ---
 

@@ -129,3 +129,18 @@ and `AI_POLICY.md`:
    - Confirm human review and full accountability for all submitted changes.
    - Confirm that AI assistants are credited in commit messages via `Co-authored-by`
      trailers.
+
+### Shell-Safe Outbound CLI Calls (`gh` & `git`)
+
+When creating commits, issues, or pull requests whose markdown body contains backticks
+(`` `code` ``), `$variables`, or double quotes, **never** pass double-quoted inline
+strings (`--body "... `code` ..."`), because bash/zsh evaluates backticks as command
+substitution and corrupts the text. Always use `--body-file` (or `-F`) with a file in
+`.temp/` or a single-quoted heredoc (`<<'EOF'`):
+
+```bash
+gh pr create --title "feat(core): add parser" --body-file - <<'EOF'
+### Summary
+Updated `parse_token` to handle `$HOME` literals safely.
+EOF
+```

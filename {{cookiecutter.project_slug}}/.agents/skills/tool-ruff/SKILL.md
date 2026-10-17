@@ -135,12 +135,17 @@ If a rule is noisy or conflicts with domain design:
 ### B. Relaxing Rules for Specific Subtrees (`per-file-ignores`)
 
 Tests, benchmarks, documentation scripts, or CLI files often require rule
-exceptions:
+exceptions. You can also use negated globs (`"!src/**.py"`) to relax strict
+docstring or typing rules across all auxiliary files (`tests/`, `scripts/`,
+`examples/`, `benchmarks/`) in a single rule while keeping `src/` 100% strict:
 
 ```toml
 [lint.per-file-ignores]
-# Allow assertions and magic numbers in tests
-"tests/**/*.py" = ["S101", "PLR2004"]
+# Relax docstring and assert rules everywhere outside production src/
+"!src/**.py" = ["D", "S101", "PLR2004"]
+
+# Or scope to specific directories:
+"tests/**/*.py" = ["S101", "PLR2004", "D"]
 
 # Allow print statements and typer callbacks in CLI entrypoints
 "src/*/cli.py" = ["T201", "FBT001", "FBT002"]

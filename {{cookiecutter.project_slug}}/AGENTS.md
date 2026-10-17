@@ -39,6 +39,12 @@ Before editing code or running tasks, ensure a clean, isolated environment:
   - `uv run poe clean` (to purge build artifacts and stale caches)
 - **Tool Guidance**: For tool usage and common configuration changes,
   consult the corresponding skill in `.agents/skills/tool-*/SKILL.md`.
+- **Reproduce-First Bug Scoping**: When fixing a bug, first reproduce the failure with a
+  minimal test, trace the root cause, and search the codebase for sibling occurrences of
+  the same pattern before editing production code.
+- **Complexity Reset Rule**: If a fix or implementation starts requiring layered hacks,
+  defensive workarounds, or fighting the type checker, stop and re-evaluate the design
+  from first principles rather than piling on patches.
 - **AI Contribution Policy**: All contributions must adhere to `AI_POLICY.md`
   for human review, local test verification, and tool disclosure.
 

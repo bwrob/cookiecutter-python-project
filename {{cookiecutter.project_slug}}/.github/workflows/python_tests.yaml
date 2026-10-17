@@ -99,6 +99,15 @@ jobs:
       - name: 🧪 Run pytest suite
         run: uv run poe test
 
+      - name: 🧹 Verify clean working tree after tests
+        shell: bash
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::Tests left untracked or modified files in the working tree:"
+            git status --short
+            exit 1
+          fi
+
       - name: 📋 Summarize test failures
         if: failure()
         env:
