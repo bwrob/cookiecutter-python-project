@@ -21,8 +21,9 @@ circular imports.
 Use these commands to validate boundaries, show trees, and generate reports.
 
 ```bash
-uv run tach check                  # Validate all module boundaries
-uv run tach check --strict         # Fail on undeclared imports
+uv run tach check                  # Validate internal module boundaries
+uv run tach check-external         # Validate pyproject.toml external deps
+uv run tach check --exact          # Fail on unused module dependencies
 uv run tach show                   # Print terminal architecture tree
 uv run tach show --mermaid         # Export dependency graph in Mermaid
 uv run tach sync                   # Sync tach.toml to existing imports
@@ -39,8 +40,9 @@ Tach is configured via **`tach.toml`** at the project root:
 # Source roots for Python import resolution
 source_roots = ["src"]
 
-# Strict import mode
-strict = true
+# Forbid circular dependencies across modules
+forbid_circular_dependencies = true
+ignore_type_checking_imports = true
 
 # Layer hierarchy (ordered from top to bottom)
 # Higher layers can import from lower layers; lower cannot import upward.
@@ -65,8 +67,8 @@ layer = "core"
 
 ## 3. Most Common Configuration Changes During Development
 
-Manage architectural layers, module dependencies, and public interfaces with
-these patterns.
+Manage architectural layers, module dependencies, public interfaces, and external
+`pyproject.toml` dependency hygiene with these patterns.
 
 ### A. Adding a New Architectural Layer
 
@@ -114,7 +116,33 @@ expose = ["my_app.core.get_greeting", "my_app.core.GreetingConfig"]
 Any attempt to import an unexposed symbol from outside `my_app.core` will
 trigger a Tach interface violation error.
 
-### D. Exporting Mermaid Architecture Diagrams to Documentation
+### D. Validating External `pyproject.toml` Dependencies (`tach check-external`)
+
+`uv run poe dependencies` runs both `tach check` (internal layer boundaries) and
+`tach check-external` (external third-party dependency hygiene). `tach check-external`
+automatically catches:
+
+1. **Unused dependencies**: Packages declared in `[project.dependencies]` that are never
+   imported in `src/` (controlled by `[rules] unused_external_dependencies = "error"`,
+   which is `"error"` by default).
+2. **Transitive or dev-only imports**: Importing a transitive dependency (e.g., `click`
+   via `typer`) or a dev-group dependency (e.g., `pytest`) inside `src/` without
+   declaring it in `[project.dependencies]`.
+
+If a runtime dependency is loaded dynamically (e.g., a database driver or ASGI server
+plugin never imported directly) or has non-standard distribution metadata, configure
+`[external]` in `tach.toml`:
+
+```toml
+[external]
+# Exclude dynamically loaded runtime packages from unused-dependency errors
+exclude = ["psycopg-binary", "uvicorn"]
+
+# Map PyPI distribution names to top-level import names if metadata is missing
+rename = ["pillow:PIL", "beautifulsoup4:bs4"]
+```
+
+### E. Exporting Mermaid Architecture Diagrams to Documentation
 
 Zenith defines a built-in task in `poe_tasks.toml` to export the current
 dependency graph directly as a Mermaid diagram:
@@ -125,7 +153,7 @@ uv run poe dependency-graph
 
 This generates `docs/dependency_graph.mmd`, which can be embedded in docs.
 
-### E. Suppressing False Positives or Temporary Migration Exceptions
+### F. Suppressing False Positives or Temporary Migration Exceptions
 
 When transitioning legacy code or handling dynamic runtime imports:
 
@@ -146,7 +174,7 @@ from my_app.cli import format_output  # tach-ignore(my_app.cli)
 
 Keep these architecture rules in mind:
 
-- **Check boundaries with Poe**: Always run `uv run poe dependencies`
+- **Check boundaries & external deps with Poe**: Always run `uv run poe dependencies`
   before merging.
 - **Top-Down Only**: Imports must flow downwards through layers (`cli` $\to$
   `services` $\to$ `core`). Never allow `core` to import anything from `cli`.

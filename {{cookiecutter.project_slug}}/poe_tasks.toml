@@ -149,8 +149,10 @@
     # ------------------------------------------------------------------------------
 
 [tasks.dependencies]
-    cmd  = "tach check"
-    help = "Validate modular architecture layer boundaries with Tach."
+    default_item_type = "cmd"
+    help              = "Validate modular architecture boundaries and external dependencies with Tach."
+    ignore_fail       = "return_non_zero"
+    sequence          = [ "tach check", "tach check-external" ]
 
 [tasks.dependency-graph]
     cmd  = "tach show --mermaid -o docs/dependency_graph.mmd"

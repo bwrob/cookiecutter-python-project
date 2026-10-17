@@ -185,6 +185,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "uv audit" in poe_text
     assert "tasks.check-api" in poe_text
     assert "griffe check demo_app --search src" in poe_text
+    assert "tach check-external" in poe_text
     assert "tasks.sync-skills" in poe_text
     assert "tasks.docs-logo" in poe_text
     assert "tasks.clean" in poe_text
