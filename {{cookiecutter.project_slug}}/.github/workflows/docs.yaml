@@ -28,9 +28,11 @@ jobs:
 {% include "ci/_setup_uv.yaml" %}
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Install dependencies
-        run: uv sync --only-group docs
+        run: uv sync --group docs
 
       - name: Build documentation with Zensical
         id: build_docs

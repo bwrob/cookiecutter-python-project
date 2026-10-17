@@ -217,7 +217,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
         in (project_dir / ".github" / "workflows" / "publish.yaml").read_text()
     )
     assert (
-        "python scripts/verify_wheel.py"
+        "scripts/verify_wheel.py"
         in (
             project_dir / ".github" / "workflows" / "test_redistribute.yaml"
         ).read_text()
@@ -395,7 +395,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "zensical build --strict" in poe_text
     docs_yaml_text = (project_dir / ".github" / "workflows" / "docs.yaml").read_text()
     assert "zensical build --clean --strict" in docs_yaml_text
-    assert "uv sync --only-group docs" in docs_yaml_text
+    assert "uv sync --group docs" in docs_yaml_text
 
     publish_yaml_text = (
         project_dir / ".github" / "workflows" / "publish.yaml"
@@ -417,8 +417,8 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "test:" in ci_text
     assert "test-lowest:" in ci_text
     assert "test-dist:" in ci_text
-    assert "uv sync --only-group test" in ci_text
-    assert "uv sync --only-group test --resolution lowest-direct" in ci_text
+    assert "uv sync --group test" in ci_text
+    assert "uv sync --group test --resolution lowest-direct" in ci_text
     assert "poe format-check" in ci_text
     assert "poe typos" in ci_text
     assert "UV_EXCLUDE_NEWER" in ci_text
