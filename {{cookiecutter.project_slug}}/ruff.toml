@@ -25,6 +25,9 @@ line-length = 88
     preview = true
     select = [ "ALL" ]
 
+    [lint.flake8-bugbear]
+        extend-immutable-calls = [ "typer.Argument", "typer.Option" ]
+
     [lint.flake8-tidy-imports]
         ban-relative-imports = "all"
 

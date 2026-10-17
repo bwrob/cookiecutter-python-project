@@ -81,7 +81,17 @@ Co-authored-by: Claude <noreply@anthropic.com>
 
 ---
 
-## 3. Pre-Commit Verification Gate
+## 3. Explicit File Staging (No Blanket Staging)
+
+Always stage files explicitly by path (`git add <file1> <file2>`). **Never** use blanket
+staging commands (`git add -A`, `git add .`, or `git commit -am`). The developer's
+working tree may contain untracked scratch notes, in-progress experimental edits, or
+environment files; blanket staging sweeps these untracked modifications into commits
+without human consent.
+
+---
+
+## 4. Pre-Commit Verification Gate
 
 Never commit unverified changes. Execute the verification pipeline locally:
 
@@ -104,7 +114,7 @@ uv run pre-commit run --all-files
 
 ---
 
-## 4. Pull Request Preparation & AI Disclosure
+## 5. Pull Request Preparation & AI Disclosure
 
 When opening a pull request, adhere to the project's `PULL_REQUEST_TEMPLATE.md`
 and `AI_POLICY.md`:

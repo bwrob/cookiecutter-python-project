@@ -46,3 +46,12 @@ attrs
 trio
 syrupy
 polyfactory
+time-machine
+starlette
+uvicorn
+narwhals
+ibis
+cyclopts
+logfire
+dspy
+smolagents

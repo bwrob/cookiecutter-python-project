@@ -34,6 +34,10 @@ contributors must adhere to the following principles:
   directly opening pull requests or creating automated issue spam.
 - **Targeted Contributions**: AI-assisted PRs must address accepted issues or
   coordinated feature requests.
+- **Search Before Opening (No Duplicates)**: Before opening a pull request, search open
+  and closed pull requests, issues, and discussions. Do not open a pull request when the
+  same change has already been proposed or is currently in progress. Submitting duplicate
+  pull requests wastes maintainer bandwidth.
 - **Contribute at Human Speed, Not AI Speed**: AI tools make it trivial to generate
   large volumes of code and prose quickly, but review bandwidth moves at human speed.
   Do not post rapid-fire pull requests, mass-claim open issues, or flood trackers with
@@ -54,6 +58,9 @@ contributors must adhere to the following principles:
 
 ## 5. Concise Code & Clean Comments
 
+- **Default to Zero Inline Comments Unless Explaining 'Why'**: Comments should default
+  to none. Only add inline comments when explaining a non-obvious rationale, hidden
+  constraint, workaround, or subtle architectural invariant.
 - **No AI Slop or Diff-Narrative Comments**: Any comments added must be concise and
   relevant for the *current* state of the code. Remove any AI-generated comments that
   describe changes relative to the previous state of the code, narrate what the agent

@@ -65,6 +65,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert (project_dir / ".github" / "copilot-instructions.md").exists()
     assert (project_dir / ".github" / "codecov.yml").exists()
     for skill in [
+        "changelog-writing",
         "code-review",
         "git-workflow",
         "project-setup",
@@ -127,6 +128,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert (project_dir / "tests" / "__snapshots__" / "test_core.ambr").exists()
     assert (project_dir / "tests" / "test_cli.py").exists()
     assert (project_dir / "docs" / "index.md").exists()
+    assert (project_dir / "docs" / "changelog.md").exists()
     assert (project_dir / "docs" / "javascripts" / "mathjax.js").exists()
     assert (project_dir / "docs" / "javascripts" / "termynal.js").exists()
     assert (project_dir / "docs" / "stylesheets" / "termynal.css").exists()
@@ -236,6 +238,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "[project.plugins.markdown-exec]" in zensical_text
     assert "[project.plugins.llmstxt]" in zensical_text
     assert 'full_output = "llms-full.txt"' in zensical_text
+    assert "changelog.md" in zensical_text
     assert 'inventories = ["https://docs.python.org/3/objects.inv"]' in zensical_text
     assert 'options.backlinks = "tree"' in zensical_text
     assert 'options.extensions = ["griffe_warnings_deprecated"]' in zensical_text
@@ -267,13 +270,17 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "*/__snapshots__/*" in coveragerc_text
     assert "tests/*" not in coveragerc_text
     assert "core = sysmon" in coveragerc_text
+    assert "skip_empty = true" in coveragerc_text
     assert "patch =\n    subprocess\n    _exit" in coveragerc_text
     assert r"return NotImplemented\b" in coveragerc_text
     assert r"(typing\.)?assert_never" in coveragerc_text
 
     pytest_ini_text = (project_dir / "pytest.ini").read_text()
     assert "-ra" in pytest_ini_text
+    assert "--durations=10" in pytest_ini_text
     assert "--snapshot-warn-unused" in pytest_ini_text
+    assert "empty_parameter_set_mark = fail_at_collect" in pytest_ini_text
+    assert "faulthandler_timeout   = 60" in pytest_ini_text
     assert "default::EncodingWarning" in pytest_ini_text
     assert "error::EncodingWarning:demo_app.*" in pytest_ini_text
     assert "minversion             = 9.0" in pytest_ini_text
@@ -286,6 +293,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
 
     ruff_toml_text = (project_dir / "ruff.toml").read_text()
     assert "combine-as-imports = true" in ruff_toml_text
+    assert "extend-immutable-calls" in ruff_toml_text
 
     # Verify docs reference and mermaid diagrams
     ref_text = (project_dir / "docs" / "reference.md").read_text()

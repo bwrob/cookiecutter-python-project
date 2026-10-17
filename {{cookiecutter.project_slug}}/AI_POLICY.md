@@ -35,6 +35,10 @@ maintainer time, all contributors must adhere to the following principles:
 - **Targeted Contributions**: Pull requests created with AI assistance should address
   existing, accepted issues or open discussions. Drive-by PRs addressing non-issues may
   be closed without review.
+- **Search Before Opening (No Duplicates)**: Before opening a pull request, search open
+  and closed pull requests, issues, and discussions. Do not open a pull request when the
+  same change has already been proposed or is currently in progress. Submitting duplicate
+  pull requests wastes maintainer bandwidth.
 - **Contribute at Human Speed, Not AI Speed**: AI tools make it trivial to generate
   large volumes of code and prose quickly, but open source review bandwidth moves at
   human speed. Do not post rapid-fire pull requests, mass-claim open issues, or flood
@@ -57,6 +61,9 @@ maintainer time, all contributors must adhere to the following principles:
 
 ## 5. Concise Code, Clear Comments, No Slop
 
+- **Default to Zero Inline Comments Unless Explaining 'Why'**: Comments should default
+  to none. Only add inline comments when explaining a non-obvious rationale, hidden
+  constraint, workaround, or subtle architectural invariant.
 - **Remove Obsolete, Verbose, & Diff-Narrative Commentary**: Any comments added must be
   concise and relevant for the *current* state of the code. Remove any AI-generated
   comments that describe changes relative to the previous state of the code, narrate
