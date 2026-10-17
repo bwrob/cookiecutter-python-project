@@ -23,6 +23,17 @@ jobs:
       contents: read
 
     steps:
+      - name: Configure SSH for zenith-example
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          echo "$SSH_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf "\n" >> ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -t ed25519,rsa github.com >> ~/.ssh/known_hosts
+        env:
+          SSH_KEY: ${{ secrets.EXAMPLE_REPO_DEPLOY_KEY }}
+
       - name: Checkout Zenith template
         uses: actions/checkout@v4
         with:
@@ -33,7 +44,6 @@ jobs:
         with:
           repository: bwrob/zenith-example
           path: zenith-example
-          ssh-key: ${{ secrets.EXAMPLE_REPO_DEPLOY_KEY }}
           ref: ${{ github.event.inputs.target_branch || 'main' }}
 
       - name: Install uv
