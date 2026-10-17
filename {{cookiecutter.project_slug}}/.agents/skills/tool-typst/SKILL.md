@@ -1,10 +1,14 @@
 ---
-description: Authoritative guide for Typst layout engine for SVG logos and docs.
+description: >-
+  Authoritative guide for Typst layout engine for SVG logos and docs.
+  Use when authoring vector assets, logotypes, diagram layouts, and rendered SVG assets.
+  Triggers: typst, vector, svg, logo, typesetting.
 name: tool-typst
 version: 1.0.0
 ---
 
-# Typst Skill
+
+# Typst Layout Engine (`tool-typst`)
 
 `typst` is a modern, blazing-fast typesetting and document layout engine
 written in Rust. It combines the expressive power of LaTeX with the ergonomics

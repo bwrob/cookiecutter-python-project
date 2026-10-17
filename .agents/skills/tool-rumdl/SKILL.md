@@ -1,10 +1,14 @@
 ---
-description: Authoritative guide for rumdl Markdown linter and formatter in Rust.
+description: >-
+  Authoritative guide for rumdl Markdown linter and formatter in Rust.
+  Use when checking, formatting, and linting Markdown documentation and embedded code blocks.
+  Triggers: rumdl, markdown, lint-md, format-md, rumdl.toml.
 name: tool-rumdl
 version: 1.0.0
 ---
 
-# rumdl Skill
+
+# rumdl Markdown Linter & Formatter (`tool-rumdl`)
 
 `rumdl` is an extremely fast markdown linter and formatter written in Rust. It
 enforces consistent, polished markdown style across READMEs, API docs, and

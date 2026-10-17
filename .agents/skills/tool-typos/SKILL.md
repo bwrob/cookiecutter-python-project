@@ -1,10 +1,14 @@
 ---
-description: Authoritative guide for typos source code and doc spell checker in Rust.
+description: >-
+  Authoritative guide for typos source code and doc spell checker in Rust.
+  Use when checking or fixing spelling mistakes across code, documentation, and commit messages.
+  Triggers: typos, spell check, typos.toml, spelling.
 name: tool-typos
 version: 1.0.0
 ---
 
-# typos Skill
+
+# typos Source Code Spell Checker (`tool-typos`)
 
 `typos` is a blazing-fast source code and documentation spell checker written in
 Rust by `crate-ci`. It is designed specifically for software codebases, finding

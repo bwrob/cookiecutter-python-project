@@ -1,10 +1,14 @@
 ---
-description: Authoritative guide for zizmor GitHub Actions security static analyzer.
+description: >-
+  Authoritative guide for zizmor GitHub Actions security static analyzer.
+  Use when auditing CI/CD workflows for security vulnerabilities, secrets leakage, or script injection.
+  Triggers: zizmor, security, github actions, workflows, ci security.
 name: tool-zizmor
 version: 1.0.0
 ---
 
-# Zizmor Skill
+
+# zizmor GitHub Actions Security Static Analyzer (`tool-zizmor`)
 
 `zizmor` is a high-performance static security analysis tool for GitHub Actions
 workflows, written in Rust. It audits CI/CD pipelines for critical security

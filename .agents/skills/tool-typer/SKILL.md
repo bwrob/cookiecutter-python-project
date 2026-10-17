@@ -1,10 +1,14 @@
 ---
-description: Authoritative guide for building modern type-safe CLIs with Typer and Rich in Python 3.12+.
+description: >-
+  Authoritative guide for building modern type-safe CLIs with Typer and Rich in Python 3.12+.
+  Use when designing command-line interfaces, parsing options, adding commands, or styling terminal output.
+  Triggers: typer, cli, rich, arguments, options, commands.
 name: tool-typer
 version: 1.0.0
 ---
 
-# Typer Skill
+
+# Typer CLI Framework (`tool-typer`)
 
 `typer` is the standard library for writing ergonomic, type-safe, and self-documenting
 command-line interfaces (CLIs) in modern Python. It is built on Python type hints,

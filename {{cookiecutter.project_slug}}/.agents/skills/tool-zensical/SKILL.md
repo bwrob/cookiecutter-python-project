@@ -1,10 +1,14 @@
 ---
-description: Authoritative guide for Zensical TOML-based static documentation generator.
+description: >-
+  Authoritative guide for Zensical TOML-based static documentation generator.
+  Use when building, serving, configuring, or writing static documentation and API references.
+  Triggers: zensical, docs, documentation, zensical.toml, mkdocstrings, mathjax.
 name: tool-zensical
 version: 1.0.0
 ---
 
-# Zensical Skill
+
+# Zensical Static Documentation Generator (`tool-zensical`)
 
 `zensical` is a modern, fast static documentation site generator built in Rust
 and Python by the creators of *Material for MkDocs* and *mkdocstrings*. It

@@ -1,10 +1,14 @@
 ---
-description: Authoritative guide for using Astral uv to manage packages and environments.
+description: >-
+  Authoritative guide for using Astral uv to manage packages and environments.
+  Use when adding dependencies, syncing environments, locking packages, running commands, or building distributions.
+  Triggers: uv, packages, dependencies, virtual environment, lockfile, uv.lock.
 name: tool-uv
 version: 1.0.0
 ---
 
-# uv Skill
+
+# uv Package & Environment Manager (`tool-uv`)
 
 `uv` is an extremely fast, Rust-based Python package and project manager
 developed by Astral. It replaces `pip`, `poetry`, and `virtualenv`.

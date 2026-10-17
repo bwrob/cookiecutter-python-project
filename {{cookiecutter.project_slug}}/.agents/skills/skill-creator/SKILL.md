@@ -1,12 +1,13 @@
 ---
 description: >-
-  Authoritative workflow and standards for designing, architecting, and creating
-  modular agent skills in Zenith repositories. Enforces progressive disclosure,
-  structured directories for complex skills (templates/, examples/, references/, scripts/),
-  external template separation, and lean SKILL.md authoring.
+  Authoritative workflow and standards for designing, architecting, and creating modular agent skills in Zenith repositories.
+  Enforces progressive disclosure, structured directories for complex skills (templates/, examples/, references/, scripts/), external template separation, and lean SKILL.md authoring.
+  Use when creating, architecting, refactoring, or modularizing agent skills.
+  Triggers: create skill, new skill, add skill, author skill, modular skill, skill template.
 name: skill-creator
 version: 1.0.0
 ---
+
 
 # Agent Skill Creator (`skill-creator`)
 

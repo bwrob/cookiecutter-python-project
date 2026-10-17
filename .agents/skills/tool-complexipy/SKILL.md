@@ -1,10 +1,14 @@
 ---
-description: Authoritative guide for complexipy cognitive complexity analyzer in Python.
+description: >-
+  Authoritative guide for complexipy cognitive complexity analyzer in Python.
+  Use when checking, refactoring, or reducing cognitive and cyclomatic complexity.
+  Triggers: complexipy, complexity, cognitive complexity, cyclomatic complexity.
 name: tool-complexipy
 version: 1.0.0
 ---
 
-# complexipy Skill
+
+# complexipy Cognitive Complexity Analyzer (`tool-complexipy`)
 
 `complexipy` is an ultra-fast cognitive complexity analyzer for Python code
 written in Rust. Unlike legacy cyclomatic complexity (which merely counts

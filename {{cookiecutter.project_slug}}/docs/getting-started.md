@@ -75,6 +75,36 @@ uv run poe test
 uv run poe code-quality
 ```
 
+???+ tip "Hermetic Task Execution"
+    Always invoke tasks using `uv run poe <task>`. Tasks inherit project environment flags,
+    strict encoding checks (`PYTHONUTF8=1`), and hermetic virtual environments.
+
+??? example "Advanced Testing & Marker Options"
+    Free arguments can be forwarded directly through Poe to underlying tools using `--`:
+    ```bash
+    uv run poe test -- -k "test_greeting" -v
+    ```
+
+### Verification Checklist
+
+- [x] Python {{ cookiecutter.python_version }} and `uv` installed
+- [x] Project cloned and dependencies locked
+- [ ] Run test suite with `uv run poe test`
+- [ ] Run code quality checks with `uv run poe code-quality`
+- [ ] Preview documentation with `uv run poe docs-serve`
+
+> [!TIP]
+> When browsing docs, press ++slash++ or ++cmd+k++ (or ++ctrl+k++ on Linux/Windows) to instantly search documentation symbols and pages.
+> Hovering internal links like [API Reference](reference.md) activates floating link previews.
+
+### Tested Code Snippets
+
+Code snippets can be embedded directly from verified tests or source files using `--8<--`:
+
+```python
+--8<-- "tests/test_core.py:10:14"
+```
+
 ## Architecture & Diagrams
 
 Mermaid diagrams render natively in documentation. Below are examples illustrating

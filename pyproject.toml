@@ -27,10 +27,30 @@ Homepage = "https://github.com/bwrob/zenith"
 Repository = "https://github.com/bwrob/zenith.git"
 
 [dependency-groups]
-dev = ["pre-commit>=4.0.0", "pytest>=8.0.0", "ruff>=0.17.0"]
+dev = [
+  "poethepoet>=0.42.0",
+  "pre-commit>=4.0.0",
+  "pytest>=8.0.0",
+  "ruff>=0.17.0",
+]
 
 [tool.uv]
 package = false
+
+[tool.poe.tasks]
+test = { cmd = "pytest", help = "Run unit test suite." }
+lint = { cmd = "ruff check", help = "Lint codebase with Ruff." }
+format = { cmd = "ruff format", help = "Format Python code with Ruff." }
+format-check = { cmd = "ruff format --check", help = "Check formatting with Ruff." }
+fix = { sequence = [
+  { cmd = "ruff check --fix" },
+  { cmd = "ruff format" },
+], help = "Auto-fix linting and formatting issues." }
+code-quality = { sequence = [
+  "lint",
+  "format-check",
+  "test",
+], help = "Run linting, formatting check, and test suite." }
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

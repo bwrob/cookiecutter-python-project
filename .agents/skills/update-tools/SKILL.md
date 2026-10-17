@@ -1,8 +1,12 @@
 ---
-description: Authoritative workflow for updating tool-* skills when upgrading tool versions.
+description: >-
+  Authoritative workflow for updating tool-* skills when upgrading tool versions.
+  Use when upgrading dependencies in pyproject.toml or when upstream tools introduce new features, syntax, or flags.
+  Triggers: update tools, upgrade tool, update skill, bump dependency, sync skills.
 name: update-tools
 version: 1.0.0
 ---
+
 
 # Updating Tool Skills (`update-tools`)
 

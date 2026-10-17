@@ -1,11 +1,12 @@
 ---
-description: >
-  Authoritative workflow for inspecting, auditing, and benchmarking mature
-  Python project setups and development skills to extract best practices and
-  propose improvements.
+description: >-
+  Authoritative workflow for inspecting, auditing, and benchmarking mature Python project setups and development skills to extract best practices and propose improvements.
+  Use when benchmarking external repositories, evaluating tool configurations, or proposing template upgrades.
+  Triggers: inspect module, audit repo, benchmark setup, extract skills, inspect-module-setup.
 name: inspect-module-setup
-version: 1.5.0
+version: 1.0.0
 ---
+
 
 # Inspect Module Setup (`inspect-module-setup`)
 

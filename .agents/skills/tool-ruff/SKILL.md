@@ -1,10 +1,14 @@
 ---
-description: Authoritative guide for linting and formatting Python with Astral Ruff.
+description: >-
+  Authoritative guide for linting and formatting Python with Astral Ruff.
+  Use when linting code, auto-fixing violations, formatting source files, or configuring rules.
+  Triggers: ruff, lint, format, ruff.toml, code style.
 name: tool-ruff
 version: 1.0.0
 ---
 
-# Ruff Skill
+
+# Ruff Linter & Formatter (`tool-ruff`)
 
 `ruff` is an extremely fast Python linter and code formatter written in Rust by
 Astral. It replaces Flake8, Black, isort, pydocstyle, pyupgrade, and autoflake.

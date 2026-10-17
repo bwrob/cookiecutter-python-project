@@ -1,10 +1,14 @@
 ---
-description: Authoritative guide for Tach modular architecture and layer boundary tool.
+description: >-
+  Authoritative guide for Tach modular architecture and layer boundary tool.
+  Use when validating module boundaries, preventing circular imports, and defining layer hierarchies.
+  Triggers: tach, architecture, layers, boundaries, circular imports, tach.toml.
 name: tool-tach
 version: 1.0.0
 ---
 
-# Tach Skill
+
+# Tach Architecture & Boundary Linter (`tool-tach`)
 
 `tach` is an ultra-fast architectural linter and dependency graph visualizer for
 Python, written in Rust. It enforces strict modular boundaries, defines public

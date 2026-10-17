@@ -343,9 +343,15 @@ def test_default_generation(temp_output_dir: Path) -> None:
     ref_text = (project_dir / "docs" / "reference.md").read_text()
     assert "::: demo_app.core" in ref_text
     assert "::: demo_app.cli" in ref_text
+    assert "site/llms.txt" in ref_text
+    index_text = (project_dir / "docs" / "index.md").read_text()
+    assert 'class="termy"' in index_text
+    assert '=== "uv (Recommended)"' in index_text
+    assert "```tree" in index_text
     getting_started_text = (project_dir / "docs" / "getting-started.md").read_text()
     assert 'class="termy"' in getting_started_text
-    assert 'class="termy"' in (project_dir / "docs" / "index.md").read_text()
+    assert "???+ tip" in getting_started_text
+    assert "- [x]" in getting_started_text
     assert "sequenceDiagram" in getting_started_text
     assert "stateDiagram-v2" in getting_started_text
 

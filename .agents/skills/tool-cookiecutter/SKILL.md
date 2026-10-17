@@ -1,10 +1,14 @@
 ---
-description: Authoritative guide for maintaining, testing, and developing Cookiecutter templates with modern 2.x advanced features.
+description: >-
+  Authoritative guide for maintaining, testing, and developing Cookiecutter templates with modern 2.x advanced features.
+  Use when editing template configurations, Jinja partials, lifecycle hooks, or running template tests.
+  Triggers: cookiecutter, template, scaffold, hooks, cookiecutter.json.
 name: tool-cookiecutter
 version: 2.0.0
 ---
 
-# Cookiecutter Skill
+
+# Cookiecutter Template Engine (`tool-cookiecutter`)
 
 `cookiecutter` is a command-line utility and Python library that scaffolds
 projects from file templates using the Jinja templating engine.

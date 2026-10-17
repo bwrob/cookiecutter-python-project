@@ -43,9 +43,51 @@ $ uv run {{ cookiecutter.project_slug }} --help
 </div>
 {% endif %}
 
+## Installation
+
+=== "uv (Recommended)"
+
+    ```bash
+    uv add {{ cookiecutter.project_slug }}
+    ```
+
+=== "pip"
+
+    ```bash
+    pip install {{ cookiecutter.project_slug }}
+    ```
+
+> [!TIP]
+> Always run project commands via `uv run poe <task>` or `uv run <command>`.
+> This guarantees hermetic execution inside the managed virtual environment without manual activation.
+
 ## Highlights
 
 {% include "docs/_tool_stack.md" %}
+
+## Architecture & Project Layout
+
+```tree
+./
+├── pyproject.toml
+├── poe_tasks.toml
+├── zensical.toml
+├── src/
+│   └── {{ cookiecutter.package_name }}/
+│       ├── __init__.py
+│       └── core.py
+├── tests/
+│   └── test_core.py
+└── docs/
+    ├── index.md
+    ├── getting-started.md
+    ├── reference.md
+    └── changelog.md
+```
+
+> [!NOTE]
+> The directory tree above is rendered dynamically at documentation build time using
+> the `markdown-exec` plugin with the ` ```tree ` fence.
 
 ## Mathematical Notation
 
@@ -71,3 +113,4 @@ print(f"Docs built with Python {sys.version.split()[0]} via markdown-exec!")
 
 - Explore the [Guide](getting-started.md) to set up your environment.
 - Review the [API Reference](reference.md) for module details.
+- Review the [Changelog](changelog.md) for release history.

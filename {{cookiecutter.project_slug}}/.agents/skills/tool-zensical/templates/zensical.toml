@@ -68,11 +68,8 @@ pymdownx.highlight.anchor_linenums = true
 pymdownx.snippets.check_paths = true
 pymdownx.snippets.dedent_subsections = true
 pymdownx.superfences.custom_fences = [
-    { name = "mermaid", class = "mermaid",
-      format = "pymdownx.superfences.fence_code_format" },
-    { name = "python", class = "python",
-      validator = "markdown_exec.validator",
-      format = "markdown_exec.formatter" },
+    { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+    { name = "python", class = "python", validator = "markdown_exec.validator", format = "markdown_exec.formatter" },
 ]
 zensical.extensions.preview.targets.include = ["*"]
 

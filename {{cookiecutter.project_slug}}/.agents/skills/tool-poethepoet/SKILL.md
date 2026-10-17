@@ -1,10 +1,14 @@
 ---
-description: Run and manage project tasks with poethepoet (poe) in uv projects.
+description: >-
+  Run and manage project tasks with poethepoet (poe) in uv projects.
+  Use when defining, debugging, executing, or organizing automated tasks.
+  Triggers: poe, poethepoet, tasks, task runner, poe_tasks.toml.
 name: tool-poethepoet
-version: 1.1.0
+version: 1.0.0
 ---
 
-# Poethepoet (poe) Task Runner
+
+# Poe the Poet Task Runner (`tool-poethepoet`)
 
 Poethepoet (`poe`) is a task runner for Python projects. It defines and
 documents project commands inside `pyproject.toml` or standalone config files

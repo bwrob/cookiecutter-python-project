@@ -1,10 +1,14 @@
 ---
-description: Authoritative guide for Meta Pyrefly static type checker in Python 3.12+.
+description: >-
+  Authoritative guide for Meta Pyrefly static type checker in Python 3.12+.
+  Use when type checking, configuring types, fixing type errors, or optimizing generic models.
+  Triggers: pyrefly, type check, static typing, pyrefly.toml, types.
 name: tool-pyrefly
 version: 1.0.0
 ---
 
-# Pyrefly Skill
+
+# Pyrefly Static Type Checker (`tool-pyrefly`)
 
 `pyrefly` is Meta's next-generation, high-performance static type checker and
 Language Server Protocol (LSP) for Python, written in Rust. It enforces strict

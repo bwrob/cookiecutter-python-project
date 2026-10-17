@@ -1,10 +1,14 @@
 ---
-description: Authoritative guide for modern pytest testing stack and plugins.
+description: >-
+  Authoritative guide for modern pytest testing stack and plugins.
+  Use when writing, running, debugging, or configuring unit, property, and snapshot tests.
+  Triggers: pytest, testing, coverage, xdist, syrupy, hypothesis, pytest-cov.
 name: tool-pytest
 version: 1.0.0
 ---
 
-# pytest Testing Stack Skill
+
+# pytest Testing Stack (`tool-pytest`)
 
 Zenith equips `pytest` with a modern, high-speed testing toolchain:
 
