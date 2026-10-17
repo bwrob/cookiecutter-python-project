@@ -334,9 +334,12 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert "options.docstring_options.ignore_init_summary = true" in zensical_text
     assert 'options.annotations_path = "brief"' in zensical_text
     assert "options.show_bases = true" in zensical_text
-    assert "options.unwrap_annotated = true" in zensical_text
     assert "stylesheets/termynal.css" in zensical_text
     assert "javascripts/termynal.js" in zensical_text
+    assert "javascripts/mathjax.js" in zensical_text
+    assert '{ name = "tree"' in zensical_text
+    assert "navigation.indexes" in zensical_text
+    assert '"adr/index.md"' in zensical_text
 
     agents_text = (project_dir / "AGENTS.md").read_text()
     assert "## Project Stewardship" in agents_text

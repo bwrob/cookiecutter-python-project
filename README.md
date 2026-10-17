@@ -93,8 +93,8 @@ uv run poe docs-serve
 | `project_slug` | *derived from name* | Repository and PyPI package name |
 | `package_name` | *derived from slug* | Python import name (`import <package_name>`) |
 | `description` | *default description* | Package summary string |
-| `author_name` | `Bartosz Marcin Wróblewski` | Package author |
-| `author_email` | `bartosz.marcin.wroblewski@gmail.com` | Author email |
+| `author_name` | `bwrob` | Package author |
+| `author_email` | `contact@bwrob.dev` | Author email |
 | `github_username`| `bwrob` | GitHub handle for repo and GitHub Pages URLs |
 | `version` | `0.1.0` | Initial release version |
 | `python_version` | `3.13` | Target Python version (`3.12`, `3.13`, `3.14`, `3.15`) |

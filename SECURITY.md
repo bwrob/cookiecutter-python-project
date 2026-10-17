@@ -25,7 +25,7 @@ The **Zenith** project takes security seriously. If you believe you have discove
    - Provide reproduction details and impact analysis.
 
 2. **Direct Security Contact**:
-   - Send an email to **Bartosz Marcin Wróblewski** at [bartosz.marcin.wroblewski@gmail.com](mailto:bartosz.marcin.wroblewski@gmail.com) with the subject line `[SECURITY] Zenith Vulnerability Report`.
+   - Send an email to **bwrob** at [contact@bwrob.dev](mailto:contact@bwrob.dev) with the subject line `[SECURITY] Zenith Vulnerability Report`.
 
 ## Vulnerability Handling & Response Timeline
 

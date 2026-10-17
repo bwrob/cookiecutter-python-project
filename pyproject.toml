@@ -4,9 +4,7 @@ version = "0.1.0"
 description = "Zenith: An opinionated, strict Cookiecutter template for modern Python projects using uv, ruff, pyrefly, complexipy, zensical, rumdl, tach, and poethepoet."
 readme = "README.md"
 requires-python = ">=3.12"
-authors = [
-  { name = "Bartosz Marcin Wróblewski", email = "bartosz.marcin.wroblewski@gmail.com" },
-]
+authors = [{ name = "bwrob", email = "contact@bwrob.dev" }]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",

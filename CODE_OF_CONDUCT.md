@@ -46,8 +46,7 @@ or harmful.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to Bartosz Marcin Wróblewski at
-[bartosz.marcin.wroblewski@gmail.com](mailto:bartosz.marcin.wroblewski@gmail.com).
+reported to bwrob at [contact@bwrob.dev](mailto:contact@bwrob.dev).
 All complaints will be reviewed and investigated promptly and fairly.
 
 ## Attribution
