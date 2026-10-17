@@ -1,0 +1,29 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: ["config:recommended"],
+  labels: ["dependencies", "github_actions"],
+  packageRules: [
+    {
+      description: "Group all GitHub Actions updates into a single weekly pull request",
+      matchManagers: ["github-actions", "custom.regex"],
+      groupName: "github actions",
+      commitMessagePrefix: "ci(deps):",
+      minimumReleaseAge: "7 days",
+      schedule: ["every weekend"],
+    },
+  ],
+  customManagers: [
+    {
+      customType: "regex",
+      description: "Update GitHub Actions in template partials and cookiecutter workflows",
+      fileMatch: [
+        "^templates/ci/.*\\.ya?ml$",
+        "^{{cookiecutter\\.project_slug}}/\\.github/workflows/.*\\.ya?ml$",
+      ],
+      matchStrings: [
+        "uses:\\s+(?<depName>[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+)@(?<currentValue>[^\\s]+)",
+      ],
+      datasourceTemplate: "github-tags",
+    },
+  ],
+}

@@ -209,6 +209,9 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert (project_dir / ".github" / "workflows" / "publish.yaml").exists()
     assert (project_dir / ".github" / "workflows" / "test_redistribute.yaml").exists()
     assert (
+        project_dir / ".github" / "workflows" / "dependabot-automerge.yaml"
+    ).exists()
+    assert (
         "UV_EXCLUDE_NEWER"
         in (project_dir / ".github" / "workflows" / "publish.yaml").read_text()
     )
@@ -629,6 +632,9 @@ def test_no_ci_testing(temp_output_dir: Path) -> None:
     ).exists()
     assert not (
         project_dir / ".github" / "workflows" / "guard-dependencies.yaml"
+    ).exists()
+    assert not (
+        project_dir / ".github" / "workflows" / "dependabot-automerge.yaml"
     ).exists()
     assert not (project_dir / ".github" / "codecov.yml").exists()
     assert (project_dir / ".zizmor.yml").exists()

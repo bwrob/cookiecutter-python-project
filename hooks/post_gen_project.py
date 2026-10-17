@@ -160,6 +160,7 @@ def main() -> None:
         remove_file(".github", "workflows", "python_tests.yaml")
         remove_file(".github", "workflows", "test_redistribute.yaml")
         remove_file(".github", "workflows", "guard-dependencies.yaml")
+        remove_file(".github", "workflows", "dependabot-automerge.yaml")
         remove_file(".github", "codecov.yml")
 
     if not include_ci_publishing:
