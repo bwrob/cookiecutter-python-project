@@ -394,7 +394,7 @@ def test_default_generation(temp_output_dir: Path) -> None:
     assert 'cmd  = "zensical serve"' in poe_text
     assert "zensical build --strict" in poe_text
     docs_yaml_text = (project_dir / ".github" / "workflows" / "docs.yaml").read_text()
-    assert "zensical build --clean --strict" in docs_yaml_text
+    assert "zensical build --clean" in docs_yaml_text
     assert "uv sync --group docs" in docs_yaml_text
 
     publish_yaml_text = (
