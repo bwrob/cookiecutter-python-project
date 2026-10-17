@@ -47,6 +47,7 @@ fix = { sequence = [
   { cmd = "ruff format" },
 ], help = "Auto-fix linting and formatting issues." }
 check-skills = { cmd = "python scripts/check_skills.py .agents/skills", help = "Validate agent skills structural invariants." }
+sync-example = { cmd = "python scripts/sync_example.py", help = "Render and sync showcase repository (zenith-example)." }
 code-quality = { sequence = [
   "lint",
   "format-check",

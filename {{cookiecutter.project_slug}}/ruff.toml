@@ -8,11 +8,11 @@
 # mode, and docstring formatting for spotless, uniform Python style.
 # ==============================================================================
 
-exclude = [ ".venv", "site", "dist", "scripts" ]
+exclude = [ ".venv", "site", "dist", "scripts", ".agents" ]
 line-length = 88
 
 [lint]
-    exclude = [ ".venv", "site", "dist", "scripts" ]
+    exclude = [ ".venv", "site", "dist", "scripts", ".agents" ]
     ignore = [
         "blank-line-before-class",
         "COM",
